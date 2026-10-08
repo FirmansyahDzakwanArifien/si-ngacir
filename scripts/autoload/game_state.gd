@@ -53,6 +53,9 @@ var wallet := 0
 var owned: Array[StringName] = []
 ## Aksesori yang dipakai, key: Cosmetics.Slot.
 var equipped := {}
+## Tips tutorial yang sudah pernah tampil, dan apakah tips ditampilkan.
+var seen_tips: Array[StringName] = []
+var tips_enabled := true
 ## Cutscene yang akan diputar dan scene tujuan setelahnya (lihat play_story).
 var pending_story: StoryData
 var pending_scene := ""
@@ -171,11 +174,27 @@ func equipped_ids() -> Array:
 	return equipped.values()
 
 
+func mark_tip_seen(id: StringName) -> void:
+	if not id in seen_tips:
+		seen_tips.append(id)
+		save_profile()
+
+
+## Hidupkan/matikan tips. Menghidupkan kembali akan menampilkan ulang semua tips.
+func set_tips_enabled(value: bool) -> void:
+	tips_enabled = value
+	if value:
+		seen_tips.clear()
+	save_profile()
+
+
 func save_profile() -> void:
 	var config := ConfigFile.new()
 	config.set_value("profile", "wallet", wallet)
 	config.set_value("profile", "owned", owned)
 	config.set_value("profile", "equipped", equipped)
+	config.set_value("profile", "seen_tips", seen_tips)
+	config.set_value("profile", "tips_enabled", tips_enabled)
 	config.save(PROFILE_PATH)
 
 
@@ -186,12 +205,16 @@ func load_profile() -> void:
 	wallet = config.get_value("profile", "wallet", 0)
 	owned.assign(config.get_value("profile", "owned", []))
 	equipped = config.get_value("profile", "equipped", {})
+	seen_tips.assign(config.get_value("profile", "seen_tips", []))
+	tips_enabled = config.get_value("profile", "tips_enabled", true)
 
 
 func reset_profile() -> void:
 	wallet = 0
 	owned.clear()
 	equipped.clear()
+	seen_tips.clear()
+	tips_enabled = true
 	if FileAccess.file_exists(PROFILE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 
