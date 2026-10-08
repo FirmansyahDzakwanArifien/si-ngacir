@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource("1_story")
 pages = PackedStringArray("Suatu hari, hiduplah Masbro, seekor capybara santai yang tinggal berdua bersama adiknya di Kota Ngacir.", "Setiap hari, Masbro mencari rezeki dengan mengandalkan ketenangannya, demi memenuhi kebutuhan mereka berdua.", "Suatu ketika, adiknya jatuh sakit parah. Dokter bilang biaya pengobatannya besar, dan harus terkumpul dalam lima hari.", "Karena itu, Masbro melamar di ekspedisi Ngacir Express. Ia harus lolos masa percobaan lima hari, mengantar paket-paket berisiko di tengah lalu lintas kota yang liar.", "Kejar Timer ETA. Jaga paket dari benturan. Jangan sampai upah terpotong denda ganti rugi.\n\nTrobos Ajalah!")
-images = PackedStringArray()
+images = PackedStringArray("home", "home", "sick", "office", "road")

@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource("1_story")
 pages = PackedStringArray("Hari terakhir masa percobaan.", "Bu Direktur sendiri yang memesan Paket VIP. Inilah penentuannya: diangkat jadi kurir tetap, atau pulang dengan tangan kosong.")
-images = PackedStringArray()
+images = PackedStringArray("vip", "vip")
