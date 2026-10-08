@@ -6,6 +6,8 @@ const TYPES := {
 	&"motor": {"length": 1, "damage": 1, "color": Color("e04f5f")},
 	&"mobil": {"length": 2, "damage": 1, "color": Color("4f8fe0")},
 	&"truk": {"length": 3, "damage": 2, "color": Color("e0a84f")},
+	# Bang Kilat, kurir rival: sekali lewat dengan sangat cepat.
+	&"kilat": {"length": 1, "damage": 1, "color": Color("06d6a0")},
 	# Rakit di sungai: bukan penabrak, tapi pijakan.
 	&"rakit2": {"length": 2, "damage": 0, "color": Color("c98b52"), "platform": true},
 	&"rakit3": {"length": 3, "damage": 0, "color": Color("c98b52"), "platform": true},
@@ -14,6 +16,9 @@ const TYPES := {
 var damage := 1
 ## true untuk rakit: dinaiki, bukan dihindari.
 var is_platform := false
+## true: lewat sekali lalu hilang (tidak berputar ke sisi seberang).
+var one_shot := false
+var type: StringName
 var direction := 1
 var speed := 60.0
 var length_px := 96.0
@@ -27,6 +32,7 @@ var _bob_time := randf() * TAU
 
 func setup(type: StringName, p_tile: float, p_speed: float, p_direction: int,
 		p_loop_start: float, p_loop_length: float) -> void:
+	self.type = type
 	var info: Dictionary = TYPES.get(type, TYPES[&"mobil"])
 	tile = p_tile
 	length_px = info["length"] * tile
@@ -52,7 +58,12 @@ func hitbox() -> Rect2:
 
 
 func _process(delta: float) -> void:
-	position.x = loop_start + fposmod(position.x + speed * direction * delta - loop_start, loop_length)
+	if one_shot:
+		position.x += speed * direction * delta
+		if position.x > loop_start + loop_length or position.x < loop_start - length_px:
+			queue_free()
+	else:
+		position.x = loop_start + fposmod(position.x + speed * direction * delta - loop_start, loop_length)
 	if _sprite and not is_platform:
 		# Bodi bergoyang pelan seperti mesin hidup.
 		_bob_time += delta * (6.0 + speed * 0.04)

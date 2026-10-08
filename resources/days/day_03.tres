@@ -25,6 +25,7 @@ river_lanes = Vector2i(2, 3)
 raft_speed = Vector2(35, 60)
 checkpoint_every = 3
 checkpoint_penalty = 15000
+vendor_chance = 0.3
 
 [resource]
 script = ExtResource("1_day")
@@ -41,6 +42,8 @@ damage_penalty = 20000
 late_penalty_per_second = 1000
 map = SubResource("Resource_map")
 cat_count = 1
+pedestrian_count = 2
+rival_interval = 14.0
 rainy = false
 slip_chance = 0.25
 visibility_tiles = 4.5

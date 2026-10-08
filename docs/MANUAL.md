@@ -161,6 +161,15 @@ Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit
 * Lane sungai yang bersebelahan mengalir berlawanan arah. Perhatikan rakit di lane berikutnya sebelum melompat.
 * Helm juga melindungi dari air.
 
+### Warga Kota Ngacir
+
+| NPC | Perilaku |
+| --- | --- |
+| **Pengemudi** | Membunyikan klakson "Tin tin!" bila Masbro berdiri tepat di depan kendaraannya. Tanda untuk segera menyingkir! |
+| **Pejalan kaki** | Ibu-ibu belanja dan anak berbalon berjalan pelan di median. Tidak merusak paket, tapi menghalangi ("Permisi, Mas!") |
+| **Pedagang bakso** | Gerobak diam di median, menghalangi langkah dan berteriak "Bakso! Bakso!" |
+| **Bang Kilat** | Kurir rival yang tiba-tiba melesat sangat cepat di salah satu lane ("Minggir, Masbro!"), mulai Hari 3. Menabraknya tetap merusak paket |
+
 ### Pos (checkpoint)
 
 Mulai Hari 2, rute panjang punya **Pos** setiap beberapa blok: median bersih bertanda bendera di kedua sisinya. Begitu Masbro menginjak Pos, benderanya berubah kuning.

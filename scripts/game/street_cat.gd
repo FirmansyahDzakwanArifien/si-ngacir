@@ -9,6 +9,10 @@ const SIT_TIME := 1.2
 const IGNORE_TIME := 2.0
 
 var tile := 48.0
+## &"cat" atau &"pedestrian".
+var kind: StringName = &"cat"
+var walk_sprite := "cat_walk"
+var idle_sprite := "cat_sit"
 var direction := 1
 var speed := 40.0
 var board_width := 720.0
@@ -19,7 +23,7 @@ var _body: AnimatedSprite2D
 
 
 func _ready() -> void:
-	var frames := SpriteLibrary.frames({&"walk": "cat_walk", &"sit": "cat_sit"}, Vector2i(48, 48))
+	var frames := SpriteLibrary.frames({&"walk": walk_sprite, &"sit": idle_sprite}, Vector2i(48, 48))
 	if frames:
 		_body = SpriteLibrary.animated(frames)
 		_body.flip_h = direction < 0
