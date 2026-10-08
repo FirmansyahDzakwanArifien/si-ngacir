@@ -276,10 +276,12 @@ func _next_button_text() -> String:
 func _on_next_requested() -> void:
 	get_tree().paused = false
 	if GameState.advance_day():
-		get_tree().reload_current_scene()
+		GameState.play_story(GameState.current_day().story, GameState.LEVEL_SCENE)
+	elif GameState.is_replay:
+		get_tree().change_scene_to_file(GameState.ENDING_SCENE)
 	else:
 		GameState.finish_probation()
-		get_tree().change_scene_to_file(GameState.ENDING_SCENE)
+		GameState.play_story(GameState.ending_story(), GameState.ENDING_SCENE)
 
 
 func _on_menu_requested() -> void:

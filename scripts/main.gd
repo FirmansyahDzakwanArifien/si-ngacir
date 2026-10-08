@@ -77,7 +77,7 @@ func _on_new_game_pressed() -> void:
 
 func _start_new_game() -> void:
 	GameState.delete_save()
-	get_tree().change_scene_to_file(GameState.LEVEL_SCENE)
+	GameState.play_story(load(GameState.OPENING_STORY), GameState.LEVEL_SCENE)
 
 
 func _button(text: String, on_pressed: Callable, height := 36) -> Button:

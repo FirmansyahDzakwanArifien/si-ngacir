@@ -23,6 +23,10 @@ const SHORTFALL_RULE := ShortfallRule.REPLAY_DAYS
 const LEVEL_SCENE := "res://scenes/game/level.tscn"
 const ENDING_SCENE := "res://scenes/ending.tscn"
 const MENU_SCENE := "res://scenes/main.tscn"
+const CUTSCENE_SCENE := "res://scenes/cutscene.tscn"
+const OPENING_STORY := "res://resources/story/opening.tres"
+const ENDING_SUCCESS_STORY := "res://resources/story/ending_success.tres"
+const ENDING_BAD_STORY := "res://resources/story/ending_bad.tres"
 const SAVE_PATH := "user://save.cfg"
 
 const INPUT_KEYS := {
@@ -40,6 +44,9 @@ var is_replay := false
 var wages := {}
 ## true setelah Hari 5 selesai; "Lanjutkan" langsung membuka layar rekap.
 var probation_done := false
+## Cutscene yang akan diputar dan scene tujuan setelahnya (lihat play_story).
+var pending_story: StoryData
+var pending_scene := ""
 
 
 func _ready() -> void:
@@ -97,6 +104,25 @@ func total_savings() -> int:
 
 func savings_enough() -> bool:
 	return total_savings() >= MEDICAL_COST
+
+
+## Putar cutscene lalu pindah ke next_scene. Tanpa cerita, langsung pindah.
+func play_story(story: StoryData, next_scene: String) -> void:
+	if story == null or story.pages.is_empty():
+		get_tree().change_scene_to_file(next_scene)
+		return
+	pending_story = story
+	pending_scene = next_scene
+	get_tree().change_scene_to_file(CUTSCENE_SCENE)
+
+
+## Cutscene penutup sesuai hasil masa percobaan (null bila pemain masih boleh mengulang hari).
+func ending_story() -> StoryData:
+	if savings_enough():
+		return load(ENDING_SUCCESS_STORY)
+	if SHORTFALL_RULE == ShortfallRule.BAD_ENDING:
+		return load(ENDING_BAD_STORY)
+	return null
 
 
 func has_save() -> bool:
