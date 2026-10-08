@@ -2,5 +2,5 @@
 .godot/
 /android/
 *.translation
-export_presets.cfg
-builds/
+builds/*
+!builds/.gdignore

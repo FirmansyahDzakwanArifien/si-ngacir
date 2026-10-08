@@ -49,7 +49,7 @@ func _ready() -> void:
 
 	_button("Pengaturan", _on_settings_pressed)
 	if not OS.has_feature("web"):
-		_button("Keluar", get_tree().quit)
+		_button("Keluar", AudioManager.quit_game)
 
 	_first_button = first
 	first.grab_focus.call_deferred()

@@ -33,8 +33,26 @@ func _ready() -> void:
 		add_child(player)
 		_sfx_players.append(player)
 	load_settings()
+	get_tree().auto_accept_quit = false
 	# Semua tombol di game otomatis berbunyi klik.
 	get_tree().node_added.connect(_on_node_added)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		quit_game()
+
+
+## Tutup game dengan rapi: hentikan semua suara dulu, beri waktu audio server
+## melepas stream, baru keluar. Dipakai tombol Keluar dan tombol tutup jendela.
+func quit_game() -> void:
+	_music_player.stop()
+	_music_player.stream = null
+	for player in _sfx_players:
+		player.stop()
+		player.stream = null
+	_streams.clear()
+	get_tree().create_timer(0.1).timeout.connect(get_tree().quit)
 
 
 func play_sfx(sfx_name: StringName, pitch_variation := 0.0) -> void:
