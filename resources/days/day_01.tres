@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="DayData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="DayData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/day_data.gd" id="1_day"]
 [ext_resource type="Script" path="res://scripts/data/map_params.gd" id="2_map"]
 [ext_resource type="Resource" path="res://resources/packages/bantal.tres" id="3_pkg"]
+[ext_resource type="Resource" path="res://resources/cities/perumahan.tres" id="5_city"]
 
 [sub_resource type="Resource" id="Resource_map"]
 script = ExtResource("2_map")
@@ -41,6 +42,7 @@ eta_bonus = 20000
 damage_penalty = 10000
 late_penalty_per_second = 500
 map = SubResource("Resource_map")
+city = ExtResource("5_city")
 cat_count = 0
 pedestrian_count = 1
 rival_interval = 0.0

@@ -144,6 +144,7 @@ func show_intro() -> void:
 		_package_picture(),
 		_label("Paket: %s" % pkg.display_name, 20, Palette.TEXT, true, 600),
 		_label(pkg.description, 16, Palette.TEXT_SOFT),
+		_label("Lokasi: %s" % (_day.city.display_name if _day.city else "Kota Ngacir"), 15, Palette.TEXT_SOFT, true, 600),
 		_customer_row(),
 		_label("Target ETA: %s   Upah dasar: %s" % [
 				format_time(_day.eta_seconds), GameState.rupiah(_day.base_wage)], 17),
