@@ -1,9 +1,16 @@
 extends Node2D
 ## Satu hari pengiriman: Masbro membawa paket dari gudang (bawah) ke rumah pelanggan (atas).
+## Map bisa jauh lebih tinggi dari layar; kamera mengikuti Masbro ke atas.
 
 const TILE := 48.0
 const COLUMNS := 15
 const HUD_HEIGHT := 48.0
+## Tinggi jendela map yang terlihat, dalam baris.
+const VIEW_ROWS := 13
+const VIEW_HEIGHT := VIEW_ROWS * TILE
+## Posisi Masbro di layar (0 = atas, 1 = bawah); lebih ke bawah supaya jalan di depan terlihat.
+const CAMERA_ANCHOR := 0.65
+const CAMERA_SMOOTHING := 8.0
 ## Area di luar layar tempat kendaraan "berputar" sebelum muncul lagi.
 const LOOP_MARGIN_TILES := 4
 const HIT_INVULNERABLE_TIME := 1.2
@@ -21,13 +28,17 @@ var collisions := 0
 var elapsed := 0.0
 
 var _rows := 0
-## Posisi diam papan (papan di tengah layar; layar bisa lebih lebar/tinggi di HP).
+## Posisi papan saat kamera di paling atas (papan di tengah layar secara horizontal).
 var _board_rest := Vector2(0, HUD_HEIGHT)
-## Menutup area di kiri/kanan papan supaya kendaraan di luar papan tidak terlihat.
+## Jarak kamera dari atas map, dalam piksel.
+var _scroll := 0.0
+var _shake_offset := Vector2.ZERO
+## Menutup area di luar jendela map supaya kendaraan di luar papan tidak terlihat.
 var _side_mask: Node2D
 var _invulnerable_left := 0.0
 var _board: Node2D
 var _player: Player
+var _rain: RainOverlay
 var _vehicles: Array[Vehicle] = []
 var _cats: Array[StreetCat] = []
 var _cat_timer := 1.5
@@ -41,6 +52,8 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if day == null:
 		day = GameState.current_day()
+	if day.map:
+		_generate_map()
 	_rows = day.lanes.size()
 
 	_board = Node2D.new()
@@ -54,15 +67,17 @@ func _ready() -> void:
 	add_child(_side_mask)
 	_spawn_vehicles()
 	_spawn_player()
+	if day.rainy:
+		_rain = RainOverlay.new()
+		_rain.area = Vector2(COLUMNS * TILE, VIEW_HEIGHT)
+		_rain.visibility_radius = day.visibility_tiles * TILE
+		_rain.target = _player
+		_rain.z_index = 10
+		_board.add_child(_rain)
 	_layout_board()
 	get_viewport().size_changed.connect(_layout_board)
-	if day.rainy:
-		var rain := RainOverlay.new()
-		rain.area = Vector2(COLUMNS * TILE, _rows * TILE)
-		rain.visibility_radius = day.visibility_tiles * TILE
-		rain.target = _player
-		rain.z_index = 10
-		_board.add_child(rain)
+	_scroll = _camera_target()
+	_apply_board_position()
 
 	_hud = GameHud.new()
 	add_child(_hud)
@@ -75,17 +90,35 @@ func _ready() -> void:
 	_hud.show_intro()
 	var touch := TouchControls.new()
 	touch.player = _player
-	touch.board_rect = Rect2(Vector2.ZERO, Vector2(COLUMNS * TILE, _rows * TILE))
+	touch.board_rect = Rect2(Vector2.ZERO, Vector2(COLUMNS * TILE, VIEW_HEIGHT))
 	add_child(touch)
 	_hud.pause_pressed.connect(_on_pause_pressed)
 	AudioManager.play_music(&"gameplay")
 
 
+## Rakit map prosedural untuk hari ini. DayData diduplikasi supaya resource asli tidak berubah.
+func _generate_map() -> void:
+	var params := day.map
+	day = day.duplicate()
+	var rng := RandomNumberGenerator.new()
+	if params.fixed_seed != 0:
+		rng.seed = params.fixed_seed
+	else:
+		rng.randomize()
+	day.lanes = MapGenerator.generate(params, rng)
+	day.eta_seconds = roundf(day.lanes.size() * params.eta_per_row)
+
+
 func _process(delta: float) -> void:
-	if state != State.PLAYING or get_tree().paused:
+	if get_tree().paused:
+		return
+	_scroll = lerpf(_scroll, _camera_target(), 1.0 - exp(-CAMERA_SMOOTHING * delta))
+	_apply_board_position()
+	if state != State.PLAYING:
 		return
 	elapsed += delta
 	_hud.update_timer(day.eta_seconds - elapsed)
+	_hud.update_progress(1.0 - _player.position.y / ((_rows - 1) * TILE))
 
 	_popup_cooldown = maxf(0.0, _popup_cooldown - delta)
 	_update_cats(delta)
@@ -106,6 +139,23 @@ func _unhandled_input(event: InputEvent) -> void:
 	if state == State.PLAYING and event.is_action_pressed(&"pause"):
 		_set_paused(not get_tree().paused)
 		get_viewport().set_input_as_handled()
+
+
+func _camera_target() -> float:
+	var target := _player.position.y + TILE / 2.0 - VIEW_HEIGHT * CAMERA_ANCHOR
+	return clampf(target, 0.0, maxf(0.0, _rows * TILE - VIEW_HEIGHT))
+
+
+func _apply_board_position() -> void:
+	_board.position = _board_rest + Vector2(0, -roundf(_scroll)) + _shake_offset
+	if _rain:
+		_rain.position.y = roundf(_scroll)
+
+
+## Baris map yang sedang terlihat di layar (atas, bawah).
+func _visible_rows() -> Vector2i:
+	var top := floori(_scroll / TILE)
+	return Vector2i(top, mini(_rows - 1, top + VIEW_ROWS))
 
 
 func _spawn_vehicles() -> void:
@@ -155,10 +205,12 @@ func _update_cats(delta: float) -> void:
 
 
 func _spawn_cat() -> void:
-	# Kucing hanya menyeberang di jalan dan median, tidak di trotoar gudang/rumah.
+	# Kucing menyeberang di jalan dan median yang sedang terlihat, tidak di trotoar gudang/rumah.
+	var view := _visible_rows()
 	var rows: Array[int] = []
-	for row in range(1, _rows - 1):
-		if row != _player.cell.y:
+	for row in range(maxi(1, view.x), mini(_rows - 1, view.y + 1)):
+		var kind := day.lanes[row].kind
+		if row != _player.cell.y and (kind == LaneData.Kind.ROAD or kind == LaneData.Kind.MEDIAN):
 			rows.append(row)
 	if rows.is_empty():
 		return
@@ -228,7 +280,8 @@ func _on_player_moved(cell: Vector2i) -> void:
 		_deliver()
 		return
 	var on_wet_road := day.rainy and day.lanes[cell.y].kind == LaneData.Kind.ROAD
-	if on_wet_road and not _player.last_move_was_slide and not _player.invulnerable 			and randf() < day.slip_chance and _player.slide():
+	if on_wet_road and not _player.last_move_was_slide and not _player.invulnerable \
+			and randf() < day.slip_chance and _player.slide():
 		_popup("Licin!", Color("8ecae6"), _player.position)
 		AudioManager.play_sfx(&"slip")
 
@@ -252,6 +305,7 @@ func _on_hit(vehicle: Vehicle) -> void:
 func _deliver() -> void:
 	state = State.FINISHED
 	_player.input_enabled = false
+	_hud.update_progress(1.0)
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed)
 	GameState.record_delivery(day, report.wage)
 	AudioManager.play_sfx(&"delivery")
@@ -274,7 +328,7 @@ func _fail() -> void:
 func _layout_board() -> void:
 	var view := get_viewport().get_visible_rect().size
 	_board_rest = Vector2(floorf(maxf(0.0, view.x - COLUMNS * TILE) / 2.0), HUD_HEIGHT)
-	_board.position = _board_rest
+	_apply_board_position()
 	_side_mask.queue_redraw()
 
 
@@ -282,10 +336,13 @@ func _draw_side_mask() -> void:
 	var view := get_viewport().get_visible_rect().size
 	var color := ProjectSettings.get_setting("rendering/environment/defaults/default_clear_color") as Color
 	var right := _board_rest.x + COLUMNS * TILE
+	var bottom := HUD_HEIGHT + VIEW_HEIGHT
 	if _board_rest.x > 0.0:
 		_side_mask.draw_rect(Rect2(0, HUD_HEIGHT, _board_rest.x, view.y), color)
 	if right < view.x:
 		_side_mask.draw_rect(Rect2(right, HUD_HEIGHT, view.x - right, view.y), color)
+	if bottom < view.y:
+		_side_mask.draw_rect(Rect2(0, bottom, view.x, view.y - bottom), color)
 
 
 func _on_pause_pressed() -> void:
@@ -294,11 +351,10 @@ func _on_pause_pressed() -> void:
 
 
 func _shake() -> void:
-	var rest := _board_rest
-	var tween := _board.create_tween()
+	var tween := create_tween()
 	for i in 6:
-		tween.tween_property(_board, "position", rest + Vector2(randf_range(-6, 6), randf_range(-6, 6)), 0.03)
-	tween.tween_property(_board, "position", rest, 0.03)
+		tween.tween_property(self, "_shake_offset", Vector2(randf_range(-6, 6), randf_range(-6, 6)), 0.03)
+	tween.tween_property(self, "_shake_offset", Vector2.ZERO, 0.03)
 
 
 func _on_retry_requested() -> void:

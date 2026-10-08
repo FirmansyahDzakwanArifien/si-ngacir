@@ -62,7 +62,9 @@ Tahan tombol arah untuk melangkah terus-menerus.
 
 ## 4. Tujuan Permainan
 
-Bawa paket dari **Gudang Ngacir Express** (bawah layar) ke **rumah pelanggan** (atas layar), menyeberangi jalan yang penuh kendaraan.
+Bawa paket dari **Gudang Ngacir Express** (bawah) ke **rumah pelanggan** (atas), menyeberangi blok demi blok jalan yang penuh kendaraan. Rute bisa jauh lebih panjang dari satu layar; layar ikut bergerak naik mengikuti Masbro.
+
+Setiap kali hari dimulai, **susunan jalan dibuat ulang secara acak**, jadi tidak ada dua pengiriman yang persis sama. Makin dekat ke rumah pelanggan, kendaraan makin cepat.
 
 Kumpulkan upah dari 5 hari masa percobaan. Jika total tabungan mencukupi biaya pengobatan, Masbro lulus dan adiknya bisa berobat.
 
@@ -86,7 +88,8 @@ Kumpulkan upah dari 5 hari masa percobaan. Jika total tabungan mencukupi biaya p
 | --- | --- |
 | **HARI** | Hari ke berapa dari masa percobaan |
 | **Kotak paket ■■■** | Kondisi paket. Satu kotak hilang setiap kali paket rusak. Semua hilang = paket hancur |
-| **ETA** | Sisa waktu target pengantaran. Berubah merah "TELAT" bila lewat |
+| **Garis rute** | Titik kuning = Masbro, rumah merah = tujuan. Menunjukkan seberapa jauh lagi |
+| **ETA** | Sisa waktu target pengantaran (makin panjang rute, makin lama). Kuning saat ≤10 detik, merah "TELAT" bila lewat |
 | **ANTAR KE** | Nama pelanggan tujuan |
 
 ---

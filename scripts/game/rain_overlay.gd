@@ -62,7 +62,8 @@ func _process(delta: float) -> void:
 
 func _follow_target() -> void:
 	if target and _material:
-		_material.set_shader_parameter("center", target.position + Vector2(24, 24))
+		# Overlay ikut kamera, jadi posisi Masbro dihitung relatif terhadap overlay.
+		_material.set_shader_parameter("center", target.position + Vector2(24, 24) - position)
 
 
 func _draw() -> void:
