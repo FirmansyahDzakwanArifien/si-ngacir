@@ -3,6 +3,8 @@ extends Node2D
 ## Masbro, capybara kurir. Bergerak per petak (grid) sambil membawa paket.
 
 signal moved(cell: Vector2i)
+## Langkah ditolak karena petak tujuan terhalang (misalnya kucing).
+signal blocked(cell: Vector2i)
 
 const DIRECTIONS := {
 	&"move_up": Vector2i.UP,
@@ -18,6 +20,11 @@ var step_time := 0.12
 var package_id: StringName = &""
 var package_color := Color("efe6cf")
 var input_enabled := false
+## Opsional: func(cell: Vector2i) -> bool. Kalau false, Masbro tidak bisa masuk ke petak itu.
+var can_enter: Callable
+var last_direction := Vector2i.UP
+## true kalau langkah terakhir adalah tergelincir (bukan input pemain).
+var last_move_was_slide := false
 var invulnerable := false:
 	set(value):
 		invulnerable = value
@@ -74,7 +81,18 @@ func is_moving() -> bool:
 
 
 func knock_back(target: Vector2i) -> void:
+	last_move_was_slide = false
 	_hop_to(target, 0.08, &"hit")
+
+
+## Tergelincir satu petak ke arah langkah terakhir. Mengembalikan false kalau tidak bisa.
+func slide() -> bool:
+	var target := _clamp_cell(cell + last_direction)
+	if target == cell or not _is_enterable(target):
+		return false
+	last_move_was_slide = true
+	_hop_to(target, step_time * 1.2, &"hit")
+	return true
 
 
 func _process(delta: float) -> void:
@@ -93,12 +111,24 @@ func _try_move(direction: Vector2i) -> void:
 	if direction.x != 0 and direction.x != _facing:
 		_facing = direction.x
 		_update_facing()
-	var target := Vector2i(
-		clampi(cell.x + direction.x, 0, grid_size.x - 1),
-		clampi(cell.y + direction.y, 0, grid_size.y - 1))
-	if target != cell:
-		_hop_to(target, step_time)
-		AudioManager.play_sfx(&"step", 0.08)
+	var target := _clamp_cell(cell + direction)
+	if target == cell:
+		return
+	if not _is_enterable(target):
+		blocked.emit(target)
+		return
+	last_direction = direction
+	last_move_was_slide = false
+	_hop_to(target, step_time)
+	AudioManager.play_sfx(&"step", 0.08)
+
+
+func _clamp_cell(target: Vector2i) -> Vector2i:
+	return Vector2i(clampi(target.x, 0, grid_size.x - 1), clampi(target.y, 0, grid_size.y - 1))
+
+
+func _is_enterable(target: Vector2i) -> bool:
+	return not can_enter.is_valid() or can_enter.call(target)
 
 
 func _hop_to(target: Vector2i, duration: float, animation := &"walk") -> void:

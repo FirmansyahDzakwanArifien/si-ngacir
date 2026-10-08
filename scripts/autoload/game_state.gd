@@ -16,7 +16,7 @@ const DAYS: Array[String] = [
 	"res://resources/days/day_04.tres",
 	"res://resources/days/day_05.tres",
 ]
-## Placeholder. Upah maksimal 5 hari = Rp480.000; nilai final ditentukan tim Writer Story.
+## Placeholder. Upah maksimal 5 hari = Rp505.000 (termasuk tip Pak Ojan); nilai final ditentukan tim Writer Story.
 const MEDICAL_COST := 350000
 ## Placeholder sampai tim Writer Story memutuskan.
 const SHORTFALL_RULE := ShortfallRule.REPLAY_DAYS
