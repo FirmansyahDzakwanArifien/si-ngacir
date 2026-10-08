@@ -8,10 +8,12 @@ const PREMISE := "Adik Masbro jatuh sakit dan butuh biaya pengobatan dalam lima 
 var _column: VBoxContainer
 var _new_game_button: Button
 var _confirming_new_game := false
+var _first_button: Button
 
 
 func _ready() -> void:
 	get_tree().paused = false
+	AudioManager.play_music(&"menu")
 	# Kembali ke progres terakhir yang tersimpan (misalnya keluar dari tengah hari).
 	if not GameState.load_game():
 		GameState.reset_run()
@@ -45,15 +47,23 @@ func _ready() -> void:
 	else:
 		first = _button("Mulai Hari 1", _start_new_game, 44)
 
+	_button("Pengaturan", _on_settings_pressed)
 	if not OS.has_feature("web"):
 		_button("Keluar", get_tree().quit)
 
+	_first_button = first
 	first.grab_focus.call_deferred()
 
 
 func _on_continue_pressed() -> void:
 	var scene := GameState.ENDING_SCENE if GameState.probation_done else GameState.LEVEL_SCENE
 	get_tree().change_scene_to_file(scene)
+
+
+func _on_settings_pressed() -> void:
+	var settings := SettingsPanel.new()
+	settings.closed.connect(func() -> void: _first_button.grab_focus())
+	add_child(settings)
 
 
 func _on_new_game_pressed() -> void:

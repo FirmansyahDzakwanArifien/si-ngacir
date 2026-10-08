@@ -65,8 +65,16 @@ func show_pause() -> void:
 	_open("PAUSE", GOLD, [], [
 		["Lanjut", resume_requested.emit],
 		["Ulangi Hari", retry_requested.emit],
+		["Pengaturan", _open_settings],
 		["Menu Utama", menu_requested.emit],
 	])
+
+
+func _open_settings() -> void:
+	_overlay.hide()
+	var settings := SettingsPanel.new()
+	settings.closed.connect(show_pause)
+	add_child(settings)
 
 
 func show_result(report: DeliveryReport, next_text: String) -> void:
@@ -224,15 +232,29 @@ func _money_row(caption: String, amount: int, color := Color.WHITE) -> Control:
 class StarRow extends Control:
 	var stars := 0
 
+	var _shown := 0
+
 	func _init(p_stars: int) -> void:
 		stars = p_stars
 		custom_minimum_size = Vector2(0, 40)
+
+	func _ready() -> void:
+		# Bintang muncul satu per satu.
+		var tween := create_tween()
+		for i in stars:
+			tween.tween_interval(0.18)
+			tween.tween_callback(_show_next_star)
+
+	func _show_next_star() -> void:
+		_shown += 1
+		AudioManager.play_sfx(&"star")
+		queue_redraw()
 
 	func _draw() -> void:
 		var spacing := 40.0
 		var start_x := size.x / 2.0 - spacing * 2.0
 		for i in 5:
-			var color := GOLD if i < stars else Color(1, 1, 1, 0.2)
+			var color := GOLD if i < _shown else Color(1, 1, 1, 0.2)
 			draw_colored_polygon(_star_points(Vector2(start_x + i * spacing, 20), 16.0, 7.0), color)
 
 	func _star_points(center: Vector2, outer: float, inner: float) -> PackedVector2Array:
