@@ -21,7 +21,8 @@ func _ready() -> void:
 	var card := PanelContainer.new()
 	center.add_child(card)
 	var column := VBoxContainer.new()
-	column.custom_minimum_size = Vector2(560, 0)
+	# Margin 40: menyisakan tepi layar + padding kartu.
+	column.custom_minimum_size = Vector2(Screen.card_width(560, 40), 0)
 	column.add_theme_constant_override("separation", 10)
 	card.add_child(column)
 
@@ -38,7 +39,7 @@ func _ready() -> void:
 	header.add_child(title)
 	header.add_child(_wallet_pill())
 
-	var body := HBoxContainer.new()
+	var body: BoxContainer = VBoxContainer.new() if Screen.is_compact() else HBoxContainer.new()
 	body.add_theme_constant_override("separation", 14)
 	column.add_child(body)
 	body.add_child(_build_preview())
@@ -105,12 +106,14 @@ func _wallet_pill() -> Control:
 func _build_preview() -> Control:
 	var box := PanelContainer.new()
 	box.add_theme_stylebox_override("panel", UiTheme.card(Palette.SKY, Palette.OUTLINE))
-	box.custom_minimum_size = Vector2(200, 230)
+	box.custom_minimum_size = Vector2(200, 170 if Screen.is_compact() else 230)
+	box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	var anchor := Control.new()
 	box.add_child(anchor)
 	_preview_holder = Node2D.new()
-	_preview_holder.scale = Vector2(3.4, 3.4)
-	_preview_holder.position = Vector2(-4, 10)
+	var zoom := 2.6 if Screen.is_compact() else 3.4
+	_preview_holder.scale = Vector2(zoom, zoom)
+	_preview_holder.position = Vector2(-4 + (3.4 - zoom) * 20.0, 10 - (3.4 - zoom) * 30.0)
 	anchor.add_child(_preview_holder)
 	var frames := SpriteLibrary.frames({&"idle": "masbro_idle", &"walk": "masbro_walk"}, Vector2i(48, 48), 6.0)
 	if frames:
@@ -150,7 +153,8 @@ func _item_button(entry: Dictionary) -> Button:
 	var owned: bool = id in GameState.owned
 	var worn: bool = GameState.equipped.get(entry["slot"]) == id
 	var button := Button.new()
-	button.custom_minimum_size = Vector2(160, 64)
+	button.custom_minimum_size = Vector2(150, 64)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.icon = Cosmetics.icon(id)
 	button.expand_icon = true
 	button.add_theme_constant_override("icon_max_width", 44)

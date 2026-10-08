@@ -36,12 +36,16 @@ func _ready() -> void:
 	add_child(column)
 
 	_image = TextureRect.new()
-	_image.custom_minimum_size = Vector2(480, 270)
+	var image_width := Screen.card_width(480, 70)
+	_image.custom_minimum_size = Vector2(image_width, image_width * 270.0 / 480.0)
 	_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	column.add_child(_image)
 
 	var card := PanelContainer.new()
+	# Kotak teks tidak melebar berlebihan di layar lebar.
+	card.custom_minimum_size.x = Screen.card_width(640, 30)
+	card.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	var text_box := VBoxContainer.new()
 	text_box.add_theme_constant_override("separation", 10)
 	card.add_child(text_box)
