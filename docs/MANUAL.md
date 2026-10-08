@@ -244,6 +244,8 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 | **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama), aksesibilitas |
 | **Keluar** | Menutup game (desktop) |
 
+Game **otomatis pause** saat tab browser ditinggal, jendela kehilangan fokus, atau aplikasi HP diminimalkan. Di HP, layar bergetar saat menabrak atau paket rusak (bisa dimatikan di **Pengaturan → Getar saat menabrak**).
+
 Progres tersimpan **otomatis** setiap kali satu hari selesai. Keluar di tengah hari berarti mengulang hari itu dari awal.
 
 Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
