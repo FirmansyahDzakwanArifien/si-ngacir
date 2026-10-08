@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="DayData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="DayData" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/day_data.gd" id="1_day"]
 [ext_resource type="Script" path="res://scripts/data/map_params.gd" id="2_map"]
 [ext_resource type="Resource" path="res://resources/packages/vip.tres" id="3_pkg"]
+[ext_resource type="Resource" path="res://resources/cities/bisnis.tres" id="5_city"]
 [ext_resource type="Resource" path="res://resources/story/day_05.tres" id="4_story"]
 
 [sub_resource type="Resource" id="Resource_map"]
@@ -42,6 +43,7 @@ eta_bonus = 30000
 damage_penalty = 30000
 late_penalty_per_second = 1500
 map = SubResource("Resource_map")
+city = ExtResource("5_city")
 cat_count = 2
 pedestrian_count = 2
 rival_interval = 9.0

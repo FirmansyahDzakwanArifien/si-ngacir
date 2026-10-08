@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CityTheme" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/city_theme.gd" id="1_city"]
+
+[resource]
+script = ExtResource("1_city")
+display_name = "Pusat Kota"
+median_tile = "tile_median_kota"
+sidewalk_tile = "tile_sidewalk_kota"
+road_tint = Color(0.92, 0.95, 1.0, 1)
+side_tile = "side_kota"
+side_tint = Color(0.86, 0.86, 0.9, 1)

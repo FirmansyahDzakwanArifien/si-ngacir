@@ -51,6 +51,16 @@ Tampak depan, 48 × 48, berdiri di samping rumah tujuan.
 | `cat_walk.png` | 48 × 48 | 4 | Berjalan menyeberang, menghadap kanan |
 | `cat_sit.png` | 48 × 48 | 2 | Duduk penasaran (saat menyentuh Masbro) |
 
+## Lokasi (tema kota)
+
+Tiap hari memakai satu `CityTheme` (`resources/cities/*.tres`) yang menentukan tile median, tile trotoar, warna aspal, dan pemandangan di sisi layar lebar.
+
+| File | Keterangan |
+| --- | --- |
+| `tile_median_pasar`, `tile_median_sekolah`, `tile_median_kota`, `tile_median_bisnis` | Median per lokasi (48 × 48, bertepi trotoar atas-bawah) |
+| `tile_sidewalk_pasar`, `tile_sidewalk_kota` | Trotoar per lokasi |
+| `side_perumahan`, `side_pasar`, `side_sekolah`, `side_kota`, `side_bisnis` | Pemandangan sisi layar lebar, diulang ke bawah (48 × 48) |
+
 ## Sungai
 
 | File | Ukuran | Keterangan |

@@ -21,6 +21,8 @@ extends Resource
 @export var late_penalty_per_second: int = 500
 
 @export_group("Peta")
+## Lokasi pengiriman (tile, warna, pemandangan). Kosong = tampilan bawaan.
+@export var city: CityTheme
 ## Aturan map prosedural. Bila diisi, map dibuat acak setiap kali hari dimulai
 ## dan `lanes` di bawah diabaikan.
 @export var map: MapParams
