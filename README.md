@@ -26,7 +26,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Upah harian: upah dasar + bonus ETA − denda kerusakan − potongan telat
 * [x] 5 hari masa percobaan: Bantal, Galon Air, Telur, Barang Sensitif, Paket VIP
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
-* [ ] Save system
+* [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
 * [ ] Kucing jalanan, hujan, Pak Ojan
 * [ ] Sprite, audio, menu settings
