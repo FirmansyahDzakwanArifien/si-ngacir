@@ -145,6 +145,32 @@ godot --headless --export-release "Windows Desktop" builds/windows/SiNgacir.exe
 
 Catatan: di browser, suara baru berbunyi setelah klik/tombol pertama (aturan browser). Mencoba build web secara lokal harus lewat server (misal `python -m http.server` di folder `builds/web`), tidak bisa dibuka langsung dari file.
 
+## Build otomatis (GitHub Actions)
+
+Workflow `.github/workflows/build.yml`:
+
+| Pemicu | Yang terjadi |
+| --- | --- |
+| Pull Request ke `dev` / `main` | Import + export dicek; build bisa diunduh di tab **Actions → Artifacts** |
+| Push ke `main` | Build Web + Windows (artifact) |
+| Push tag `v*` (contoh `v0.2.0`) | **GitHub Release** otomatis berisi `SiNgacir-web.zip`, `SiNgacir-windows.zip`, dan manual |
+| Tombol **Run workflow** di tab Actions | Build manual kapan saja |
+
+Membuat rilis baru (setelah `dev` digabung ke `main`):
+
+```bash
+git checkout main && git pull
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+Deploy opsional (Settings → Secrets and variables → Actions):
+
+| Tujuan | Atur | Catatan |
+| --- | --- | --- |
+| **itch.io** (link main di browser) | Variable `ITCH_GAME` = `namauser/si-ngacir`, Secret `BUTLER_API_KEY` | API key dari itch.io → Settings → API keys. Jalan saat push tag |
+| **GitHub Pages** | Variable `DEPLOY_PAGES` = `true`, Settings → Pages → Source: *GitHub Actions* | Repo private butuh GitHub Pro/Team; repo public gratis |
+
 ## Workflow Git
 
 | Branch | Fungsi |

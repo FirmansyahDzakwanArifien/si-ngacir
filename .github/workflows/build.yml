@@ -1,0 +1,154 @@
+name: Build & Release
+
+# Kapan workflow jalan:
+# - PR ke dev/main      : cek project bisa di-import dan di-export (build disimpan sebagai artifact)
+# - push ke main        : build Web + Windows (artifact), opsional deploy GitHub Pages
+# - push tag v*         : build + GitHub Release berisi zip Web, zip Windows, dan manual
+# - manual (Actions tab): tombol "Run workflow"
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: "4.3"
+
+jobs:
+  export:
+    name: Export Web & Windows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot & export templates
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-web-windows
+
+      - name: Download Godot & export templates
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
+          mkdir -p ~/godot
+          curl -sSL -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip -d ~/godot
+          curl -sSL -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          dest=~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mkdir -p "$dest"
+          unzip -q -j templates.tpz "templates/version.txt" "templates/web_nothreads_*.zip" \
+            "templates/windows_*_x86_64.exe" -d "$dest"
+          rm godot.zip templates.tpz
+
+      - name: Import project
+        run: |
+          godot=~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          "$godot" --headless --import --path . 2>&1 | tee import.log
+          if grep -E "SCRIPT ERROR|Parse Error|Failed to load script" import.log; then
+            echo "::error::Ada error script saat import project"
+            exit 1
+          fi
+
+      - name: Export
+        run: |
+          godot=~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          mkdir -p builds/web builds/windows
+          "$godot" --headless --path . --export-release "Web" builds/web/index.html
+          "$godot" --headless --path . --export-release "Windows Desktop" builds/windows/SiNgacir.exe
+          test -f builds/web/index.wasm
+          test -f builds/windows/SiNgacir.exe
+
+      - name: Package
+        run: |
+          cp docs/MANUAL.md builds/web/MANUAL.md
+          cp docs/MANUAL.md builds/windows/MANUAL.md
+          (cd builds/web && zip -qr ../../SiNgacir-web.zip .)
+          (cd builds/windows && zip -qr ../../SiNgacir-windows.zip .)
+          cp docs/MANUAL.md SiNgacir-MANUAL.md
+          ls -la SiNgacir-*
+
+      - name: Upload builds
+        uses: actions/upload-artifact@v4
+        with:
+          name: si-ngacir-builds
+          path: SiNgacir-*
+          retention-days: 14
+
+      - name: Upload web build for GitHub Pages
+        if: vars.DEPLOY_PAGES == 'true' && github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: builds/web
+
+  release:
+    name: GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: export
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: si-ngacir-builds
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: Si Ngacir ${{ github.ref_name }}
+          files: |
+            SiNgacir-web.zip
+            SiNgacir-windows.zip
+            SiNgacir-MANUAL.md
+          generate_release_notes: true
+          body: |
+            ## Download
+
+            | Versi | File | Cara main |
+            | --- | --- | --- |
+            | **Desktop (Windows)** | `SiNgacir-windows.zip` | Ekstrak, jalankan `SiNgacir.exe` |
+            | **Web (browser / HP)** | `SiNgacir-web.zip` | Upload ke itch.io (HTML) atau web server, buka `index.html` |
+            | **Manual** | `SiNgacir-MANUAL.md` | Storyline, kontrol, cara main |
+
+            Windows SmartScreen: pilih **More info → Run anyway**.
+
+  pages:
+    name: Deploy GitHub Pages
+    if: vars.DEPLOY_PAGES == 'true' && github.event_name == 'push'
+    needs: export
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  itch:
+    name: Deploy itch.io
+    # Aktif bila repo variable ITCH_GAME (contoh: namauser/si-ngacir) dan secret BUTLER_API_KEY diisi.
+    if: startsWith(github.ref, 'refs/tags/v') && vars.ITCH_GAME != ''
+    needs: export
+    runs-on: ubuntu-latest
+    env:
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: si-ngacir-builds
+
+      - name: Push to itch.io
+        run: |
+          curl -sSL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip -d butler && chmod +x butler/butler
+          version="${GITHUB_REF_NAME#v}"
+          ./butler/butler push SiNgacir-web.zip "${{ vars.ITCH_GAME }}:html5" --userversion "$version"
+          ./butler/butler push SiNgacir-windows.zip "${{ vars.ITCH_GAME }}:windows" --userversion "$version"
