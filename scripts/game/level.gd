@@ -601,6 +601,8 @@ func _deliver() -> void:
 	_hud.update_progress(1.0)
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins, checkpoint_uses)
 	GameState.record_delivery(day, report.wage)
+	# Koin yang dipungut masuk dompet untuk belanja di toko.
+	GameState.add_coins(coins)
 	AudioManager.play_sfx(&"delivery")
 	_player.celebrate()
 	_customer.set_mood(CustomerNpc.Mood.HAPPY)

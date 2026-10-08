@@ -34,6 +34,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Pos (checkpoint): lanjut dari Pos dengan denda bila paket hancur
 * [x] NPC pelanggan dengan balon ucapan dan reaksi (sapaan diatur di `customer_greeting`)
 * [x] NPC jalanan: pengemudi berklakson, pejalan kaki, pedagang bakso, Bang Kilat (kurir rival)
+* [x] Toko Masbro: dompet koin permanen, aksesori topi/kacamata/tas (`scripts/data/cosmetics.gd`)
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)

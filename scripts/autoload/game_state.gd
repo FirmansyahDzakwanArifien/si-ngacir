@@ -28,6 +28,9 @@ const OPENING_STORY := "res://resources/story/opening.tres"
 const ENDING_SUCCESS_STORY := "res://resources/story/ending_success.tres"
 const ENDING_BAD_STORY := "res://resources/story/ending_bad.tres"
 const SAVE_PATH := "user://save.cfg"
+## Dompet koin dan koleksi aksesori; tidak terhapus oleh "Mulai Baru".
+const PROFILE_PATH := "user://profile.cfg"
+const SHOP_SCENE := "res://scenes/shop.tscn"
 
 const INPUT_KEYS := {
 	&"move_up": [KEY_W, KEY_UP],
@@ -44,6 +47,12 @@ var is_replay := false
 var wages := {}
 ## true setelah Hari 5 selesai; "Lanjutkan" langsung membuka layar rekap.
 var probation_done := false
+## Koin di dompet (dibelanjakan di toko).
+var wallet := 0
+## Id aksesori yang sudah dibeli.
+var owned: Array[StringName] = []
+## Aksesori yang dipakai, key: Cosmetics.Slot.
+var equipped := {}
 ## Cutscene yang akan diputar dan scene tujuan setelahnya (lihat play_story).
 var pending_story: StoryData
 var pending_scene := ""
@@ -53,6 +62,7 @@ func _ready() -> void:
 	_setup_input()
 	UiTheme.apply(get_tree().root)
 	load_game()
+	load_profile()
 
 
 func reset_run() -> void:
@@ -124,6 +134,66 @@ func ending_story() -> StoryData:
 	if SHORTFALL_RULE == ShortfallRule.BAD_ENDING:
 		return load(ENDING_BAD_STORY)
 	return null
+
+
+func add_coins(amount: int) -> void:
+	wallet += amount
+	save_profile()
+
+
+## Beli aksesori bila koin cukup. Mengembalikan true bila berhasil (atau sudah punya).
+func buy(id: StringName) -> bool:
+	if id in owned:
+		return true
+	var entry := Cosmetics.item(id)
+	if entry.is_empty() or wallet < entry["price"]:
+		return false
+	wallet -= entry["price"]
+	owned.append(id)
+	save_profile()
+	return true
+
+
+## Pakai aksesori milik sendiri; memakai lagi yang sedang dipakai akan melepasnya.
+func toggle_equip(id: StringName) -> void:
+	var entry := Cosmetics.item(id)
+	if entry.is_empty() or not id in owned:
+		return
+	var slot: int = entry["slot"]
+	if equipped.get(slot) == id:
+		equipped.erase(slot)
+	else:
+		equipped[slot] = id
+	save_profile()
+
+
+func equipped_ids() -> Array:
+	return equipped.values()
+
+
+func save_profile() -> void:
+	var config := ConfigFile.new()
+	config.set_value("profile", "wallet", wallet)
+	config.set_value("profile", "owned", owned)
+	config.set_value("profile", "equipped", equipped)
+	config.save(PROFILE_PATH)
+
+
+func load_profile() -> void:
+	var config := ConfigFile.new()
+	if config.load(PROFILE_PATH) != OK:
+		return
+	wallet = config.get_value("profile", "wallet", 0)
+	owned.assign(config.get_value("profile", "owned", []))
+	equipped = config.get_value("profile", "equipped", {})
+
+
+func reset_profile() -> void:
+	wallet = 0
+	owned.clear()
+	equipped.clear()
+	if FileAccess.file_exists(PROFILE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 
 
 func has_save() -> bool:

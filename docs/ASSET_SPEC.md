@@ -90,6 +90,19 @@ Semua 48 × 48 (1 petak), tampak samping/depan, berdiri di tengah petak.
 
 Pengemudi mobil/truk digambar di jendela depan sprite kendaraan.
 
+## Aksesori toko
+
+Frame **48 × 48 sejajar sprite Masbro** (menghadap kanan): gambar hanya aksesorinya di posisi kepala/badan Masbro, sisanya transparan. Game menggeser aksesori naik-turun mengikuti animasi.
+
+| File | Slot |
+| --- | --- |
+| `acc_caping.png`, `acc_beanie.png`, `acc_koki.png`, `acc_mahkota.png` | Topi |
+| `acc_kacamata_bulat.png`, `acc_kacamata_hitam.png`, `acc_kacamata_bintang.png` | Kacamata |
+| `acc_tas_pink.png`, `acc_tas_oranye.png`, `acc_tas_kucing.png` | Tas |
+| `icon_coin.png` (20 × 20) | Ikon koin di toko |
+
+Daftar barang dan harga ada di `scripts/data/cosmetics.gd`.
+
 ## Paket
 
 Ikon paket di punggung Masbro, **20 × 15 px**.

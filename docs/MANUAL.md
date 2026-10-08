@@ -198,7 +198,19 @@ Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos*
 
 ---
 
-## 8. Akhir Cerita
+## 8. Toko Masbro
+
+Koin yang dipungut di jalan menambah upah (*Bonus koin*) **dan** masuk ke **dompet** saat paket sampai. Belanjakan di **Toko Masbro** (menu utama):
+
+| Slot | Pilihan |
+| --- | --- |
+| Topi | Caping, Beanie, Topi Koki, Mahkota |
+| Kacamata | Bulat, Hitam, Bintang |
+| Tas | Pink, Oranye, Kucing |
+
+Klik barang untuk membeli; klik barang milikmu untuk memakai atau melepasnya. Aksesori langsung terlihat saat mengantar paket. Dompet dan koleksi **tidak hilang** saat memilih Mulai Baru.
+
+## 9. Akhir Cerita
 
 Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 
@@ -207,12 +219,13 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 
 ---
 
-## 9. Menu dan Penyimpanan
+## 10. Menu dan Penyimpanan
 
 | Menu | Fungsi |
 | --- | --- |
 | **Lanjutkan** | Melanjutkan dari hari terakhir yang belum selesai |
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
+| **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
 | **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop) |
 | **Keluar** | Menutup game (desktop) |
 
@@ -222,7 +235,7 @@ Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
 
 ---
 
-## 10. Tips
+## 11. Tips
 
 1. **Median hijau adalah zona aman.** Berhenti di sana untuk membaca pola lalu lintas berikutnya.
 2. **Truk lambat tapi panjang** dan merusak paket 2x. Jangan memotong tepat di depannya.
@@ -235,7 +248,7 @@ Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
 
 ---
 
-## 11. Masalah Umum
+## 12. Masalah Umum
 
 | Masalah | Solusi |
 | --- | --- |
@@ -247,7 +260,7 @@ Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
 
 ---
 
-## 12. Tim Pengembang
+## 13. Tim Pengembang
 
 **Varmintz KW Studio** — Pemrograman Game (7TI02), Program Studi Teknik Informatika, Depok, 2026
 

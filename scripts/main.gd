@@ -69,6 +69,7 @@ func _ready() -> void:
 		_new_game_button = _button("Mulai Baru", _on_new_game_pressed)
 	else:
 		first = _button("Mulai Hari 1", _start_new_game, 52)
+	_button("Toko Masbro (%d koin)" % GameState.wallet, Transition.change_scene.bind(GameState.SHOP_SCENE))
 	_button("Pengaturan", _on_settings_pressed)
 	if not OS.has_feature("web"):
 		_button("Keluar", AudioManager.quit_game)
