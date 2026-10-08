@@ -622,6 +622,7 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 	if _player.shielded:
 		# Helm menahan benturan; paket aman.
 		_player.shielded = false
+		AudioManager.vibrate(30)
 		_popup("Helm melindungi!", Palette.TEAL, _player.position)
 		AudioManager.play_sfx(&"hit", 0.1)
 		_player.knock_back(knock_to)
@@ -633,11 +634,13 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 	Effects.burst(_board, _player.position + Vector2(TILE / 2.0, TILE / 2.0), day.package.color)
 	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:
+		AudioManager.vibrate(300)
 		_invulnerable_left = 0.0
 		_player.invulnerable = false
 		_fail()
 		return
 	AudioManager.play_sfx(&"package_damage", 0.05)
+	AudioManager.vibrate(80 + 40 * amount)
 	_player.knock_back(knock_to)
 
 
@@ -739,6 +742,13 @@ func _draw_side_mask() -> void:
 		_side_mask.draw_rect(Rect2(right, HUD_HEIGHT, 4, view.y), Palette.OUTLINE)
 	if bottom < view.y:
 		_side_mask.draw_rect(Rect2(0, bottom, view.x, view.y - bottom), color)
+
+
+func _notification(what: int) -> void:
+	# Tab browser ditinggal, jendela kehilangan fokus, atau aplikasi HP diminimalkan: pause otomatis.
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
+		if state == State.PLAYING and is_inside_tree() and not get_tree().paused:
+			_set_paused(true)
 
 
 func _on_pause_pressed() -> void:

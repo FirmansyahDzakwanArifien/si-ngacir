@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+<meta name="theme-color" content="#6cc7ef">
+<title>$GODOT_PROJECT_NAME</title>
+<style>
+html, body, #canvas { margin: 0; padding: 0; border: 0; }
+body { color: #3d2c2e; background: #1b1c2a; overflow: hidden; touch-action: none; height: 100vh; height: 100dvh; }
+#canvas { display: block; }
+#canvas:focus { outline: none; }
+
+/* Layar loading Si Ngacir */
+#status {
+  position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: linear-gradient(#6cc7ef, #cdeffb 70%, #fff4dc); font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  transition: opacity .4s ease; z-index: 10; overflow: hidden;
+}
+#status.hidden { opacity: 0; pointer-events: none; }
+.cloud { position: absolute; background: #fff; border-radius: 999px; opacity: .9; animation: drift 24s linear infinite; }
+.cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+.cloud::before { width: 55%; height: 160%; left: 15%; top: -70%; }
+.cloud::after { width: 40%; height: 130%; right: 12%; top: -45%; }
+.c1 { width: 120px; height: 36px; top: 12%; left: -140px; }
+.c2 { width: 90px; height: 28px; top: 28%; left: -100px; animation-duration: 32s; animation-delay: -12s; }
+@keyframes drift { to { transform: translateX(calc(100vw + 260px)); } }
+#title {
+  font-size: clamp(40px, 11vw, 72px); font-weight: 900; letter-spacing: 2px; color: #ffd166; margin: 0;
+  -webkit-text-stroke: 3px #3d2c2e; paint-order: stroke fill; text-shadow: 0 6px 0 rgba(0,0,0,.2);
+}
+#tag { background: #ff6b6b; color: #fff; border: 3px solid #3d2c2e; border-radius: 16px; padding: 2px 14px; font-weight: 700; margin: 6px 0 18px; }
+#runner { width: 112px; height: 112px; animation: hop .5s ease-in-out infinite alternate; }
+@keyframes hop { from { transform: translateY(0) scaleY(1); } to { transform: translateY(-14px) scaleY(1.04); } }
+#bar { width: min(320px, 80vw); height: 22px; border: 4px solid #3d2c2e; border-radius: 16px; background: #fff4dc; overflow: hidden; margin-top: 14px; }
+#fill { height: 100%; width: 0%; background: repeating-linear-gradient(-45deg, #ffd166 0 14px, #f4a93b 14px 28px); transition: width .2s; }
+#fill.busy { width: 100% !important; animation: stripes 1s linear infinite; background-size: 40px 40px; }
+@keyframes stripes { to { background-position: 40px 0; } }
+#percent { font-weight: 700; margin-top: 8px; min-height: 1.2em; }
+#tip { max-width: min(420px, 86vw); text-align: center; margin-top: 18px; font-size: 15px; opacity: .85; min-height: 2.6em; }
+#road { position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: #545978; border-top: 4px solid #3d2c2e; }
+#road::after { content: ""; position: absolute; left: 0; right: 0; top: 28px; height: 5px;
+  background: repeating-linear-gradient(90deg, #fff4dc 0 34px, transparent 34px 70px); animation: lane 1s linear infinite; }
+@keyframes lane { to { background-position: -70px 0; } }
+#notice { display: none; max-width: 86vw; background: #fff4dc; border: 4px solid #3d2c2e; border-radius: 18px; padding: 12px 18px; margin-top: 16px; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .cloud, #runner, #road::after, #fill.busy { animation: none; } }
+</style>
+$GODOT_HEAD_INCLUDE
+</head>
+<body>
+<canvas id="canvas">Browser ini tidak mendukung HTML5 canvas.</canvas>
+<noscript>Aktifkan JavaScript untuk memainkan Si Ngacir.</noscript>
+
+<div id="status">
+  <div class="cloud c1"></div><div class="cloud c2"></div>
+  <h1 id="title">SI NGACIR</h1>
+  <div id="tag">Trobos Ajalah!</div>
+  <svg xmlns="http://www.w3.org/2000/svg" id="runner" viewBox="0 0 96 96"><g stroke-linejoin="round" stroke-linecap="round"><g transform="translate(0 0)"><ellipse cx="46" cy="89" rx="30" ry="5" fill="#000" opacity="0.15"/><rect x="22" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="36" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="54" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="67" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><g transform="translate(0 0)"><ellipse cx="44" cy="62" rx="33" ry="24" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><ellipse cx="40" cy="71" rx="20" ry="8" fill="#EBC08F" opacity="0.7"/><path d="M18 50 Q24 44 30 47" stroke="#A8723F" stroke-width="3" fill="none"/><path d="M24 44 Q40 62 56 76" stroke="#2EC4B6" stroke-width="5" fill="none"/><circle cx="59" cy="31" r="6" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="50" y="28" width="40" height="34" rx="15" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><rect x="71" y="42" width="21" height="18" rx="9" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><ellipse cx="86" cy="47" rx="2.2" ry="3" fill="#3D2C2E"/><path d="M76 55 Q79 58 82 55" stroke="#3D2C2E" stroke-width="2" fill="none"/><circle cx="65" cy="42" r="5.5" fill="#3D2C2E"/><circle cx="66.925" cy="39.8" r="2.09" fill="#FFFFFF"/><circle cx="63.35" cy="43.925" r="0.935" fill="#FFFFFF"/><ellipse cx="60" cy="52" rx="5" ry="3" fill="#FF8FA3" opacity="0.85"/><path d="M52 32 C52 18 62 13 71 13 C82 13 88 20 88 30 Z" fill="#FFD166" stroke="#3D2C2E" stroke-width="3"/><path d="M80 28 Q92 27 95 31 Q88 34 80 33 Z" fill="#F4A93B" stroke="#3D2C2E" stroke-width="3"/><circle cx="69" cy="23" r="4.5" fill="#2EC4B6" stroke="#3D2C2E" stroke-width="1.5"/><circle cx="71" cy="13.5" r="2.5" fill="#F4A93B"/></g></g><g transform="translate(96 0)"><ellipse cx="46" cy="89" rx="30" ry="5" fill="#000" opacity="0.15"/><rect x="22" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="36" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="54" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="67" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><g transform="translate(0 0)"><ellipse cx="44" cy="62" rx="33" ry="24" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><ellipse cx="40" cy="71" rx="20" ry="8" fill="#EBC08F" opacity="0.7"/><path d="M18 50 Q24 44 30 47" stroke="#A8723F" stroke-width="3" fill="none"/><path d="M24 44 Q40 62 56 76" stroke="#2EC4B6" stroke-width="5" fill="none"/><circle cx="59" cy="31" r="6" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="50" y="28" width="40" height="34" rx="15" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><rect x="71" y="42" width="21" height="18" rx="9" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><ellipse cx="86" cy="47" rx="2.2" ry="3" fill="#3D2C2E"/><path d="M76 55 Q79 58 82 55" stroke="#3D2C2E" stroke-width="2" fill="none"/><circle cx="65" cy="42" r="5.5" fill="#3D2C2E"/><circle cx="66.925" cy="39.8" r="2.09" fill="#FFFFFF"/><circle cx="63.35" cy="43.925" r="0.935" fill="#FFFFFF"/><ellipse cx="60" cy="52" rx="5" ry="3" fill="#FF8FA3" opacity="0.85"/><path d="M52 32 C52 18 62 13 71 13 C82 13 88 20 88 30 Z" fill="#FFD166" stroke="#3D2C2E" stroke-width="3"/><path d="M80 28 Q92 27 95 31 Q88 34 80 33 Z" fill="#F4A93B" stroke="#3D2C2E" stroke-width="3"/><circle cx="69" cy="23" r="4.5" fill="#2EC4B6" stroke="#3D2C2E" stroke-width="1.5"/><circle cx="71" cy="13.5" r="2.5" fill="#F4A93B"/></g></g><g transform="translate(192 0)"><ellipse cx="46" cy="89" rx="30" ry="5" fill="#000" opacity="0.15"/><rect x="22" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="36" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="54" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="67" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><g transform="translate(0 1)"><ellipse cx="44" cy="62" rx="33" ry="24" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><ellipse cx="40" cy="71" rx="20" ry="8" fill="#EBC08F" opacity="0.7"/><path d="M18 50 Q24 44 30 47" stroke="#A8723F" stroke-width="3" fill="none"/><path d="M24 44 Q40 62 56 76" stroke="#2EC4B6" stroke-width="5" fill="none"/><circle cx="59" cy="31" r="6" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="50" y="28" width="40" height="34" rx="15" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><rect x="71" y="42" width="21" height="18" rx="9" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><ellipse cx="86" cy="47" rx="2.2" ry="3" fill="#3D2C2E"/><path d="M76 55 Q79 58 82 55" stroke="#3D2C2E" stroke-width="2" fill="none"/><circle cx="65" cy="42" r="5.5" fill="#3D2C2E"/><circle cx="66.925" cy="39.8" r="2.09" fill="#FFFFFF"/><circle cx="63.35" cy="43.925" r="0.935" fill="#FFFFFF"/><ellipse cx="60" cy="52" rx="5" ry="3" fill="#FF8FA3" opacity="0.85"/><path d="M52 32 C52 18 62 13 71 13 C82 13 88 20 88 30 Z" fill="#FFD166" stroke="#3D2C2E" stroke-width="3"/><path d="M80 28 Q92 27 95 31 Q88 34 80 33 Z" fill="#F4A93B" stroke="#3D2C2E" stroke-width="3"/><circle cx="69" cy="23" r="4.5" fill="#2EC4B6" stroke="#3D2C2E" stroke-width="1.5"/><circle cx="71" cy="13.5" r="2.5" fill="#F4A93B"/></g></g><g transform="translate(288 0)"><ellipse cx="46" cy="89" rx="30" ry="5" fill="#000" opacity="0.15"/><rect x="22" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="36" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="54" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="67" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><g transform="translate(0 1)"><ellipse cx="44" cy="62" rx="33" ry="24" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><ellipse cx="40" cy="71" rx="20" ry="8" fill="#EBC08F" opacity="0.7"/><path d="M18 50 Q24 44 30 47" stroke="#A8723F" stroke-width="3" fill="none"/><path d="M24 44 Q40 62 56 76" stroke="#2EC4B6" stroke-width="5" fill="none"/><circle cx="59" cy="31" r="6" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="50" y="28" width="40" height="34" rx="15" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><rect x="71" y="42" width="21" height="18" rx="9" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><ellipse cx="86" cy="47" rx="2.2" ry="3" fill="#3D2C2E"/><path d="M76 55 Q79 58 82 55" stroke="#3D2C2E" stroke-width="2" fill="none"/><circle cx="65" cy="42" r="5.5" fill="#3D2C2E"/><circle cx="66.925" cy="39.8" r="2.09" fill="#FFFFFF"/><circle cx="63.35" cy="43.925" r="0.935" fill="#FFFFFF"/><ellipse cx="60" cy="52" rx="5" ry="3" fill="#FF8FA3" opacity="0.85"/><path d="M52 32 C52 18 62 13 71 13 C82 13 88 20 88 30 Z" fill="#FFD166" stroke="#3D2C2E" stroke-width="3"/><path d="M80 28 Q92 27 95 31 Q88 34 80 33 Z" fill="#F4A93B" stroke="#3D2C2E" stroke-width="3"/><circle cx="69" cy="23" r="4.5" fill="#2EC4B6" stroke="#3D2C2E" stroke-width="1.5"/><circle cx="71" cy="13.5" r="2.5" fill="#F4A93B"/></g></g><g transform="translate(384 0)"><ellipse cx="46" cy="89" rx="30" ry="5" fill="#000" opacity="0.15"/><rect x="22" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="36" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="54" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="67" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><g transform="translate(0 1)"><ellipse cx="44" cy="62" rx="33" ry="24" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><ellipse cx="40" cy="71" rx="20" ry="8" fill="#EBC08F" opacity="0.7"/><path d="M18 50 Q24 44 30 47" stroke="#A8723F" stroke-width="3" fill="none"/><path d="M24 44 Q40 62 56 76" stroke="#2EC4B6" stroke-width="5" fill="none"/><circle cx="59" cy="31" r="6" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="50" y="28" width="40" height="34" rx="15" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><rect x="71" y="42" width="21" height="18" rx="9" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><ellipse cx="86" cy="47" rx="2.2" ry="3" fill="#3D2C2E"/><path d="M76 55 Q79 58 82 55" stroke="#3D2C2E" stroke-width="2" fill="none"/><circle cx="65" cy="42" r="5.5" fill="#3D2C2E"/><circle cx="66.925" cy="39.8" r="2.09" fill="#FFFFFF"/><circle cx="63.35" cy="43.925" r="0.935" fill="#FFFFFF"/><ellipse cx="60" cy="52" rx="5" ry="3" fill="#FF8FA3" opacity="0.85"/><path d="M52 32 C52 18 62 13 71 13 C82 13 88 20 88 30 Z" fill="#FFD166" stroke="#3D2C2E" stroke-width="3"/><path d="M80 28 Q92 27 95 31 Q88 34 80 33 Z" fill="#F4A93B" stroke="#3D2C2E" stroke-width="3"/><circle cx="69" cy="23" r="4.5" fill="#2EC4B6" stroke="#3D2C2E" stroke-width="1.5"/><circle cx="71" cy="13.5" r="2.5" fill="#F4A93B"/></g></g><g transform="translate(480 0)"><ellipse cx="46" cy="89" rx="30" ry="5" fill="#000" opacity="0.15"/><rect x="22" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="36" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="54" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="67" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><g transform="translate(0 0)"><ellipse cx="44" cy="62" rx="33" ry="24" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><ellipse cx="40" cy="71" rx="20" ry="8" fill="#EBC08F" opacity="0.7"/><path d="M18 50 Q24 44 30 47" stroke="#A8723F" stroke-width="3" fill="none"/><path d="M24 44 Q40 62 56 76" stroke="#2EC4B6" stroke-width="5" fill="none"/><circle cx="59" cy="31" r="6" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="50" y="28" width="40" height="34" rx="15" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><rect x="71" y="42" width="21" height="18" rx="9" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><ellipse cx="86" cy="47" rx="2.2" ry="3" fill="#3D2C2E"/><path d="M76 55 Q79 58 82 55" stroke="#3D2C2E" stroke-width="2" fill="none"/><circle cx="65" cy="42" r="5.5" fill="#3D2C2E"/><circle cx="66.925" cy="39.8" r="2.09" fill="#FFFFFF"/><circle cx="63.35" cy="43.925" r="0.935" fill="#FFFFFF"/><ellipse cx="60" cy="52" rx="5" ry="3" fill="#FF8FA3" opacity="0.85"/><path d="M52 32 C52 18 62 13 71 13 C82 13 88 20 88 30 Z" fill="#FFD166" stroke="#3D2C2E" stroke-width="3"/><path d="M80 28 Q92 27 95 31 Q88 34 80 33 Z" fill="#F4A93B" stroke="#3D2C2E" stroke-width="3"/><circle cx="69" cy="23" r="4.5" fill="#2EC4B6" stroke="#3D2C2E" stroke-width="1.5"/><circle cx="71" cy="13.5" r="2.5" fill="#F4A93B"/></g></g><g transform="translate(576 0)"><ellipse cx="46" cy="89" rx="30" ry="5" fill="#000" opacity="0.15"/><rect x="22" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="36" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="54" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="67" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><g transform="translate(0 0)"><ellipse cx="44" cy="62" rx="33" ry="24" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><ellipse cx="40" cy="71" rx="20" ry="8" fill="#EBC08F" opacity="0.7"/><path d="M18 50 Q24 44 30 47" stroke="#A8723F" stroke-width="3" fill="none"/><path d="M24 44 Q40 62 56 76" stroke="#2EC4B6" stroke-width="5" fill="none"/><circle cx="59" cy="31" r="6" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="50" y="28" width="40" height="34" rx="15" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><rect x="71" y="42" width="21" height="18" rx="9" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><ellipse cx="86" cy="47" rx="2.2" ry="3" fill="#3D2C2E"/><path d="M76 55 Q79 58 82 55" stroke="#3D2C2E" stroke-width="2" fill="none"/><circle cx="65" cy="42" r="5.5" fill="#3D2C2E"/><circle cx="66.925" cy="39.8" r="2.09" fill="#FFFFFF"/><circle cx="63.35" cy="43.925" r="0.935" fill="#FFFFFF"/><ellipse cx="60" cy="52" rx="5" ry="3" fill="#FF8FA3" opacity="0.85"/><path d="M52 32 C52 18 62 13 71 13 C82 13 88 20 88 30 Z" fill="#FFD166" stroke="#3D2C2E" stroke-width="3"/><path d="M80 28 Q92 27 95 31 Q88 34 80 33 Z" fill="#F4A93B" stroke="#3D2C2E" stroke-width="3"/><circle cx="69" cy="23" r="4.5" fill="#2EC4B6" stroke="#3D2C2E" stroke-width="1.5"/><circle cx="71" cy="13.5" r="2.5" fill="#F4A93B"/></g></g><g transform="translate(672 0)"><ellipse cx="46" cy="89" rx="30" ry="5" fill="#000" opacity="0.15"/><rect x="22" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="36" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="54" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="67" y="74" width="11" height="14" rx="5" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><g transform="translate(0 0)"><ellipse cx="44" cy="62" rx="33" ry="24" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><ellipse cx="40" cy="71" rx="20" ry="8" fill="#EBC08F" opacity="0.7"/><path d="M18 50 Q24 44 30 47" stroke="#A8723F" stroke-width="3" fill="none"/><path d="M24 44 Q40 62 56 76" stroke="#2EC4B6" stroke-width="5" fill="none"/><circle cx="59" cy="31" r="6" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><rect x="50" y="28" width="40" height="34" rx="15" fill="#D19A66" stroke="#3D2C2E" stroke-width="4"/><rect x="71" y="42" width="21" height="18" rx="9" fill="#A8723F" stroke="#3D2C2E" stroke-width="3"/><ellipse cx="86" cy="47" rx="2.2" ry="3" fill="#3D2C2E"/><path d="M76 55 Q79 58 82 55" stroke="#3D2C2E" stroke-width="2" fill="none"/><path d="M60 42 Q65 46 70 42" stroke="#3D2C2E" stroke-width="3" fill="none"/><ellipse cx="60" cy="52" rx="5" ry="3" fill="#FF8FA3" opacity="0.85"/><path d="M52 32 C52 18 62 13 71 13 C82 13 88 20 88 30 Z" fill="#FFD166" stroke="#3D2C2E" stroke-width="3"/><path d="M80 28 Q92 27 95 31 Q88 34 80 33 Z" fill="#F4A93B" stroke="#3D2C2E" stroke-width="3"/><circle cx="69" cy="23" r="4.5" fill="#2EC4B6" stroke="#3D2C2E" stroke-width="1.5"/><circle cx="71" cy="13.5" r="2.5" fill="#F4A93B"/></g></g></g></svg>
+  <div id="bar"><div id="fill"></div></div>
+  <div id="percent"></div>
+  <div id="tip"></div>
+  <div id="notice"></div>
+  <div id="road"></div>
+</div>
+
+<script src="$GODOT_URL"></script>
+<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+  const english = !(navigator.language || "id").toLowerCase().startsWith("id");
+  const TIPS = english ? [
+    "Tip: medians are safe zones. Catch your breath there!",
+    "Tip: raft in the river? Step on it before it drifts away.",
+    "Tip: a helmet blocks one hit. A shoe gives a speed boost.",
+    "Tip: Mr. Ojan fines double. Keep his eggs perfect!",
+    "Tip: Bang Kilat speeds suddenly. Don't stand in his lane.",
+  ] : [
+    "Tips: median jalan adalah zona aman. Tarik napas di sana!",
+    "Tips: ada rakit di sungai? Naik sebelum terbawa arus.",
+    "Tips: helm menahan satu benturan, sepatu bikin lari lebih cepat.",
+    "Tips: Pak Ojan dendanya 2x lipat. Jaga telurnya tetap utuh!",
+    "Tips: Bang Kilat suka ngebut tiba-tiba. Jangan berdiri di lajurnya.",
+  ];
+  const status = document.getElementById("status");
+  const fill = document.getElementById("fill");
+  const percent = document.getElementById("percent");
+  const tip = document.getElementById("tip");
+  const notice = document.getElementById("notice");
+  let tipIndex = Math.floor(Math.random() * TIPS.length);
+  const showTip = () => { tip.textContent = TIPS[tipIndex++ % TIPS.length]; };
+  showTip();
+  const tipTimer = setInterval(showTip, 3500);
+
+  function fail(err) {
+    clearInterval(tipTimer);
+    notice.style.display = "block";
+    notice.textContent = (english ? "Failed to start the game: " : "Game gagal dimuat: ") + (err && err.message ? err.message : err);
+    console.error(err);
+  }
+
+  const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+  if (missing.length !== 0) {
+    fail((english ? "Your browser is missing: " : "Browser belum mendukung: ") + missing.join(", "));
+    return;
+  }
+  engine.startGame({
+    onProgress: function (current, total) {
+      if (current > 0 && total > 0) {
+        const p = Math.min(100, Math.round(current / total * 100));
+        fill.classList.remove("busy");
+        fill.style.width = p + "%";
+        percent.textContent = p + "%";
+      } else {
+        fill.classList.add("busy");
+        percent.textContent = english ? "Loading..." : "Memuat...";
+      }
+    },
+  }).then(() => {
+    clearInterval(tipTimer);
+    status.classList.add("hidden");
+    setTimeout(() => status.remove(), 500);
+  }, fail);
+}());
+</script>
+</body>
+</html>

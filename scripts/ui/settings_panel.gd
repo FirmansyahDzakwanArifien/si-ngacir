@@ -80,6 +80,15 @@ func _ready() -> void:
 		row.add_child(picker)
 		column.add_child(row)
 
+	if AudioManager.can_vibrate():
+		var vibration := CheckButton.new()
+		vibration.text = "Getar saat menabrak"
+		vibration.button_pressed = AudioManager.vibration
+		vibration.toggled.connect(func(on: bool) -> void:
+			AudioManager.vibration = on
+			AudioManager.vibrate(60))
+		column.add_child(vibration)
+
 	column.add_child(_section("Aksesibilitas"))
 	_option_row(column, "Ukuran teks", Accessibility.TEXT_SCALE_NAMES, Accessibility.text_size,
 			Accessibility.set_text_size)
