@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="DayData" load_steps=17 format=3]
+[gd_resource type="Resource" script_class="DayData" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/day_data.gd" id="1_day"]
 [ext_resource type="Script" path="res://scripts/data/lane_data.gd" id="2_lane"]
 [ext_resource type="Resource" path="res://resources/packages/galon.tres" id="3_pkg"]
+[ext_resource type="Resource" path="res://resources/story/day_02.tres" id="4_story"]
 
 [sub_resource type="Resource" id="Resource_lane00"]
 script = ExtResource("2_lane")
@@ -138,4 +139,5 @@ slip_chance = 0.25
 visibility_tiles = 4.5
 strict_customer = false
 perfect_tip = 0
+story = ExtResource("4_story")
 lanes = Array[ExtResource("2_lane")]([SubResource("Resource_lane00"), SubResource("Resource_lane01"), SubResource("Resource_lane02"), SubResource("Resource_lane03"), SubResource("Resource_lane04"), SubResource("Resource_lane05"), SubResource("Resource_lane06"), SubResource("Resource_lane07"), SubResource("Resource_lane08"), SubResource("Resource_lane09"), SubResource("Resource_lane10"), SubResource("Resource_lane11"), SubResource("Resource_lane12")])

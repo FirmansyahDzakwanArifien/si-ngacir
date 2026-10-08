@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="StoryData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/story_data.gd" id="1_story"]
+
+[resource]
+script = ExtResource("1_story")
+pages = PackedStringArray("Hari ketiga. Kata kurir lain, Pak Ojan adalah pelanggan paling teliti di seluruh Kota Ngacir.", "Hari ini ia memesan sekotak telur. Satu retak saja, ia pasti tahu.")
+images = PackedStringArray()

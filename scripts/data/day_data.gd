@@ -33,3 +33,7 @@ extends Resource
 @export var strict_customer: bool = false
 ## Tip dari pelanggan perfeksionis bila paket utuh dan tepat waktu.
 @export var perfect_tip: int = 0
+
+@export_group("Cerita")
+## Cutscene sebelum hari ini dimulai (dari hari sebelumnya). Kosongkan bila tidak ada.
+@export var story: StoryData

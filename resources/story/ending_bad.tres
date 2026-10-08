@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="StoryData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/story_data.gd" id="1_story"]
+
+[resource]
+script = ExtResource("1_story")
+pages = PackedStringArray("Masa percobaan berakhir, tapi tabungan Masbro belum cukup untuk biaya pengobatan adiknya.", "Masbro menarik napas panjang. Besok ia akan mencari jalan lain, dengan tenang, seperti biasa.")
+images = PackedStringArray()

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="StoryData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/story_data.gd" id="1_story"]
+
+[resource]
+script = ExtResource("1_story")
+pages = PackedStringArray("Sampai akhirnya, Paket VIP tiba di tangan Bu Direktur.", "Masbro resmi diangkat menjadi kurir tetap Ngacir Express.", "Tabungannya cukup untuk biaya pengobatan. Beberapa hari kemudian, adiknya sudah bisa tertawa lagi.", "Trobos Ajalah, Masbro!")
+images = PackedStringArray()
