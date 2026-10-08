@@ -86,17 +86,114 @@ jobs:
         with:
           path: builds/web
 
+  android:
+    name: Export Android
+    runs-on: ubuntu-latest
+    env:
+      # Keystore permanen (opsional, lihat README bagian Android). Tanpa ini CI memakai keystore sementara.
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Cache Godot & Android templates
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-android
+
+      - name: Download Godot & Android templates
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
+          mkdir -p ~/godot
+          curl -sSL -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip -d ~/godot
+          curl -sSL -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          dest=~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mkdir -p "$dest"
+          unzip -q -j templates.tpz "templates/version.txt" "templates/android_*.apk" -d "$dest"
+          rm godot.zip templates.tpz
+
+      - name: Keystore
+        run: |
+          ks="$RUNNER_TEMP/release.keystore"
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$ks"
+            alias="${ANDROID_KEY_ALIAS:-singacir}"
+            pass="$ANDROID_KEYSTORE_PASSWORD"
+            echo "### Android: ditandatangani keystore permanen" >> "$GITHUB_STEP_SUMMARY"
+          else
+            alias="singacir"
+            pass="$(openssl rand -hex 16)"
+            keytool -genkeypair -v -keystore "$ks" -alias "$alias" -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$pass" -keypass "$pass" -dname "CN=Si Ngacir, O=Varmintz KW Studio, C=ID" >/dev/null
+            echo "### Android: keystore sementara (update APK perlu uninstall dulu; isi secret ANDROID_KEYSTORE_* untuk keystore permanen)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "::add-mask::$pass"
+          {
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_PATH=$ks"
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_USER=$alias"
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=$pass"
+            echo "GODOT_ANDROID_KEYSTORE_DEBUG_PATH=$ks"
+            echo "GODOT_ANDROID_KEYSTORE_DEBUG_USER=$alias"
+            echo "GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=$pass"
+          } >> "$GITHUB_ENV"
+
+      - name: Editor settings (Android SDK & Java)
+        run: |
+          mkdir -p ~/.config/godot
+          for f in editor_settings-4.tres "editor_settings-${GODOT_VERSION}.tres"; do
+            cat > ~/.config/godot/"$f" <<EOF
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/android_sdk_path = "$ANDROID_SDK_ROOT"
+          export/android/java_sdk_path = "$JAVA_HOME"
+          EOF
+          done
+
+      - name: Import & export APK
+        run: |
+          godot=~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          "$godot" --headless --import --path . > import.log 2>&1 || true
+          # Versi APK: nama dari tag (atau versi project), kode naik tiap run supaya bisa update.
+          name="$(grep -oP 'config/version="\K[^"]+' project.godot)"
+          case "$GITHUB_REF" in refs/tags/v*) name="${GITHUB_REF_NAME#v}";; esac
+          sed -i "s/^version\/code=.*/version\/code=${GITHUB_RUN_NUMBER}/; s/^version\/name=.*/version\/name=\"$name\"/" export_presets.cfg
+          mkdir -p builds/android
+          "$godot" --headless --path . --export-release "Android" builds/android/SiNgacir.apk 2>&1 | tee export.log
+          test -f builds/android/SiNgacir.apk
+          cp builds/android/SiNgacir.apk SiNgacir-android.apk
+          echo "APK: $(du -k SiNgacir-android.apk | cut -f1) KB, versi $name ($GITHUB_RUN_NUMBER)" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: si-ngacir-android
+          path: SiNgacir-android.apk
+          retention-days: 14
+
   release:
     name: GitHub Release
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: export
+    needs: [export, android]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: si-ngacir-builds
+          pattern: si-ngacir-*
+          merge-multiple: true
 
       - uses: softprops/action-gh-release@v2
         with:
@@ -104,6 +201,7 @@ jobs:
           files: |
             SiNgacir-web.zip
             SiNgacir-windows.zip
+            SiNgacir-android.apk
             SiNgacir-MANUAL.md
           generate_release_notes: true
           body: |
@@ -113,6 +211,7 @@ jobs:
             | --- | --- | --- |
             | **Desktop (Windows)** | `SiNgacir-windows.zip` | Ekstrak, jalankan `SiNgacir.exe` |
             | **Web (browser / HP)** | `SiNgacir-web.zip` | Upload ke itch.io (HTML) atau web server, buka `index.html` |
+            | **Android** | `SiNgacir-android.apk` | Buka file APK di HP, izinkan "instal dari sumber tidak dikenal" |
             | **Manual** | `SiNgacir-MANUAL.md` | Storyline, kontrol, cara main |
 
             Windows SmartScreen: pilih **More info → Run anyway**.
@@ -136,14 +235,15 @@ jobs:
     name: Deploy itch.io
     # Aktif bila repo variable ITCH_GAME (contoh: namauser/si-ngacir) dan secret BUTLER_API_KEY diisi.
     if: startsWith(github.ref, 'refs/tags/v') && vars.ITCH_GAME != ''
-    needs: export
+    needs: [export, android]
     runs-on: ubuntu-latest
     env:
       BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: si-ngacir-builds
+          pattern: si-ngacir-*
+          merge-multiple: true
 
       - name: Push to itch.io
         run: |
@@ -152,3 +252,4 @@ jobs:
           version="${GITHUB_REF_NAME#v}"
           ./butler/butler push SiNgacir-web.zip "${{ vars.ITCH_GAME }}:html5" --userversion "$version"
           ./butler/butler push SiNgacir-windows.zip "${{ vars.ITCH_GAME }}:windows" --userversion "$version"
+          ./butler/butler push SiNgacir-android.apk "${{ vars.ITCH_GAME }}:android" --userversion "$version"
