@@ -59,6 +59,8 @@ var tips_enabled := true
 ## Cutscene yang akan diputar dan scene tujuan setelahnya (lihat play_story).
 var pending_story: StoryData
 var pending_scene := ""
+## Kondisi paket pada pengiriman terakhir cukup baik (memilih cutscene malam).
+var last_day_good := true
 
 
 func _ready() -> void:
@@ -128,6 +130,15 @@ func play_story(story: StoryData, next_scene: String) -> void:
 	pending_story = story
 	pending_scene = next_scene
 	Transition.change_scene(CUTSCENE_SCENE)
+
+
+## Teks cutscene yang sudah diterjemahkan, dengan token tabungan diganti angka.
+func story_text(text: String) -> String:
+	return tr(text).format({
+		"saved": rupiah(total_savings()),
+		"target": rupiah(MEDICAL_COST),
+		"left": rupiah(maxi(0, MEDICAL_COST - total_savings())),
+	})
 
 
 ## Cutscene penutup sesuai hasil masa percobaan (null bila pemain masih boleh mengulang hari).

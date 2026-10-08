@@ -15,6 +15,8 @@ const CAT_SPAWN_DELAY := Vector2(2.5, 5.0)
 const POPUP_COOLDOWN := 0.6
 const SHOES_TIME := 8.0
 const SHOES_SPEED := 0.6
+## Kondisi paket minimal agar malam harinya memakai cutscene "bagus".
+const GOOD_DAY_INTEGRITY := 0.7
 const BLOCKERS := [&"cone", &"barrier", &"gerobak"]
 const HONK_DISTANCE := 2.5 * 48.0
 const HONK_COOLDOWN := 2.0
@@ -645,6 +647,7 @@ func _deliver() -> void:
 	_hud.update_progress(1.0)
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins, checkpoint_uses)
 	GameState.record_delivery(day, report.wage)
+	GameState.last_day_good = report.integrity >= GOOD_DAY_INTEGRITY
 	# Koin yang dipungut masuk dompet untuk belanja di toko.
 	GameState.add_coins(coins)
 	AudioManager.play_sfx(&"delivery")
@@ -764,8 +767,9 @@ func _next_button_text() -> String:
 
 func _on_next_requested() -> void:
 	get_tree().paused = false
+	var evening := day.evening_good if GameState.last_day_good else day.evening_rough
 	if GameState.advance_day():
-		GameState.play_story(GameState.current_day().story, GameState.LEVEL_SCENE)
+		GameState.play_story(StoryData.combine([evening, GameState.current_day().story]), GameState.LEVEL_SCENE)
 	elif GameState.is_replay:
 		Transition.change_scene(GameState.ENDING_SCENE)
 	else:

@@ -22,6 +22,19 @@
 
 Nasib Masbro ada di tanganmu.
 
+### Tokoh
+
+| Tokoh | Siapa |
+| --- | --- |
+| **Masbro** | Capybara paling santai sekampung. Prinsipnya: cepat boleh, asal paket selamat |
+| **Nana** | Adik Masbro yang sedang dirawat. Selalu menunggu Masbro pulang |
+| **Bang Kilat** | Kurir rival yang suka ngebut demi rating. Lambat laun belajar bahwa cepat tidak selalu menang |
+| **Bu Direktur** | Pemilik Ngacir Express yang menilai masa percobaan Masbro |
+| **Bu Dokter** | Dokter yang merawat Nana |
+| **Pak Ojan** | Pelanggan paling teliti sekota |
+
+Setelah tiap pengiriman, cerita berlanjut dengan **malam di rumah** bersama Nana. Kalau paket terjaga dengan baik, malamnya lebih ceria.
+
 ---
 
 ## 2. Cara Memainkan

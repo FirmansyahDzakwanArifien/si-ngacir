@@ -51,3 +51,6 @@ extends Resource
 @export_group("Cerita")
 ## Cutscene sebelum hari ini dimulai (dari hari sebelumnya). Kosongkan bila tidak ada.
 @export var story: StoryData
+## Cutscene malam setelah hari ini selesai: paket terjaga baik, atau banyak rusak.
+@export var evening_good: StoryData
+@export var evening_rough: StoryData

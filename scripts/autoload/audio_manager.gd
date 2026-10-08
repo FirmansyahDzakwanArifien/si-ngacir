@@ -14,6 +14,8 @@ var sfx_volume := 0.8
 var fullscreen := false
 ## Kode bahasa: "id" (Indonesia) atau "en" (Inggris).
 var language := ""
+## Kurangi efek gerak (goyangan layar, animasi pop).
+var reduce_motion := false
 
 var _music_player: AudioStreamPlayer
 var _sfx_players: Array[AudioStreamPlayer] = []

@@ -44,7 +44,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Side conflict: kucing jalanan, hujan (jarak pandang & licin), Pak Ojan (pelanggan perfeksionis)
 * [x] Sistem audio (BGM + SFX, suara placeholder) dan menu Pengaturan (volume, layar penuh)
 * [x] Siap sprite: game otomatis memakai gambar di `assets/sprites/` (spesifikasi di `docs/ASSET_SPEC.md`)
-* [x] Cutscene cerita: pembuka, sebelum Hari 2–5, dan ending (naskah draf)
+* [x] Cutscene cerita bergaya dialog (potret tokoh): pembuka, malam setelah Hari 1–4, pagi sebelum Hari 2–5, dan ending (naskah draf)
 * [x] Export Web (HTML5) dan Windows
 * [x] Kontrol sentuh swipe (kiri/kanan/maju, tap = maju) dan layar responsif: HP potret (UI diperbesar, kamera geser samping), lanskap, layar lebar (`scripts/autoload/screen.gd`)
 * [x] Tampilan flat kawaii: sprite, ilustrasi cutscene, UI, animasi & efek (bawaan, bisa diganti tim Illustrator)
@@ -134,16 +134,25 @@ Diatur di grup **Side Conflict** pada tiap `day_0N.tres`:
 
 ## Cerita (untuk Writer Story)
 
-Naskah cutscene ada di `resources/story/` dan bisa diedit langsung di Inspector Godot (properti `pages`, satu halaman per elemen). Naskah saat ini adalah **draf** yang disusun dari storyline Pixar Method.
+Naskah cutscene ada di `resources/story/` dan bisa diedit langsung di Inspector Godot. Naskah saat ini adalah **draf** yang dikembangkan dari storyline Pixar Method: konflik utama dengan Bang Kilat (cepat vs aman), Nana yang dirawat, dan malam di rumah setelah tiap hari.
+
+Setiap cutscene punya tiga daftar dengan urutan sama (satu elemen per halaman):
+
+| Properti | Isi |
+| --- | --- |
+| `pages` | Teks halaman. Token `{saved}`, `{target}`, `{left}` diganti tabungan, biaya pengobatan, dan kekurangannya |
+| `speakers` | `tokoh:ekspresi` (misalnya `nana:senang`), atau kosong untuk narasi. Daftar tokoh di `scripts/data/speakers.gd` |
+| `images` | Ilustrasi di `assets/story/`. Kosong = tetap memakai gambar halaman sebelumnya |
 
 | File | Kapan diputar |
 | --- | --- |
 | `opening.tres` | Setelah "Mulai Baru", sebelum Hari 1 |
-| `day_02.tres` … `day_05.tres` | Sebelum hari tersebut (dihubungkan lewat properti `story` di `day_0N.tres`) |
+| `evening_0N_good.tres` / `evening_0N_rough.tres` | Malam setelah Hari N (1–4): versi *good* bila kondisi paket ≥ 70%, *rough* bila lebih rendah. Dihubungkan lewat `evening_good` / `evening_rough` di `day_0N.tres` |
+| `day_02.tres` … `day_05.tres` | Pagi sebelum hari tersebut (properti `story` di `day_0N.tres`), diputar langsung setelah cutscene malam |
 | `ending_success.tres` | Setelah Hari 5 bila tabungan cukup |
 | `ending_bad.tres` | Setelah Hari 5 bila tabungan kurang dan `SHORTFALL_RULE = BAD_ENDING` |
 
-Ilustrasi per halaman ada di `assets/story/` (SVG bawaan: `home`, `sick`, `office`, `road`, `galon`, `eggs`, `rain`, `vip`, `celebrate`, `sunset`) dan dipilih lewat properti `images` dengan urutan yang sama seperti `pages`. Untuk mengganti, edit SVG-nya atau taruh PNG 480 × 270 dengan nama sama (PNG diutamakan).
+Ilustrasi dan potret bisa diganti tim Illustrator, lihat `docs/ASSET_SPEC.md`. Setiap mengubah teks naskah, perbarui juga kuncinya di `translations/strings.csv`.
 
 Kontrol cutscene: Enter / klik untuk lanjut, Esc untuk lewati.
 
