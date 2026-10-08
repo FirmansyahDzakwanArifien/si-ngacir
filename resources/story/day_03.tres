@@ -4,5 +4,6 @@
 
 [resource]
 script = ExtResource("1_story")
-pages = PackedStringArray("Hari ketiga. Kata kurir lain, Pak Ojan adalah pelanggan paling teliti di seluruh Kota Ngacir.", "Hari ini ia memesan sekotak telur. Satu retak saja, ia pasti tahu.")
-images = PackedStringArray("eggs", "eggs")
+pages = PackedStringArray("Masbro, pesanan Pak Ojan. Pelanggan paling teliti sekota. Telurnya dicek satu-satu.", "Pak Ojan?! Aku pernah didenda dua kali lipat gara-gara satu telur retak!", "Pelan-pelan, asal pasti.")
+images = PackedStringArray("eggs", "depot", "eggs")
+speakers = PackedStringArray("direktur:normal", "kilat:kaget", "masbro:mantap")

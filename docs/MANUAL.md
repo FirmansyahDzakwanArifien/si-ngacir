@@ -22,6 +22,19 @@
 
 Nasib Masbro ada di tanganmu.
 
+### Tokoh
+
+| Tokoh | Siapa |
+| --- | --- |
+| **Masbro** | Capybara paling santai sekampung. Prinsipnya: cepat boleh, asal paket selamat |
+| **Nana** | Adik Masbro yang sedang dirawat. Selalu menunggu Masbro pulang |
+| **Bang Kilat** | Kurir rival yang suka ngebut demi rating. Lambat laun belajar bahwa cepat tidak selalu menang |
+| **Bu Direktur** | Pemilik Ngacir Express yang menilai masa percobaan Masbro |
+| **Bu Dokter** | Dokter yang merawat Nana |
+| **Pak Ojan** | Pelanggan paling teliti sekota |
+
+Setelah tiap pengiriman, cerita berlanjut dengan **malam di rumah** bersama Nana. Kalau paket terjaga dengan baik, malamnya lebih ceria.
+
 ---
 
 ## 2. Cara Memainkan
@@ -228,12 +241,24 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 | **Lanjutkan** | Melanjutkan dari hari terakhir yang belum selesai |
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
 | **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
-| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama) |
+| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama), aksesibilitas |
 | **Keluar** | Menutup game (desktop) |
+
+Game **otomatis pause** saat tab browser ditinggal, jendela kehilangan fokus, atau aplikasi HP diminimalkan. Di HP, layar bergetar saat menabrak atau paket rusak (bisa dimatikan di **Pengaturan → Getar saat menabrak**).
 
 Progres tersimpan **otomatis** setiap kali satu hari selesai. Keluar di tengah hari berarti mengulang hari itu dari awal.
 
 Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
+
+### Aksesibilitas
+
+Di **Pengaturan → Aksesibilitas**:
+
+| Opsi | Fungsi |
+| --- | --- |
+| **Ukuran teks** | Normal, Besar, atau Sangat Besar. Berlaku langsung di semua layar |
+| **Buta warna** | Filter koreksi warna untuk Protanopia (merah), Deuteranopia (hijau), atau Tritanopia (biru) |
+| **Kurangi efek gerak** | Mematikan goyangan layar, konfeti, animasi pop, dan denyut timer; transisi layar menjadi pudar biasa |
 
 ---
 

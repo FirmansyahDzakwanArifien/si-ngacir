@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StoryData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/story_data.gd" id="1_story"]
+
+[resource]
+script = ExtResource("1_story")
+pages = PackedStringArray("Masbro pulang basah kuyup. Tabungan: {saved}, kurang {left}.", "Abang kedinginan... Nana bikinin teh, ya?", "Kamu istirahat saja. Besok hari terakhir. Abang pasti bisa.")
+images = PackedStringArray("home_night", "home_night", "home_night")
+speakers = PackedStringArray("", "nana:sakit", "masbro:mantap")

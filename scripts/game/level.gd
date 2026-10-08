@@ -15,6 +15,8 @@ const CAT_SPAWN_DELAY := Vector2(2.5, 5.0)
 const POPUP_COOLDOWN := 0.6
 const SHOES_TIME := 8.0
 const SHOES_SPEED := 0.6
+## Kondisi paket minimal agar malam harinya memakai cutscene "bagus".
+const GOOD_DAY_INTEGRITY := 0.7
 const BLOCKERS := [&"cone", &"barrier", &"gerobak"]
 const HONK_DISTANCE := 2.5 * 48.0
 const HONK_COOLDOWN := 2.0
@@ -620,6 +622,7 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 	if _player.shielded:
 		# Helm menahan benturan; paket aman.
 		_player.shielded = false
+		AudioManager.vibrate(30)
 		_popup("Helm melindungi!", Palette.TEAL, _player.position)
 		AudioManager.play_sfx(&"hit", 0.1)
 		_player.knock_back(knock_to)
@@ -631,11 +634,13 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 	Effects.burst(_board, _player.position + Vector2(TILE / 2.0, TILE / 2.0), day.package.color)
 	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:
+		AudioManager.vibrate(300)
 		_invulnerable_left = 0.0
 		_player.invulnerable = false
 		_fail()
 		return
 	AudioManager.play_sfx(&"package_damage", 0.05)
+	AudioManager.vibrate(80 + 40 * amount)
 	_player.knock_back(knock_to)
 
 
@@ -645,6 +650,7 @@ func _deliver() -> void:
 	_hud.update_progress(1.0)
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins, checkpoint_uses)
 	GameState.record_delivery(day, report.wage)
+	GameState.last_day_good = report.integrity >= GOOD_DAY_INTEGRITY
 	# Koin yang dipungut masuk dompet untuk belanja di toko.
 	GameState.add_coins(coins)
 	AudioManager.play_sfx(&"delivery")
@@ -653,7 +659,8 @@ func _deliver() -> void:
 	_customer.say("Makasih, Masbro!" if report.stars >= 3 else "Hmm... ya sudah, makasih.", 0.0)
 	# Konfeti di lapisan HUD supaya jatuh di depan kartu hasil.
 	var view := get_viewport().get_visible_rect().size
-	Effects.confetti(_hud, Vector2(view.x / 2.0, 0), view.x)
+	if not Accessibility.reduce_motion:
+		Effects.confetti(_hud, Vector2(view.x / 2.0, 0), view.x)
 	_hud.show_result(report, _next_button_text())
 
 
@@ -737,12 +744,21 @@ func _draw_side_mask() -> void:
 		_side_mask.draw_rect(Rect2(0, bottom, view.x, view.y - bottom), color)
 
 
+func _notification(what: int) -> void:
+	# Tab browser ditinggal, jendela kehilangan fokus, atau aplikasi HP diminimalkan: pause otomatis.
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
+		if state == State.PLAYING and is_inside_tree() and not get_tree().paused:
+			_set_paused(true)
+
+
 func _on_pause_pressed() -> void:
 	if state == State.PLAYING and not get_tree().paused:
 		_set_paused(true)
 
 
 func _shake() -> void:
+	if Accessibility.reduce_motion:
+		return
 	var tween := create_tween()
 	for i in 6:
 		tween.tween_property(self, "_shake_offset", Vector2(randf_range(-6, 6), randf_range(-6, 6)), 0.03)
@@ -764,8 +780,9 @@ func _next_button_text() -> String:
 
 func _on_next_requested() -> void:
 	get_tree().paused = false
+	var evening := day.evening_good if GameState.last_day_good else day.evening_rough
 	if GameState.advance_day():
-		GameState.play_story(GameState.current_day().story, GameState.LEVEL_SCENE)
+		GameState.play_story(StoryData.combine([evening, GameState.current_day().story]), GameState.LEVEL_SCENE)
 	elif GameState.is_replay:
 		Transition.change_scene(GameState.ENDING_SCENE)
 	else:

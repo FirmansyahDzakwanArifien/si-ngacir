@@ -14,6 +14,8 @@ var sfx_volume := 0.8
 var fullscreen := false
 ## Kode bahasa: "id" (Indonesia) atau "en" (Inggris).
 var language := ""
+## Getar HP saat menabrak / paket rusak.
+var vibration := true
 
 var _music_player: AudioStreamPlayer
 var _sfx_players: Array[AudioStreamPlayer] = []
@@ -43,6 +45,28 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		quit_game()
+	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
+		# Tab browser / aplikasi HP ditinggal: diamkan suara sampai kembali.
+		if mutes_in_background():
+			AudioServer.set_bus_mute(0, true)
+	elif what == NOTIFICATION_APPLICATION_FOCUS_IN or what == NOTIFICATION_APPLICATION_RESUMED:
+		AudioServer.set_bus_mute(0, false)
+
+
+## Web dan HP: suara berhenti saat game tidak dilihat. Desktop tetap berbunyi.
+func mutes_in_background() -> bool:
+	return OS.has_feature("web") or OS.has_feature("mobile")
+
+
+## Perangkat yang mungkin bisa bergetar (HP, atau browser di layar sentuh).
+func can_vibrate() -> bool:
+	return OS.has_feature("mobile") or (OS.has_feature("web") and DisplayServer.is_touchscreen_available())
+
+
+## Getarkan HP selama duration_ms (diabaikan bila tidak didukung atau dimatikan).
+func vibrate(duration_ms: int) -> void:
+	if vibration and can_vibrate():
+		Input.vibrate_handheld(duration_ms)
 
 
 ## Tutup game dengan rapi: hentikan semua suara dulu, beri waktu audio server
@@ -104,10 +128,13 @@ func set_language(code: String) -> void:
 
 func save_settings() -> void:
 	var config := ConfigFile.new()
+	# Bagian lain (misalnya aksesibilitas) ikut disimpan di file yang sama.
+	config.load(SETTINGS_PATH)
 	config.set_value("audio", "music_volume", music_volume)
 	config.set_value("audio", "sfx_volume", sfx_volume)
 	config.set_value("display", "fullscreen", fullscreen)
 	config.set_value("display", "language", language)
+	config.set_value("display", "vibration", vibration)
 	config.save(SETTINGS_PATH)
 
 
@@ -119,6 +146,7 @@ func load_settings() -> void:
 	# Bawaan: Indonesia bila perangkat berbahasa Indonesia, selain itu Inggris.
 	var default_language := "id" if OS.get_locale_language() == "id" else "en"
 	set_language(config.get_value("display", "language", default_language))
+	vibration = config.get_value("display", "vibration", true)
 	if not OS.has_feature("web") and DisplayServer.get_name() != "headless":
 		set_fullscreen(config.get_value("display", "fullscreen", fullscreen))
 

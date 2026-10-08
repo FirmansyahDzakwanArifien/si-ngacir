@@ -163,6 +163,24 @@ Lokasi: `assets/story/`. Ukuran **480 × 270 px** (PNG) atau 960 × 540 (SVG baw
 | `vip` | Paket VIP (Hari 5) |
 | `celebrate` | Lulus, adik sembuh |
 | `sunset` | Ending gagal |
+| `home_night` | Malam di rumah, toples tabungan (setelah Hari 1–4) |
+| `hospital` | Nana dirawat, Bu Dokter memeriksa |
+| `depot` | Gudang Ngacir Express pagi hari, Bang Kilat dengan motornya |
+
+## Potret dialog
+
+Lokasi: `assets/portraits/`. Nama file `<tokoh>_<ekspresi>`, ukuran **96 × 96 px** (PNG) atau 192 × 192 (SVG bawaan, 2x). Kepala dan bahu tampak depan, latar transparan (bingkai bulat berwarna digambar oleh game).
+
+| Tokoh | Ekspresi yang dipakai naskah |
+| --- | --- |
+| `masbro` | `normal`, `senang`, `sedih`, `kaget`, `mantap` |
+| `nana` (adik) | `normal`, `senang`, `sedih`, `sakit` |
+| `kilat` (Bang Kilat) | `sombong`, `kaget`, `sedih`, `senang` |
+| `dokter` | `normal`, `senang` |
+| `direktur` | `normal`, `senang` |
+| `ojan` | `normal`, `senang`, `kaget` |
+
+Ekspresi yang belum ada otomatis memakai `normal`. Nama tampilan dan warna papan nama diatur di `scripts/data/speakers.gd`.
 
 ## Audio
 
