@@ -106,6 +106,12 @@ func is_moving() -> bool:
 	return _tween != null and _tween.is_running()
 
 
+## Bergeser mengikuti rakit di sungai; kolom grid ikut diperbarui.
+func ride(dx: float) -> void:
+	position.x += dx
+	cell.x = clampi(roundi(position.x / tile), 0, grid_size.x - 1)
+
+
 ## Antre satu langkah (dipakai kontrol sentuh).
 func queue_move(direction: Vector2i) -> void:
 	if input_enabled:

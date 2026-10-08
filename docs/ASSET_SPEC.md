@@ -39,6 +39,14 @@ Catatan: paket digambar **terpisah** (lihat di bawah) dan diletakkan di punggung
 | `cat_walk.png` | 48 × 48 | 4 | Berjalan menyeberang, menghadap kanan |
 | `cat_sit.png` | 48 × 48 | 2 | Duduk penasaran (saat menyentuh Masbro) |
 
+## Sungai
+
+| File | Ukuran | Keterangan |
+| --- | --- | --- |
+| `tile_water.png` | 48 × 48 | Air sungai, sisi kiri-kanan menyambung |
+| `vehicle_rakit2.png` | 96 × 48 | Rakit 2 petak (tampak atas/samping) |
+| `vehicle_rakit3.png` | 144 × 48 | Rakit 3 petak |
+
 ## Rintangan & item
 
 Semua 48 × 48 (1 petak), tampak samping/depan, berdiri di tengah petak.

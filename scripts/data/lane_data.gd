@@ -2,10 +2,10 @@ class_name LaneData
 extends Resource
 ## Satu baris di peta. Baris ROAD berisi kendaraan yang melaju terus.
 
-enum Kind { SIDEWALK, ROAD, MEDIAN }
+enum Kind { SIDEWALK, ROAD, MEDIAN, RIVER }
 
 @export var kind: Kind = Kind.ROAD
-## Jenis kendaraan: motor / mobil / truk (lihat Vehicle.TYPES).
+## Jenis kendaraan: motor / mobil / truk, atau rakit2 / rakit3 untuk sungai (lihat Vehicle.TYPES).
 @export var vehicle: StringName = &"mobil"
 ## 1 = ke kanan, -1 = ke kiri.
 @export_range(-1, 1, 2) var direction: int = 1

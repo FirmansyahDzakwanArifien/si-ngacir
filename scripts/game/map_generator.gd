@@ -16,10 +16,12 @@ static func generate(params: MapParams, rng: RandomNumberGenerator) -> Array[Lan
 		var progress := float(block) / maxf(1.0, params.road_blocks - 1.0)
 		var speed_scale := lerpf(1.0, params.speed_ramp, progress)
 		var direction := 1 if rng.randf() < 0.5 else -1
-		for i in rng.randi_range(params.lanes_per_block.x, params.lanes_per_block.y):
-			rows.append(_road(params, rng, direction, speed_scale))
-			# Lane bersebelahan berlawanan arah, seperti jalan dua arah.
-			direction = -direction
+		if block > 0 and rng.randf() < params.river_chance:
+			for i in rng.randi_range(params.river_lanes.x, params.river_lanes.y):
+				rows.append(_river(params, rng, direction))
+				direction = -direction
+		else:
+			_append_roads(rows, params, rng, direction, speed_scale)
 		if block < params.road_blocks - 1:
 			for i in rng.randi_range(params.safe_rows_between.x, params.safe_rows_between.y):
 				rows.append(_safe(LaneData.Kind.MEDIAN))
@@ -29,11 +31,34 @@ static func generate(params: MapParams, rng: RandomNumberGenerator) -> Array[Lan
 	return rows
 
 
+static func _append_roads(rows: Array[LaneData], params: MapParams, rng: RandomNumberGenerator,
+		direction: int, speed_scale: float) -> void:
+	for i in rng.randi_range(params.lanes_per_block.x, params.lanes_per_block.y):
+		rows.append(_road(params, rng, direction, speed_scale))
+		# Lane bersebelahan berlawanan arah, seperti jalan dua arah.
+		direction = -direction
+
+
+## Lane air dengan rakit yang rapat (celah < 1 petak) supaya selalu bisa diseberangi.
+static func _river(params: MapParams, rng: RandomNumberGenerator, direction: int) -> LaneData:
+	var lane := LaneData.new()
+	lane.kind = LaneData.Kind.RIVER
+	lane.direction = direction
+	lane.vehicle = [&"rakit2", &"rakit3"][rng.randi() % 2]
+	var length: int = Vehicle.TYPES[lane.vehicle]["length"]
+	lane.vehicle_count = ceili(float(LOOP_TILES) / (length + 1.5))
+	lane.speed = rng.randf_range(params.raft_speed.x, params.raft_speed.y)
+	lane.offset = rng.randf_range(0.0, LOOP_TILES * 48.0)
+	return lane
+
+
 ## Taruh rintangan statis dan item. Baris gudang dan rumah dibiarkan kosong.
 static func _decorate(rows: Array[LaneData], params: MapParams, rng: RandomNumberGenerator) -> void:
 	var road_rows: Array[int] = []
 	for row in range(1, rows.size() - 1):
 		var lane := rows[row]
+		if lane.kind == LaneData.Kind.RIVER:
+			continue
 		if lane.kind == LaneData.Kind.MEDIAN:
 			var count := rng.randi_range(params.blockers_per_safe_row.x, params.blockers_per_safe_row.y)
 			for col in _distinct_columns(rng, count):
