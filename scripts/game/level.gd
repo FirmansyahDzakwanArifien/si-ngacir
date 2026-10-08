@@ -142,7 +142,7 @@ func _deliver() -> void:
 	_player.input_enabled = false
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed)
 	GameState.record_delivery(day, report.wage)
-	_hud.show_result(report, GameState.has_next_day())
+	_hud.show_result(report, _next_button_text())
 
 
 func _fail() -> void:
@@ -150,7 +150,7 @@ func _fail() -> void:
 	_player.input_enabled = false
 	_player.invulnerable = false
 	GameState.record_delivery(day, 0)
-	_hud.show_failed()
+	_hud.show_failed(GameState.is_replay)
 
 
 func _shake() -> void:
@@ -166,16 +166,25 @@ func _on_retry_requested() -> void:
 	get_tree().reload_current_scene()
 
 
+func _next_button_text() -> String:
+	if GameState.is_replay:
+		return "Kembali ke Rekap"
+	if GameState.has_next_day():
+		return "Hari Berikutnya"
+	return "Lihat Hasil Masa Percobaan"
+
+
 func _on_next_requested() -> void:
+	get_tree().paused = false
 	if GameState.advance_day():
 		get_tree().reload_current_scene()
 	else:
-		_on_menu_requested()
+		get_tree().change_scene_to_file(GameState.ENDING_SCENE)
 
 
 func _on_menu_requested() -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
+	get_tree().change_scene_to_file(GameState.MENU_SCENE)
 
 
 func _draw_board() -> void:

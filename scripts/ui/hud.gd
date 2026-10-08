@@ -69,7 +69,7 @@ func show_pause() -> void:
 	])
 
 
-func show_result(report: DeliveryReport, has_next_day: bool) -> void:
+func show_result(report: DeliveryReport, next_text: String) -> void:
 	var rows: Array[Control] = [
 		StarRow.new(report.stars),
 		_label("\"%s\"\n- %s" % [report.comment, report.customer], 16, GOLD),
@@ -86,20 +86,21 @@ func show_result(report: DeliveryReport, has_next_day: bool) -> void:
 				GameState.rupiah(GameState.total_savings()), GameState.rupiah(GameState.MEDICAL_COST)],
 				14, Color(1, 1, 1, 0.7)),
 	]
-	var next_text := "Hari Berikutnya" if has_next_day else "Kembali ke Menu"
 	_open("PAKET SAMPAI!", GREEN, rows, [
 		[next_text, next_requested.emit],
 		["Ulangi Hari", retry_requested.emit],
 	])
 
 
-func show_failed() -> void:
+func show_failed(is_replay: bool) -> void:
+	var leave: Array = ["Kembali ke Rekap", next_requested.emit] if is_replay \
+			else ["Menu Utama", menu_requested.emit]
 	_open("PAKET HANCUR!", RED, [
 		_label("\"%s\"\n- %s" % [DeliveryReport.FAILED_COMMENT, _day.customer_name], 16, GOLD),
 		_label("Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.", 16),
 	], [
 		["Ulangi Hari", retry_requested.emit],
-		["Menu Utama", menu_requested.emit],
+		leave,
 	])
 
 

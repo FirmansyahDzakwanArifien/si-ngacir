@@ -1,7 +1,6 @@
 extends Control
 ## Layar judul Si Ngacir.
 
-const LEVEL_SCENE := "res://scenes/game/level.tscn"
 const PREMISE := "Adik Masbro jatuh sakit dan butuh biaya pengobatan dalam lima hari. " \
 		+ "Satu-satunya jalan: lolos masa percobaan sebagai kurir Ngacir Express. " \
 		+ "Kejar ETA, jaga paket, dan jangan sampai upah terpotong denda."
@@ -48,7 +47,7 @@ func _ready() -> void:
 
 
 func _on_start_pressed() -> void:
-	get_tree().change_scene_to_file(LEVEL_SCENE)
+	get_tree().change_scene_to_file(GameState.LEVEL_SCENE)
 
 
 func _label(text: String, size: int, color: Color) -> Label:
