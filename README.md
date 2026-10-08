@@ -205,8 +205,10 @@ Workflow `.github/workflows/build.yml`:
 | --- | --- |
 | Pull Request ke `dev` / `main` | Import + export dicek; build bisa diunduh di tab **Actions → Artifacts** |
 | Push ke `main` | Build Web + Windows (artifact) |
-| Push tag `v*` (contoh `v0.2.0`) | **GitHub Release** otomatis berisi `SiNgacir-web.zip`, `SiNgacir-windows.zip`, dan manual |
+| Push tag `v*` (contoh `v0.2.0`) | **GitHub Release** otomatis berisi `SiNgacir-web.zip`, `SiNgacir-windows.zip`, `SiNgacir-android.apk`, dan manual |
 | Tombol **Run workflow** di tab Actions | Build manual kapan saja |
+
+Build Web memakai **template Godot ramping** (tanpa 3D dan modul yang tidak dipakai, lihat `.github/godot/web_template.py`). Template dibangun sekali (sekitar 30 menit) lalu disimpan di cache Actions; mengubah file profil itu akan membangunnya ulang. Ukuran file web tercatat di ringkasan setiap run.
 
 Membuat rilis baru (setelah `dev` digabung ke `main`):
 
@@ -220,10 +222,22 @@ Deploy opsional (Settings → Secrets and variables → Actions):
 
 | Tujuan | Atur | Catatan |
 | --- | --- | --- |
-| **itch.io** (link main di browser) | Variable `ITCH_GAME` = `namauser/si-ngacir`, Secret `BUTLER_API_KEY` | API key dari itch.io → Settings → API keys. Jalan saat push tag |
+| **itch.io** (link main di browser) | Variable `ITCH_GAME` = `namauser/si-ngacir`, Secret `BUTLER_API_KEY` | API key dari itch.io → Settings → API keys. Jalan saat push tag; channel `html5`, `windows`, `android` |
+| **GitHub Pages** | Variable `DEPLOY_PAGES` = `true`, Settings → Pages → Source: *GitHub Actions* | Repo private butuh GitHub Pro/Team; repo public gratis |
+| **Keystore Android permanen** | Secret `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` | Lihat di bawah. Tanpa ini APK ditandatangani keystore sementara |
 
 Upload ulang rilis yang sudah ada ke itch.io (misalnya setelah secret baru diisi): `gh workflow run build.yml --ref v0.5.0`.
-| **GitHub Pages** | Variable `DEPLOY_PAGES` = `true`, Settings → Pages → Source: *GitHub Actions* | Repo private butuh GitHub Pro/Team; repo public gratis |
+
+### Keystore Android
+
+Tanpa keystore permanen, setiap rilis APK ditandatangani kunci yang berbeda, jadi pemain harus menghapus versi lama sebelum memasang versi baru. Untuk update yang mulus, buat keystore sekali (butuh Java / Android Studio) lalu simpan sebagai secret:
+
+```bash
+keytool -genkeypair -v -keystore singacir.keystore -alias singacir -keyalg RSA -keysize 2048 -validity 10000
+base64 -w0 singacir.keystore > keystore.txt   # Windows PowerShell: [Convert]::ToBase64String([IO.File]::ReadAllBytes("singacir.keystore")) > keystore.txt
+```
+
+Isi di GitHub → Settings → Secrets and variables → Actions: `ANDROID_KEYSTORE_BASE64` = isi `keystore.txt`, `ANDROID_KEYSTORE_PASSWORD` = password keystore, `ANDROID_KEY_ALIAS` = `singacir`. **Simpan file keystore dan password-nya baik-baik**: kalau hilang, update APK berikutnya tidak bisa menimpa versi lama.
 
 ## Workflow Git
 
