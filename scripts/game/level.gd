@@ -19,6 +19,8 @@ const POPUP_COOLDOWN := 0.6
 const SHOES_TIME := 8.0
 const SHOES_SPEED := 0.6
 const BLOCKERS := [&"cone", &"barrier"]
+## Jarak (baris) ke rumah saat pelanggan mulai menyemangati.
+const CUSTOMER_CHEER_ROWS := 6
 
 enum State { INTRO, PLAYING, FINISHED }
 
@@ -59,6 +61,9 @@ var _collected := {}
 ## Pos terakhir yang dicapai; Vector2i(-1, -1) = belum ada.
 var _checkpoint_cell := Vector2i(-1, -1)
 var _hud: GameHud
+var _customer: CustomerNpc
+## Kalimat pelanggan yang sudah diucapkan (supaya tidak diulang).
+var _customer_said := {}
 
 
 func _ready() -> void:
@@ -82,6 +87,7 @@ func _ready() -> void:
 	add_child(_side_mask)
 	_spawn_items()
 	_spawn_vehicles()
+	_spawn_customer()
 	_spawn_player()
 	if day.rainy:
 		_rain = RainOverlay.new()
@@ -138,6 +144,7 @@ func _process(delta: float) -> void:
 	_hud.update_progress(1.0 - _player.position.y / ((_rows - 1) * TILE))
 
 	_popup_cooldown = maxf(0.0, _popup_cooldown - delta)
+	_update_customer()
 	_update_cats(delta)
 	_update_river(delta)
 	if _boost_left > 0.0:
@@ -216,6 +223,37 @@ func _spawn_items() -> void:
 			tween.tween_property(node, "position:y", -4.0, 0.5).set_trans(Tween.TRANS_SINE)
 			tween.tween_property(node, "position:y", 0.0, 0.5).set_trans(Tween.TRANS_SINE)
 			_item_nodes[Vector2i(col, row)] = holder
+
+
+func _spawn_customer() -> void:
+	_customer = CustomerNpc.new()
+	_customer.customer_id = day.customer_id
+	_customer.tile = TILE
+	# Berdiri di sebelah kiri rumah (rumah digambar di pojok kanan baris paling atas).
+	var house := SpriteLibrary.texture("house")
+	var house_width := house.get_width() / SpriteLibrary.density("house") if house else 0.0
+	_customer.position = Vector2(COLUMNS * TILE - house_width - 8.0 - TILE, 0)
+	_board.add_child(_customer)
+
+
+## Pelanggan bereaksi terhadap jarak Masbro dan sisa waktu.
+func _update_customer() -> void:
+	var left := day.eta_seconds - elapsed
+	if left < 0.0:
+		_customer_line(&"late", "Kok lama, ya...", CustomerNpc.Mood.IMPATIENT)
+	elif left <= 10.0:
+		_customer_line(&"hurry", "Cepetan, Masbro...", CustomerNpc.Mood.IMPATIENT)
+	elif _player.cell.y <= CUSTOMER_CHEER_ROWS:
+		_customer_line(&"close", "Sedikit lagi, Masbro!", CustomerNpc.Mood.WAITING)
+
+
+func _customer_line(key: StringName, text: String, mood: CustomerNpc.Mood) -> void:
+	if _customer_said.has(key):
+		return
+	_customer_said[key] = true
+	_customer.say(text)
+	if _customer.mood != mood:
+		_customer.set_mood(mood)
 
 
 func _spawn_player() -> void:
@@ -314,6 +352,7 @@ func _on_start_requested() -> void:
 	state = State.PLAYING
 	_player.input_enabled = true
 	AudioManager.play_sfx(&"pickup")
+	_customer.say(day.customer_greeting, 3.5)
 
 
 func _set_paused(value: bool) -> void:
@@ -457,6 +496,8 @@ func _deliver() -> void:
 	GameState.record_delivery(day, report.wage)
 	AudioManager.play_sfx(&"delivery")
 	_player.celebrate()
+	_customer.set_mood(CustomerNpc.Mood.HAPPY)
+	_customer.say("Makasih, Masbro!" if report.stars >= 3 else "Hmm... ya sudah, makasih.", 0.0)
 	# Konfeti di lapisan HUD supaya jatuh di depan kartu hasil.
 	var view := get_viewport().get_visible_rect().size
 	Effects.confetti(_hud, Vector2(view.x / 2.0, 0), view.x)
@@ -469,6 +510,8 @@ func _fail() -> void:
 	_player.invulnerable = false
 	GameState.record_delivery(day, 0)
 	AudioManager.play_sfx(&"fail")
+	_customer.set_mood(CustomerNpc.Mood.SAD)
+	_customer.say("Yah... paketnya...", 0.0)
 	var can_continue := _checkpoint_cell.y >= 0 and day.map != null
 	_hud.show_failed(GameState.is_replay, day.map.checkpoint_penalty if can_continue else 0)
 
@@ -494,6 +537,7 @@ func _on_checkpoint_requested() -> void:
 	state = State.PLAYING
 	AudioManager.play_sfx(&"pickup")
 	_popup("Paket baru!", Palette.TEAL, _player.position)
+	_customer.set_mood(CustomerNpc.Mood.WAITING)
 
 
 func _layout_board() -> void:

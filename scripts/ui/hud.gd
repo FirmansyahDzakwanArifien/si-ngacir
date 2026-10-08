@@ -94,7 +94,7 @@ func show_intro() -> void:
 		_package_picture(),
 		_label("Paket: %s" % pkg.display_name, 20, Palette.TEXT, true, 600),
 		_label(pkg.description, 16, Palette.TEXT_SOFT),
-		_label("Antar ke: %s" % _day.customer_name, 17),
+		_customer_row(),
 		_label("Target ETA: %s   Upah dasar: %s" % [
 				format_time(_day.eta_seconds), GameState.rupiah(_day.base_wage)], 17),
 	]
@@ -347,6 +347,22 @@ func _package_icon(size: Vector2) -> Control:
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.custom_minimum_size = size
 	return icon
+
+
+## "Antar ke: <nama>" dengan potret kecil pelanggan.
+func _customer_row() -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	var portrait := SpriteLibrary.hires("customer_%s" % _day.customer_id, 1.0)
+	if portrait:
+		var picture := TextureRect.new()
+		picture.texture = portrait
+		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		picture.custom_minimum_size = Vector2(44, 44)
+		row.add_child(picture)
+	row.add_child(_label("Antar ke: %s" % _day.customer_name, 17))
+	return row
 
 
 func _package_picture(broken := false) -> Control:
