@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PackageData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/package_data.gd" id="1_pkg"]
+
+[resource]
+script = ExtResource("1_pkg")
+id = &"vip"
+display_name = "Paket VIP"
+description = "Paket terakhir masa percobaan. Satu goresan pun akan dicatat."
+max_damage = 2
+fragility = 1
+step_time = 0.12
+color = Color(1.0, 0.82, 0.4, 1)

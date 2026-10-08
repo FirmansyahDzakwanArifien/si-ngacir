@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PackageData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/package_data.gd" id="1_pkg"]
+
+[resource]
+script = ExtResource("1_pkg")
+id = &"telur"
+display_name = "Telur"
+description = "Rapuh. Satu senggolan langsung bikin retak parah."
+max_damage = 3
+fragility = 2
+step_time = 0.12
+color = Color(1.0, 0.95, 0.77, 1)

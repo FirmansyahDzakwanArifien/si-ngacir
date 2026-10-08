@@ -1,0 +1,135 @@
+[gd_resource type="Resource" script_class="DayData" load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/day_data.gd" id="1_day"]
+[ext_resource type="Script" path="res://scripts/data/lane_data.gd" id="2_lane"]
+[ext_resource type="Resource" path="res://resources/packages/bantal.tres" id="3_pkg"]
+
+[sub_resource type="Resource" id="Resource_lane00"]
+script = ExtResource("2_lane")
+kind = 0
+vehicle = &"mobil"
+direction = 1
+speed = 0.0
+vehicle_count = 0
+offset = 0.0
+
+[sub_resource type="Resource" id="Resource_lane01"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"motor"
+direction = -1
+speed = 110.0
+vehicle_count = 2
+offset = 0.0
+
+[sub_resource type="Resource" id="Resource_lane02"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"mobil"
+direction = 1
+speed = 70.0
+vehicle_count = 2
+offset = 120.0
+
+[sub_resource type="Resource" id="Resource_lane03"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"truk"
+direction = -1
+speed = 45.0
+vehicle_count = 1
+offset = 300.0
+
+[sub_resource type="Resource" id="Resource_lane04"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"mobil"
+direction = 1
+speed = 85.0
+vehicle_count = 2
+offset = 40.0
+
+[sub_resource type="Resource" id="Resource_lane05"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"motor"
+direction = -1
+speed = 95.0
+vehicle_count = 2
+offset = 200.0
+
+[sub_resource type="Resource" id="Resource_lane06"]
+script = ExtResource("2_lane")
+kind = 2
+vehicle = &"mobil"
+direction = 1
+speed = 0.0
+vehicle_count = 0
+offset = 0.0
+
+[sub_resource type="Resource" id="Resource_lane07"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"mobil"
+direction = -1
+speed = 60.0
+vehicle_count = 2
+offset = 80.0
+
+[sub_resource type="Resource" id="Resource_lane08"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"motor"
+direction = 1
+speed = 100.0
+vehicle_count = 2
+offset = 0.0
+
+[sub_resource type="Resource" id="Resource_lane09"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"truk"
+direction = 1
+speed = 40.0
+vehicle_count = 1
+offset = 400.0
+
+[sub_resource type="Resource" id="Resource_lane10"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"mobil"
+direction = -1
+speed = 75.0
+vehicle_count = 2
+offset = 250.0
+
+[sub_resource type="Resource" id="Resource_lane11"]
+script = ExtResource("2_lane")
+kind = 1
+vehicle = &"motor"
+direction = 1
+speed = 80.0
+vehicle_count = 1
+offset = 100.0
+
+[sub_resource type="Resource" id="Resource_lane12"]
+script = ExtResource("2_lane")
+kind = 0
+vehicle = &"mobil"
+direction = 1
+speed = 0.0
+vehicle_count = 0
+offset = 0.0
+
+[resource]
+script = ExtResource("1_day")
+day = 1
+title = "Pengiriman Pertama"
+package = ExtResource("3_pkg")
+customer_name = "Bu Sri"
+eta_seconds = 30.0
+base_wage = 50000
+eta_bonus = 20000
+damage_penalty = 10000
+late_penalty_per_second = 500
+lanes = Array[ExtResource("2_lane")]([SubResource("Resource_lane00"), SubResource("Resource_lane01"), SubResource("Resource_lane02"), SubResource("Resource_lane03"), SubResource("Resource_lane04"), SubResource("Resource_lane05"), SubResource("Resource_lane06"), SubResource("Resource_lane07"), SubResource("Resource_lane08"), SubResource("Resource_lane09"), SubResource("Resource_lane10"), SubResource("Resource_lane11"), SubResource("Resource_lane12")])

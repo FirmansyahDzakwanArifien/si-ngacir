@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PackageData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/package_data.gd" id="1_pkg"]
+
+[resource]
+script = ExtResource("1_pkg")
+id = &"galon"
+display_name = "Galon Air"
+description = "Berat! Langkah Masbro jadi lebih lambat. Atur timing menyeberang."
+max_damage = 3
+fragility = 1
+step_time = 0.22
+color = Color(0.49, 0.78, 0.89, 1)

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PackageData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/package_data.gd" id="1_pkg"]
+
+[resource]
+script = ExtResource("1_pkg")
+id = &"sensitif"
+display_name = "Barang Sensitif"
+description = "Barang mahal di tengah lalu lintas yang makin padat."
+max_damage = 3
+fragility = 1
+step_time = 0.14
+color = Color(0.61, 0.55, 1.0, 1)

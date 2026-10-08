@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PackageData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/package_data.gd" id="1_pkg"]
+
+[resource]
+script = ExtResource("1_pkg")
+id = &"bantal"
+display_name = "Bantal"
+description = "Empuk dan pemaaf. Tahan beberapa benturan, cocok untuk hari pertama."
+max_damage = 4
+fragility = 1
+step_time = 0.12
+color = Color(0.94, 0.9, 0.81, 1)
