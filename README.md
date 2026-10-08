@@ -2,6 +2,8 @@
 
 Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima hari sebagai kurir Ngacir Express demi biaya pengobatan adiknya. Seberangi lalu lintas, kejar Timer ETA, dan jaga paket supaya upah tidak terpotong denda.
 
+📖 **Manual pemain** (storyline, cara main, kontrol, tips): [`docs/MANUAL.md`](docs/MANUAL.md)
+
 ## Teknologi
 
 * Godot Engine 4.3 Stable (GDScript)
