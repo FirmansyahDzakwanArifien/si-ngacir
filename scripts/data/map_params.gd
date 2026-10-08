@@ -39,6 +39,8 @@ extends Resource
 @export_group("Rintangan & Item")
 ## Jumlah cone/pembatas di tiap baris median (min, max).
 @export var blockers_per_safe_row := Vector2i(0, 2)
+## Peluang sebuah median punya gerobak bakso (penghalang yang berteriak).
+@export_range(0.0, 1.0, 0.05) var vendor_chance: float = 0.0
 ## Peluang satu lane jalan punya lubang.
 @export_range(0.0, 1.0, 0.05) var hole_chance: float = 0.1
 ## Peluang satu baris punya deretan koin.

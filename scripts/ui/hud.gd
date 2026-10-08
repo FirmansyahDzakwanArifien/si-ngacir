@@ -113,6 +113,8 @@ func _day_warnings() -> PackedStringArray:
 		warnings.append("Hujan deras: jarak pandang terbatas dan aspal licin.")
 	if _day.cat_count > 0:
 		warnings.append("Kucing jalanan suka menghalangi jalan. Cari jalur lain!")
+	if _day.rival_interval > 0.0:
+		warnings.append("Bang Kilat, kurir rival, suka ngebut tiba-tiba. Hati-hati!")
 	return warnings
 
 

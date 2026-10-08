@@ -79,6 +79,17 @@ Semua 48 × 48 (1 petak), tampak samping/depan, berdiri di tengah petak.
 | `item_helmet.png` | Power-up helm |
 | `item_shoes.png` | Power-up sepatu |
 
+## NPC jalanan
+
+| File | Ukuran frame | Frame | Keterangan |
+| --- | --- | --- | --- |
+| `pejalan_ibu_walk.png` / `_idle.png` | 48 × 48 | 4 / 1 | Ibu-ibu membawa belanjaan |
+| `pejalan_anak_walk.png` / `_idle.png` | 48 × 48 | 4 / 1 | Anak membawa balon |
+| `obstacle_gerobak.png` | 48 × 48 | 1 | Gerobak bakso + pedagang |
+| `vehicle_kilat.png` | 48 × 48 | 1 | Bang Kilat, kurir rival bermotor |
+
+Pengemudi mobil/truk digambar di jendela depan sprite kendaraan.
+
 ## Paket
 
 Ikon paket di punggung Masbro, **20 × 15 px**.

@@ -33,6 +33,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Sungai & rakit (mulai Hari 2)
 * [x] Pos (checkpoint): lanjut dari Pos dengan denda bila paket hancur
 * [x] NPC pelanggan dengan balon ucapan dan reaksi (sapaan diatur di `customer_greeting`)
+* [x] NPC jalanan: pengemudi berklakson, pejalan kaki, pedagang bakso, Bang Kilat (kurir rival)
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
@@ -105,6 +106,7 @@ Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/r
 | `sfx/meow` | Jalan terhalang kucing |
 | `sfx/slip` | Masbro tergelincir saat hujan |
 | `sfx/splash` | Tercebur ke sungai |
+| `sfx/horn` | Klakson pengemudi & Bang Kilat |
 | `sfx/click` | Semua tombol |
 
 ## Side conflict per hari

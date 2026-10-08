@@ -65,8 +65,11 @@ static func _decorate(rows: Array[LaneData], params: MapParams, rng: RandomNumbe
 			continue
 		if lane.kind == LaneData.Kind.MEDIAN:
 			var count := rng.randi_range(params.blockers_per_safe_row.x, params.blockers_per_safe_row.y)
-			for col in _distinct_columns(rng, count):
-				lane.obstacles[col] = [&"cone", &"barrier"][rng.randi() % 2]
+			var columns := _distinct_columns(rng, count + 1)
+			for i in count:
+				lane.obstacles[columns[i]] = [&"cone", &"barrier"][rng.randi() % 2]
+			if rng.randf() < params.vendor_chance:
+				lane.obstacles[columns[count]] = &"gerobak"
 		elif lane.kind == LaneData.Kind.ROAD:
 			road_rows.append(row)
 			if rng.randf() < params.hole_chance:
