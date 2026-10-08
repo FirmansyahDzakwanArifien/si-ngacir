@@ -100,6 +100,7 @@ func _spawn_player() -> void:
 	_player.tile = TILE
 	_player.grid_size = Vector2i(COLUMNS, _rows)
 	_player.step_time = day.package.step_time
+	_player.package_id = day.package.id
 	_player.package_color = day.package.color
 	_player.place(Vector2i(floori(COLUMNS / 2.0), _rows - 1))
 	_player.moved.connect(_on_player_moved)
@@ -195,12 +196,20 @@ func _on_menu_requested() -> void:
 
 
 func _draw_board() -> void:
-	# Placeholder latar sampai tileset dari Illustrator siap.
 	var width := COLUMNS * TILE
+	var tiles := {
+		LaneData.Kind.SIDEWALK: SpriteLibrary.texture("tile_sidewalk"),
+		LaneData.Kind.ROAD: SpriteLibrary.texture("tile_road"),
+		LaneData.Kind.MEDIAN: SpriteLibrary.texture("tile_median"),
+	}
 	for row in _rows:
 		var kind := day.lanes[row].kind
 		var y := row * TILE
-		if kind == LaneData.Kind.SIDEWALK:
+		var tile_texture: Texture2D = tiles[kind]
+		if tile_texture:
+			_board.draw_texture_rect(tile_texture, Rect2(0, y, width, TILE), true)
+		# Placeholder latar sampai tileset dari Illustrator siap.
+		elif kind == LaneData.Kind.SIDEWALK:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("c9c2b3"))
 			for col in COLUMNS:
 				_board.draw_rect(Rect2(col * TILE, y, TILE, TILE), Color("b5ad9c"), false, 1.0)
@@ -214,9 +223,18 @@ func _draw_board() -> void:
 					_board.draw_line(Vector2(x, y + TILE), Vector2(x + 20, y + TILE), Color("d8d8d8"), 2.0)
 					x += 40.0
 
+	_draw_building("house", 0)
+	_draw_building("warehouse", _rows - 1)
 	var font := ThemeDB.fallback_font
 	var ink := Color("3b2f2f")
 	_board.draw_string(font, Vector2(10, 30), "Rumah %s" % day.customer_name,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
 	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), "Gudang Ngacir Express",
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
+
+
+func _draw_building(sprite_name: String, row: int) -> void:
+	var texture := SpriteLibrary.texture(sprite_name)
+	if texture:
+		var size := texture.get_size()
+		_board.draw_texture(texture, Vector2(COLUMNS * TILE - size.x - 8, row * TILE + TILE - size.y))

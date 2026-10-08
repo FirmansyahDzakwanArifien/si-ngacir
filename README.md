@@ -30,7 +30,8 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
 * [ ] Kucing jalanan, hujan, Pak Ojan
 * [x] Sistem audio (BGM + SFX, suara placeholder) dan menu Pengaturan (volume, layar penuh)
-* [ ] Sprite
+* [x] Siap sprite: game otomatis memakai gambar di `assets/sprites/` (spesifikasi di `docs/ASSET_SPEC.md`)
+* [ ] Gambar final dari tim Illustrator
 
 ## Struktur
 
@@ -99,4 +100,4 @@ git push -u origin feat/nama-fitur
 # Buka Pull Request ke dev, minimal 1 reviewer, lalu merge.
 ```
 
-Grafis saat ini masih placeholder (digambar lewat `_draw()`); ganti dengan sprite dari tim Illustrator.
+Grafis saat ini masih placeholder. Tim Illustrator cukup menaruh PNG sesuai `docs/ASSET_SPEC.md` di `assets/sprites/`; game otomatis memakainya.
