@@ -128,4 +128,4 @@ func _finish() -> void:
 	GameState.pending_scene = ""
 	GameState.pending_story = null
 	_story = null
-	get_tree().change_scene_to_file(next_scene)
+	Transition.change_scene(next_scene)

@@ -79,7 +79,7 @@ func _ready() -> void:
 
 func _on_continue_pressed() -> void:
 	var scene := GameState.ENDING_SCENE if GameState.probation_done else GameState.LEVEL_SCENE
-	get_tree().change_scene_to_file(scene)
+	Transition.change_scene(scene)
 
 
 func _on_settings_pressed() -> void:
