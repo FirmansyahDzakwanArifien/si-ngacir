@@ -228,7 +228,7 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 | **Lanjutkan** | Melanjutkan dari hari terakhir yang belum selesai |
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
 | **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
-| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial |
+| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama) |
 | **Keluar** | Menutup game (desktop) |
 
 Progres tersimpan **otomatis** setiap kali satu hari selesai. Keluar di tengah hari berarti mengulang hari itu dari awal.

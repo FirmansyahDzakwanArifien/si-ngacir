@@ -160,8 +160,8 @@ func _item_button(entry: Dictionary) -> Button:
 	button.add_theme_constant_override("icon_max_width", 44)
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	button.add_theme_font_size_override("font_size", 15)
-	var status := "Dipakai" if worn else ("Pakai" if owned else "%d koin" % entry["price"])
-	button.text = "%s\n%s" % [entry["name"], status]
+	var status := tr("Dipakai") if worn else (tr("Pakai") if owned else tr("%d koin") % entry["price"])
+	button.text = "%s\n%s" % [tr(entry["name"]), status]
 	if worn:
 		button.add_theme_stylebox_override("normal", UiTheme.pill(Palette.TEAL))
 		button.add_theme_color_override("font_color", Palette.WHITE)
@@ -175,13 +175,13 @@ func _on_item_pressed(id: StringName) -> void:
 	var entry := Cosmetics.item(id)
 	if not id in GameState.owned:
 		if not GameState.buy(id):
-			_message.text = "Koin belum cukup. Butuh %d koin lagi." % (entry["price"] - GameState.wallet)
+			_message.text = tr("Koin belum cukup. Butuh %d koin lagi.") % (entry["price"] - GameState.wallet)
 			AudioManager.play_sfx(&"hit")
 			return
-		_message.text = "%s terbeli!" % entry["name"]
+		_message.text = tr("%s terbeli!") % tr(entry["name"])
 		AudioManager.play_sfx(&"delivery")
 	GameState.toggle_equip(id)
 	if GameState.equipped.get(entry["slot"]) != id:
-		_message.text = "%s dilepas." % entry["name"]
+		_message.text = tr("%s dilepas.") % tr(entry["name"])
 	_refresh_preview()
 	_refresh_items()

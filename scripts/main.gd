@@ -65,9 +65,9 @@ func _ready() -> void:
 	var first: Button
 	var secondary: Array[Button] = []
 	if GameState.has_save():
-		var progress := "Rekap Masa Percobaan" if GameState.probation_done \
-				else "Hari %d" % (GameState.current_day_index + 1)
-		first = _button("Lanjutkan (%s)" % progress, _on_continue_pressed)
+		var progress := tr("Rekap Masa Percobaan") if GameState.probation_done \
+				else tr("Hari %d") % (GameState.current_day_index + 1)
+		first = _button(tr("Lanjutkan (%s)") % progress, _on_continue_pressed)
 		_new_game_button = _button("Mulai Baru", _on_new_game_pressed)
 		secondary.append(_new_game_button)
 	else:
@@ -127,7 +127,7 @@ func _wallet_row() -> Control:
 	coin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(coin)
 	var label := Label.new()
-	label.text = "%d koin" % GameState.wallet
+	label.text = tr("%d koin") % GameState.wallet
 	label.add_theme_font_override("font", UiTheme.font(600))
 	label.add_theme_font_size_override("font_size", 16)
 	row.add_child(label)
@@ -141,6 +141,7 @@ func _on_continue_pressed() -> void:
 
 func _on_settings_pressed() -> void:
 	var settings := SettingsPanel.new()
+	settings.allow_language = true
 	settings.closed.connect(func() -> void: _first_button.grab_focus())
 	add_child(settings)
 

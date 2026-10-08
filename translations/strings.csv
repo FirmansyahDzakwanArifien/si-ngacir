@@ -1,0 +1,186 @@
+keys,en
+SI NGACIR,SI NGACIR
+Trobos Ajalah!,Just Go For It!
+Lanjutkan (%s),Continue (%s)
+Rekap Masa Percobaan,Probation Recap
+Hari %d,Day %d
+Mulai Baru,New Game
+Mulai Hari 1,Start Day 1
+Toko Masbro,Masbro's Shop
+Pengaturan,Settings
+Keluar,Quit
+%d koin,%d coins
+Yakin? Tekan lagi,Sure? Press again
+Kembali,Back
+Menu Utama,Main Menu
+Lewati (Esc),Skip (Esc)
+Enter / klik untuk mulai,Enter / click to start
+Enter / klik untuk lanjut,Enter / click to continue
+PENGATURAN,SETTINGS
+Musik,Music
+Efek Suara,Sound FX
+Layar Penuh,Fullscreen
+Tips tutorial (nyalakan untuk mengulang),Tutorial tips (turn on to replay)
+Bahasa,Language
+TOKO MASBRO,MASBRO'S SHOP
+Kumpulkan koin di jalan untuk belanja.,Collect coins on the road to go shopping.
+Topi,Hats
+Kacamata,Glasses
+Tas,Bags
+Dipakai,Wearing
+Pakai,Wear
+Koin belum cukup. Butuh %d koin lagi.,Not enough coins. You need %d more.
+%s terbeli!,%s purchased!
+%s dilepas.,%s taken off.
+Caping,Rice Hat
+Beanie,Beanie
+Topi Koki,Chef Hat
+Mahkota,Crown
+Kacamata Bulat,Round Glasses
+Kacamata Hitam,Sunglasses
+Kacamata Bintang,Star Glasses
+Tas Pink,Pink Bag
+Tas Oranye,Orange Bag
+Tas Kucing,Cat Bag
+HARI %d,DAY %d
+ke %s,to %s
+ETA %s,ETA %s
+TELAT +%s,LATE +%s
+TIPS,TIP
+Hari %d: %s,Day %d: %s
+Paket: %s,Package: %s
+Lokasi: %s,Location: %s
+Antar ke: %s,Deliver to: %s
+Target ETA: %s   Upah dasar: %s,Target ETA: %s   Base pay: %s
+Gerak: WASD / panah / swipe   Pause: Esc / P,Move: WASD / arrows / swipe   Pause: Esc / P
+%s perfeksionis: denda kerusakan 2x. Paket sempurna dan tepat waktu dapat tip %s.,"%s is a perfectionist: damage fines are doubled. A perfect, on-time package earns a %s tip."
+Hujan deras: jarak pandang terbatas dan aspal licin.,Heavy rain: limited visibility and slippery asphalt.
+Kucing jalanan suka menghalangi jalan. Cari jalur lain!,Street cats like to block the way. Find another path!
+"Bang Kilat, kurir rival, suka ngebut tiba-tiba. Hati-hati!","Bang Kilat, the rival courier, speeds by out of nowhere. Watch out!"
+PAUSE,PAUSED
+Lanjut,Resume
+Ulangi Hari,Retry Day
+PAKET SAMPAI!,DELIVERED!
+Kondisi paket: %d%%   Tabrakan: %d,Package condition: %d%%   Crashes: %d
+Waktu: %s (ETA %s),Time: %s (ETA %s)
+Upah dasar,Base pay
+Bonus tepat waktu,On-time bonus
+Tip pelanggan,Customer tip
+"Bonus koin (%d, juga masuk dompet)","Coin bonus (%d, also added to wallet)"
+Denda kerusakan,Damage fine
+Potongan telat,Late deduction
+Ganti paket di Pos (%dx),Replacement at checkpoint (%dx)
+UPAH HARI INI,TODAY'S PAY
+Tabungan pengobatan: %s / %s,Medical savings: %s / %s
+PAKET HANCUR!,PACKAGE DESTROYED!
+Kamu sudah sampai di Pos. Ambil paket pengganti dan lanjutkan perjalanan?,You reached a checkpoint. Take a replacement package and keep going?
+Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.,Delivery failed. Today's pay goes to compensation.
+Lanjut dari Pos (-%s),Continue from checkpoint (-%s)
+Kembali ke Rekap,Back to Recap
+Hari Berikutnya,Next Day
+Lihat Hasil Masa Percobaan,See Probation Results
+MASA PERCOBAAN LULUS!,PROBATION PASSED!
+TABUNGAN BELUM CUKUP,NOT ENOUGH SAVINGS
+MASA PERCOBAAN BERAKHIR,PROBATION OVER
+"Paket VIP sampai di tangan Bu Direktur. Masbro resmi diangkat menjadi kurir tetap Ngacir Express, dan tabungannya cukup untuk menyembuhkan adiknya. Trobos Ajalah!","The VIP package reached the Director. Masbro is officially hired as a permanent Ngacir Express courier, and his savings are enough to cure his little sister. Just go for it!"
+Tabungan masih kurang %s. Ulangi hari mana pun untuk memperbaiki upah. Upah terbaik tiap hari yang dihitung.,Savings are still %s short. Replay any day to improve your pay. Only each day's best pay counts.
+"Masa percobaan berakhir, tapi tabungan Masbro belum cukup untuk biaya pengobatan adiknya. Besok ia harus mencari jalan lain.","The probation is over, but Masbro's savings aren't enough for his sister's treatment. Tomorrow he'll have to find another way."
+Ulangi %s   (%s),Replay %s   (%s)
+Total tabungan,Total savings
+Biaya pengobatan,Medical costs
+"Paketnya utuh, kurirnya santai. Recommended!","Package intact, courier chill. Recommended!"
+"Paket agak penyok, tapi masih aman.","The package is a bit dented, but still fine."
+"Paketnya sampai dengan baik, cuma agak lama.","It arrived in good shape, just a little slow."
+"Hati-hati kalau antar paket, Masbro.","Be careful with deliveries, Masbro."
+"Masbro... paketnya rusak, tapi masih bisa diterima.","Masbro... it's damaged, but I'll take it."
+Mas... ini paket apa habis perang?,Dude... did this package go through a war?
+Masbro... paket saya mana?,Masbro... where's my package?
+"Sempurna. Saya jarang bilang begini, Masbro.","Perfect. I rarely say that, Masbro."
+"Utuh, tapi saya tidak suka menunggu.","Intact, but I don't like waiting."
+Ada lecet. Saya catat di aplikasi.,There's a scratch. I'm noting it in the app.
+"Ini jauh dari standar saya, Masbro.","This is far below my standards, Masbro."
+Saya akan bicara dengan atasanmu.,I'll be speaking to your manager.
+"Kok lama, ya...",What's taking so long...
+"Cepetan, Masbro...","Hurry up, Masbro..."
+"Sedikit lagi, Masbro!","Almost there, Masbro!"
+"Makasih, Masbro!","Thanks, Masbro!"
+"Hmm... ya sudah, makasih.","Hmm... well, thanks anyway."
+Yah... paketnya...,Oh no... my package...
+"Bakso, Mas?","Meatballs, sir?"
+Bakso! Bakso!,Meatballs! Meatballs!
+Awas!,Watch out!
+"Permisi, Mas!",Excuse me!
+"Eh, maaf!","Oops, sorry!"
+Meong!,Meow!
+Meong?,Meow?
+Tin tin!,Beep beep!
+"Minggir, Masbro!","Move it, Masbro!"
+Licin!,Slippery!
+Helm! Kebal 1x,Helmet! 1 free hit
+Sepatu kilat!,Speed shoes!
+Paket basah!,Package soaked!
+Lubang!,Pothole!
+Helm melindungi!,Helmet saved you!
+Pos tercapai!,Checkpoint reached!
+Paket baru!,New package!
+Rumah %s,%s's House
+Gudang Ngacir Express,Ngacir Express Warehouse
+POS,CHECKPOINT
+Tekan W / panah atas (atau tap layar) untuk maju. Hindari kendaraan!,Press W / up arrow (or tap the screen) to move forward. Avoid the traffic!
+"Aduh! Tiap tabrakan merusak paket. Kalau ikon paket di kiri atas habis, pengiriman gagal.","Ouch! Every crash damages the package. If the package icons at the top left run out, the delivery fails."
+"Ambil koin! +Rp1.000 untuk upah, dan masuk dompet untuk belanja di Toko Masbro.","Grab coins! +Rp1,000 pay each, and they go to your wallet for Masbro's Shop."
+"Power-up! Helm menahan 1 benturan, sepatu bikin langkah lebih cepat.","Power-up! A helmet blocks 1 hit, shoes make you step faster."
+"Ada lubang di aspal. Terperosok bikin paket rusak, jadi lewati saja.","A pothole ahead. Falling in damages the package, so go around it."
+Sungai! Lompat ke atas rakit dan ikut arusnya. Jangan sampai tercebur.,A river! Hop onto a raft and ride the current. Don't fall in.
+"Ini Pos. Kalau paket hancur setelah ini, kamu bisa lanjut dari sini.","This is a checkpoint. If the package breaks after this, you can continue from here."
+ETA hampir habis! Terlambat membuat upah dipotong per detik.,The ETA is almost up! Being late cuts your pay every second.
+"Kucing dan pejalan kaki tidak merusak paket, tapi menghalangi. Cari jalur lain.","Cats and pedestrians don't damage the package, but they block you. Find another path."
+"Itu Bang Kilat, kurir rival! Dia ngebut, jangan berdiri di lane-nya.","That's Bang Kilat, the rival courier! He speeds, so stay out of his lane."
+Pengiriman Pertama,First Delivery
+Pengiriman Berat,Heavy Delivery
+Pesanan Pak Ojan,Mr. Ojan's Order
+Hujan di Jam Sibuk,Rush Hour Rain
+Paket VIP,VIP Package
+Bantal,Pillow
+Galon Air,Water Jug
+Telur,Eggs
+Barang Sensitif,Fragile Goods
+"Empuk dan pemaaf. Tahan beberapa benturan, cocok untuk hari pertama.","Soft and forgiving. Survives a few bumps, perfect for day one."
+Berat! Langkah Masbro jadi lebih lambat. Atur timing menyeberang.,Heavy! Masbro walks slower. Time your crossings.
+Rapuh. Satu senggolan langsung bikin retak parah.,Fragile. A single bump cracks it badly.
+Barang mahal di tengah lalu lintas yang makin padat.,Expensive goods in ever heavier traffic.
+Paket terakhir masa percobaan. Satu goresan pun akan dicatat.,The last package of the probation. Every scratch will be noted.
+"Bantalnya buat cucu saya. Hati-hati, Masbro!","The pillow is for my grandkid. Careful, Masbro!"
+"Air di rumah habis, galonnya ditunggu!","We're out of water at home, I need that jug!"
+Telurnya harus utuh. Saya cek satu-satu.,The eggs must be intact. I'll check every one.
+Hujan begini... barangnya jangan sampai basah!,In this rain... don't let it get wet!
+"Ini penentuan, Masbro. Saya tunggu.","This is the decider, Masbro. I'm waiting."
+Kota Ngacir,Ngacir City
+Kompleks Perumahan,Housing Estate
+Pasar Ngacir,Ngacir Market
+Sekitar Sekolah,School District
+Pusat Kota,Downtown
+Kawasan Bisnis,Business District
+"Suatu hari, hiduplah Masbro, seekor capybara santai yang tinggal berdua bersama adiknya di Kota Ngacir.","Once upon a time, there lived Masbro, a laid-back capybara who shared a home with his little sister in Ngacir City."
+"Setiap hari, Masbro mencari rezeki dengan mengandalkan ketenangannya, demi memenuhi kebutuhan mereka berdua.","Every day, Masbro made a living with nothing but his calm nature, to provide for the two of them."
+"Suatu ketika, adiknya jatuh sakit parah. Dokter bilang biaya pengobatannya besar, dan harus terkumpul dalam lima hari.","One day, his sister fell seriously ill. The doctor said the treatment was expensive, and the money had to be raised within five days."
+"Karena itu, Masbro melamar di ekspedisi Ngacir Express. Ia harus lolos masa percobaan lima hari, mengantar paket-paket berisiko di tengah lalu lintas kota yang liar.","So Masbro applied at the Ngacir Express courier company. He has to pass a five-day probation, delivering risky packages through the city's wild traffic."
+"Kejar Timer ETA. Jaga paket dari benturan. Jangan sampai upah terpotong denda ganti rugi.
+
+Trobos Ajalah!","Beat the ETA timer. Keep the package safe from bumps. Don't let damage fines eat your pay.
+
+Just go for it!"
+Hari kedua. Demam adik belum juga turun.,Day two. His sister's fever still hasn't broken.
+"Pesanan pagi ini: galon air untuk Pak Budi. Beratnya bukan main, tapi Masbro tetap santai.","This morning's order: a water jug for Mr. Budi. It's incredibly heavy, but Masbro stays chill."
+"Hari ketiga. Kata kurir lain, Pak Ojan adalah pelanggan paling teliti di seluruh Kota Ngacir.",Day three. The other couriers say Mr. Ojan is the pickiest customer in all of Ngacir City.
+"Hari ini ia memesan sekotak telur. Satu retak saja, ia pasti tahu.","Today he ordered a box of eggs. One crack, and he'll know."
+"Hari keempat. Langit Kota Ngacir mendung sejak pagi, lalu hujan turun deras tepat di jam sibuk.","Day four. The sky over Ngacir City has been grey since morning, and then the rain pours down right at rush hour."
+"Barang sensitif untuk Pak Joko tetap harus sampai. Jalanan licin, pandangan terbatas.","Mr. Joko's fragile goods still have to arrive. Slippery roads, poor visibility."
+Hari terakhir masa percobaan.,The last day of the probation.
+"Bu Direktur sendiri yang memesan Paket VIP. Inilah penentuannya: diangkat jadi kurir tetap, atau pulang dengan tangan kosong.","The Director herself ordered the VIP package. This is it: become a permanent courier, or go home empty-handed."
+"Sampai akhirnya, Paket VIP tiba di tangan Bu Direktur.","And finally, the VIP package arrived in the Director's hands."
+Masbro resmi diangkat menjadi kurir tetap Ngacir Express.,Masbro is officially hired as a permanent Ngacir Express courier.
+"Tabungannya cukup untuk biaya pengobatan. Beberapa hari kemudian, adiknya sudah bisa tertawa lagi.","His savings cover the treatment. A few days later, his sister is laughing again."
+"Trobos Ajalah, Masbro!","Just go for it, Masbro!"
+"Masa percobaan berakhir, tapi tabungan Masbro belum cukup untuk biaya pengobatan adiknya.","The probation is over, but Masbro's savings aren't enough for his sister's treatment."
+"Masbro menarik napas panjang. Besok ia akan mencari jalan lain, dengan tenang, seperti biasa.","Masbro takes a deep breath. Tomorrow he'll find another way, calmly, as always."

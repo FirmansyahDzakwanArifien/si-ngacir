@@ -822,9 +822,9 @@ func _draw_board() -> void:
 	_draw_building("warehouse", _rows - 1)
 	var font := ThemeDB.fallback_font
 	var ink := Color("3b2f2f")
-	_board.draw_string(font, Vector2(10, 30), "Rumah %s" % day.customer_name,
+	_board.draw_string(font, Vector2(10, 30), tr("Rumah %s") % day.customer_name,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
-	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), "Gudang Ngacir Express",
+	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), tr("Gudang Ngacir Express"),
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
 
 
@@ -842,7 +842,7 @@ func _draw_checkpoints() -> void:
 				_board.draw_texture_rect(texture, rect, false)
 			else:
 				_board.draw_rect(rect.grow(-10), Palette.TEAL)
-		_board.draw_string(font, Vector2(TILE + 6, row * TILE + 30), "POS",
+		_board.draw_string(font, Vector2(TILE + 6, row * TILE + 30), tr("POS"),
 				HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Palette.OUTLINE)
 
 

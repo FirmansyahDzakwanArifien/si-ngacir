@@ -55,10 +55,10 @@ func update_timer(seconds_left: float) -> void:
 	var fill := Palette.TEAL
 	var text_color := Palette.WHITE
 	if seconds_left < 0.0:
-		_time_label.text = "TELAT +%s" % format_time(-seconds_left)
+		_time_label.text = tr("TELAT +%s") % format_time(-seconds_left)
 		fill = Palette.CORAL
 	else:
-		_time_label.text = "ETA %s" % format_time(seconds_left)
+		_time_label.text = tr("ETA %s") % format_time(seconds_left)
 		if seconds_left <= 10.0:
 			fill = Palette.YELLOW
 			text_color = Palette.TEXT
@@ -142,30 +142,30 @@ func show_intro() -> void:
 	var pkg := _day.package
 	var rows: Array[Control] = [
 		_package_picture(),
-		_label("Paket: %s" % pkg.display_name, 20, Palette.TEXT, true, 600),
+		_label(tr("Paket: %s") % tr(pkg.display_name), 20, Palette.TEXT, true, 600),
 		_label(pkg.description, 16, Palette.TEXT_SOFT),
-		_label("Lokasi: %s" % (_day.city.display_name if _day.city else "Kota Ngacir"), 15, Palette.TEXT_SOFT, true, 600),
+		_label(tr("Lokasi: %s") % tr(_day.city.display_name if _day.city else "Kota Ngacir"), 15, Palette.TEXT_SOFT, true, 600),
 		_customer_row(),
-		_label("Target ETA: %s   Upah dasar: %s" % [
+		_label(tr("Target ETA: %s   Upah dasar: %s") % [
 				format_time(_day.eta_seconds), GameState.rupiah(_day.base_wage)], 17),
 	]
 	for warning in _day_warnings():
 		rows.append(_label("! " + warning, 15, Palette.TEAL_DARK, true, 600))
 	rows.append(_label("Gerak: WASD / panah / swipe   Pause: Esc / P", 14, Palette.TEXT_SOFT))
-	_open("Hari %d: %s" % [_day.day, _day.title], Palette.YELLOW, rows, [["Trobos Ajalah!", start_requested.emit]])
+	_open(tr("Hari %d: %s") % [_day.day, tr(_day.title)], Palette.YELLOW, rows, [["Trobos Ajalah!", start_requested.emit]])
 
 
 func _day_warnings() -> PackedStringArray:
 	var warnings := PackedStringArray()
 	if _day.strict_customer:
-		warnings.append("%s perfeksionis: denda kerusakan 2x. Paket sempurna dan tepat waktu dapat tip %s." % [
+		warnings.append(tr("%s perfeksionis: denda kerusakan 2x. Paket sempurna dan tepat waktu dapat tip %s.") % [
 				_day.customer_name, GameState.rupiah(_day.perfect_tip)])
 	if _day.rainy:
-		warnings.append("Hujan deras: jarak pandang terbatas dan aspal licin.")
+		warnings.append(tr("Hujan deras: jarak pandang terbatas dan aspal licin."))
 	if _day.cat_count > 0:
-		warnings.append("Kucing jalanan suka menghalangi jalan. Cari jalur lain!")
+		warnings.append(tr("Kucing jalanan suka menghalangi jalan. Cari jalur lain!"))
 	if _day.rival_interval > 0.0:
-		warnings.append("Bang Kilat, kurir rival, suka ngebut tiba-tiba. Hati-hati!")
+		warnings.append(tr("Bang Kilat, kurir rival, suka ngebut tiba-tiba. Hati-hati!"))
 	return warnings
 
 
@@ -189,20 +189,20 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 	var rows: Array[Control] = [
 		StarRow.new(report.stars),
 		_quote(report.comment, report.customer),
-		_label("Kondisi paket: %d%%   Tabrakan: %d" % [roundi(report.integrity * 100.0), report.collisions], 16),
-		_label("Waktu: %s (ETA %s)" % [format_time(report.elapsed), format_time(_day.eta_seconds)], 16),
+		_label(tr("Kondisi paket: %d%%   Tabrakan: %d") % [roundi(report.integrity * 100.0), report.collisions], 16),
+		_label(tr("Waktu: %s (ETA %s)") % [format_time(report.elapsed), format_time(_day.eta_seconds)], 16),
 		HSeparator.new(),
 		_money_row("Upah dasar", report.base_wage),
 		_money_row("Bonus tepat waktu", report.eta_bonus),
 		_money_row("Tip pelanggan", report.tip) if report.strict else null,
-		_money_row("Bonus koin (%d, juga masuk dompet)" % report.coins, report.coin_bonus) if report.coins > 0 else null,
-		_money_row("Denda kerusakan" + (" (2x)" if report.strict else ""), -report.damage_penalty),
+		_money_row(tr("Bonus koin (%d, juga masuk dompet)") % report.coins, report.coin_bonus) if report.coins > 0 else null,
+		_money_row(tr("Denda kerusakan") + (" (2x)" if report.strict else ""), -report.damage_penalty),
 		_money_row("Potongan telat", -report.late_penalty),
-		_money_row("Ganti paket di Pos (%dx)" % report.checkpoint_uses, -report.checkpoint_penalty)
+		_money_row(tr("Ganti paket di Pos (%dx)") % report.checkpoint_uses, -report.checkpoint_penalty)
 				if report.checkpoint_uses > 0 else null,
 		HSeparator.new(),
 		_counting_money_row("UPAH HARI INI", report.wage),
-		_label("Tabungan pengobatan: %s / %s" % [
+		_label(tr("Tabungan pengobatan: %s / %s") % [
 				GameState.rupiah(GameState.total_savings()), GameState.rupiah(GameState.MEDICAL_COST)],
 				14, Palette.TEXT_SOFT),
 	]
@@ -223,7 +223,7 @@ func show_failed(is_replay: bool, checkpoint_penalty := 0) -> void:
 	]
 	if checkpoint_penalty > 0:
 		rows.append(_label("Kamu sudah sampai di Pos. Ambil paket pengganti dan lanjutkan perjalanan?", 16))
-		buttons.push_front(["Lanjut dari Pos (-%s)" % GameState.rupiah(checkpoint_penalty), checkpoint_requested.emit])
+		buttons.push_front([tr("Lanjut dari Pos (-%s)") % GameState.rupiah(checkpoint_penalty), checkpoint_requested.emit])
 	else:
 		rows.append(_label("Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.", 16))
 	_open("PAKET HANCUR!", Palette.CORAL, rows, buttons)
@@ -257,7 +257,7 @@ func _build_top_bar() -> void:
 	row.add_theme_constant_override("separation", 10)
 	bar.add_child(row)
 
-	row.add_child(_pill(_label("HARI %d" % _day.day, 17, Palette.WHITE, false, 600), Palette.CORAL))
+	row.add_child(_pill(_label(tr("HARI %d") % _day.day, 17, Palette.WHITE, false, 600), Palette.CORAL))
 	var icons := HBoxContainer.new()
 	icons.add_theme_constant_override("separation", 3)
 	for i in _day.package.max_damage:
@@ -275,7 +275,7 @@ func _build_top_bar() -> void:
 	_time_pill = _pill(_time_label, Palette.TEAL)
 	row.add_child(_time_pill)
 	# Nama pelanggan panjang dipotong dengan "..." supaya bar tidak meluber.
-	var customer := _label("ke %s" % _day.customer_name, 16, Palette.TEXT, false, 600)
+	var customer := _label(tr("ke %s") % _day.customer_name, 16, Palette.TEXT, false, 600)
 	var natural := UiTheme.font(600).get_string_size(customer.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
 	customer.clip_text = true
 	customer.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -378,7 +378,7 @@ func _quote(comment: String, customer: String) -> Control:
 	style.set_corner_radius_all(16)
 	style.set_content_margin_all(10)
 	box.add_theme_stylebox_override("panel", style)
-	var label := _label("\"%s\"\n- %s" % [comment, customer], 16, Palette.TEXT, true, 500)
+	var label := _label("\"%s\"\n- %s" % [tr(comment), customer], 16, Palette.TEXT, true, 500)
 	box.add_child(label)
 	return box
 
@@ -419,7 +419,7 @@ func _customer_row() -> Control:
 		picture.custom_minimum_size = Vector2(44, 44)
 		row.add_child(picture)
 	# Label di dalam HBox harus melebar; tanpa ini lebarnya 0 dan teks pecah per huruf.
-	var label := _label("Antar ke: %s" % _day.customer_name, 17)
+	var label := _label(tr("Antar ke: %s") % _day.customer_name, 17)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(label)
 	return row
