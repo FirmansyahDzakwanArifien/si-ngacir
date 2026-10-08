@@ -46,6 +46,33 @@ jobs:
             "templates/windows_*_x86_64.exe" -d "$dest"
           rm godot.zip templates.tpz
 
+      # Template Web ramping (tanpa 3D dan modul yang tidak dipakai), lihat .github/godot/web_template.py.
+      # Dibangun sekali lalu disimpan di cache; bila gagal, export memakai template resmi.
+      - name: Cache slim web template
+        id: cache-webtpl
+        uses: actions/cache@v4
+        with:
+          path: ~/webtpl
+          key: webtpl-${{ env.GODOT_VERSION }}-${{ hashFiles('.github/godot/web_template.py') }}
+
+      - name: Setup Emscripten
+        if: steps.cache-webtpl.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 3.1.64
+
+      - name: Build slim web template
+        if: steps.cache-webtpl.outputs.cache-hit != 'true'
+        continue-on-error: true
+        run: |
+          pip install --quiet scons==4.8.1
+          git clone --quiet --depth 1 -b "${GODOT_VERSION}-stable" https://github.com/godotengine/godot.git ~/godot-src
+          cd ~/godot-src
+          scons platform=web target=template_release profile="$GITHUB_WORKSPACE/.github/godot/web_template.py" -j"$(nproc)"
+          mkdir -p ~/webtpl
+          cp bin/godot.web.template_release.wasm32*.zip ~/webtpl/web_nothreads_release.zip
+
       - name: Import project
         run: |
           godot=~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64
@@ -59,10 +86,31 @@ jobs:
         run: |
           godot=~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64
           mkdir -p builds/web builds/windows
+          if [ -f ~/webtpl/web_nothreads_release.zip ]; then
+            # Preset Web (preset pertama) memakai template ramping.
+            python3 - "$HOME/webtpl/web_nothreads_release.zip" <<'PY'
+          import sys
+          from pathlib import Path
+          p = Path("export_presets.cfg")
+          s = p.read_text()
+          s = s.replace('custom_template/release=""', f'custom_template/release="{sys.argv[1]}"', 1)
+          p.write_text(s)
+          PY
+            echo "### Template Web: ramping" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Template Web: resmi (template ramping belum tersedia)" >> "$GITHUB_STEP_SUMMARY"
+          fi
           "$godot" --headless --path . --export-release "Web" builds/web/index.html
           "$godot" --headless --path . --export-release "Windows Desktop" builds/windows/SiNgacir.exe
           test -f builds/web/index.wasm
           test -f builds/windows/SiNgacir.exe
+          {
+            echo '| File | Ukuran | gzip |'
+            echo '| --- | --- | --- |'
+            for f in builds/web/index.wasm builds/web/index.pck builds/web/index.js; do
+              echo "| $(basename "$f") | $(du -k "$f" | cut -f1) KB | $(gzip -6 -c "$f" | wc -c | awk '{print int($1/1024)}') KB |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Package
         run: |
