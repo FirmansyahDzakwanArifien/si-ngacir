@@ -21,7 +21,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | Enter | Pilih tombol di panel |
 | Layar sentuh | Swipe kiri / kanan / atas (maju), tap = maju, swipe bawah = mundur, tombol II = pause |
 
-## Status (v0.5)
+## Status (v0.6)
 
 * [x] Gerak grid, lane jalan/trotoar/median, kendaraan (motor, mobil, truk)
 * [x] Kondisi paket menggantikan nyawa (tabrakan → damage → paket hancur)
