@@ -1,14 +1,24 @@
 extends Node2D
 ## Satu hari pengiriman: Masbro membawa paket dari gudang (bawah) ke rumah pelanggan (atas).
+## Map bisa jauh lebih tinggi dari layar; kamera mengikuti Masbro ke atas.
 
 const TILE := 48.0
 const COLUMNS := 15
 const HUD_HEIGHT := 48.0
+## Tinggi jendela map yang terlihat, dalam baris.
+const VIEW_ROWS := 13
+const VIEW_HEIGHT := VIEW_ROWS * TILE
+## Posisi Masbro di layar (0 = atas, 1 = bawah); lebih ke bawah supaya jalan di depan terlihat.
+const CAMERA_ANCHOR := 0.65
+const CAMERA_SMOOTHING := 8.0
 ## Area di luar layar tempat kendaraan "berputar" sebelum muncul lagi.
 const LOOP_MARGIN_TILES := 4
 const HIT_INVULNERABLE_TIME := 1.2
 const CAT_SPAWN_DELAY := Vector2(2.5, 5.0)
 const POPUP_COOLDOWN := 0.6
+const SHOES_TIME := 8.0
+const SHOES_SPEED := 0.6
+const BLOCKERS := [&"cone", &"barrier"]
 
 enum State { INTRO, PLAYING, FINISHED }
 
@@ -19,19 +29,35 @@ var state := State.INTRO
 var damage := 0
 var collisions := 0
 var elapsed := 0.0
+var coins := 0
+var checkpoint_uses := 0
 
 var _rows := 0
-## Posisi diam papan (papan di tengah layar; layar bisa lebih lebar/tinggi di HP).
+## Posisi papan saat kamera di paling atas (papan di tengah layar secara horizontal).
 var _board_rest := Vector2(0, HUD_HEIGHT)
-## Menutup area di kiri/kanan papan supaya kendaraan di luar papan tidak terlihat.
+## Jarak kamera dari atas map, dalam piksel.
+var _scroll := 0.0
+var _shake_offset := Vector2.ZERO
+## Menutup area di luar jendela map supaya kendaraan di luar papan tidak terlihat.
 var _side_mask: Node2D
 var _invulnerable_left := 0.0
 var _board: Node2D
 var _player: Player
+var _rain: RainOverlay
 var _vehicles: Array[Vehicle] = []
+## Rakit per baris sungai, key: nomor baris.
+var _rafts := {}
+## Petak darat terakhir tempat Masbro berdiri; tujuan kembali bila jatuh ke air.
+var _last_safe_cell := Vector2i.ZERO
 var _cats: Array[StreetCat] = []
 var _cat_timer := 1.5
 var _popup_cooldown := 0.0
+var _boost_left := 0.0
+## Node item di papan, key: Vector2i(kolom, baris).
+var _item_nodes := {}
+var _collected := {}
+## Pos terakhir yang dicapai; Vector2i(-1, -1) = belum ada.
+var _checkpoint_cell := Vector2i(-1, -1)
 var _hud: GameHud
 
 
@@ -41,6 +67,8 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if day == null:
 		day = GameState.current_day()
+	if day.map:
+		_generate_map()
 	_rows = day.lanes.size()
 
 	_board = Node2D.new()
@@ -52,17 +80,20 @@ func _ready() -> void:
 	_side_mask.z_index = 50
 	_side_mask.draw.connect(_draw_side_mask)
 	add_child(_side_mask)
+	_spawn_items()
 	_spawn_vehicles()
 	_spawn_player()
+	if day.rainy:
+		_rain = RainOverlay.new()
+		_rain.area = Vector2(COLUMNS * TILE, VIEW_HEIGHT)
+		_rain.visibility_radius = day.visibility_tiles * TILE
+		_rain.target = _player
+		_rain.z_index = 10
+		_board.add_child(_rain)
 	_layout_board()
 	get_viewport().size_changed.connect(_layout_board)
-	if day.rainy:
-		var rain := RainOverlay.new()
-		rain.area = Vector2(COLUMNS * TILE, _rows * TILE)
-		rain.visibility_radius = day.visibility_tiles * TILE
-		rain.target = _player
-		rain.z_index = 10
-		_board.add_child(rain)
+	_scroll = _camera_target()
+	_apply_board_position()
 
 	_hud = GameHud.new()
 	add_child(_hud)
@@ -72,23 +103,47 @@ func _ready() -> void:
 	_hud.retry_requested.connect(_on_retry_requested)
 	_hud.next_requested.connect(_on_next_requested)
 	_hud.menu_requested.connect(_on_menu_requested)
+	_hud.checkpoint_requested.connect(_on_checkpoint_requested)
 	_hud.show_intro()
 	var touch := TouchControls.new()
 	touch.player = _player
-	touch.board_rect = Rect2(Vector2.ZERO, Vector2(COLUMNS * TILE, _rows * TILE))
+	touch.board_rect = Rect2(Vector2.ZERO, Vector2(COLUMNS * TILE, VIEW_HEIGHT))
 	add_child(touch)
 	_hud.pause_pressed.connect(_on_pause_pressed)
 	AudioManager.play_music(&"gameplay")
 
 
+## Rakit map prosedural untuk hari ini. DayData diduplikasi supaya resource asli tidak berubah.
+func _generate_map() -> void:
+	var params := day.map
+	day = day.duplicate()
+	var rng := RandomNumberGenerator.new()
+	if params.fixed_seed != 0:
+		rng.seed = params.fixed_seed
+	else:
+		rng.randomize()
+	day.lanes = MapGenerator.generate(params, rng)
+	day.eta_seconds = roundf(day.lanes.size() * params.eta_per_row)
+
+
 func _process(delta: float) -> void:
-	if state != State.PLAYING or get_tree().paused:
+	if get_tree().paused:
+		return
+	_scroll = lerpf(_scroll, _camera_target(), 1.0 - exp(-CAMERA_SMOOTHING * delta))
+	_apply_board_position()
+	if state != State.PLAYING:
 		return
 	elapsed += delta
 	_hud.update_timer(day.eta_seconds - elapsed)
+	_hud.update_progress(1.0 - _player.position.y / ((_rows - 1) * TILE))
 
 	_popup_cooldown = maxf(0.0, _popup_cooldown - delta)
 	_update_cats(delta)
+	_update_river(delta)
+	if _boost_left > 0.0:
+		_boost_left -= delta
+		if _boost_left <= 0.0:
+			_player.speed_multiplier = 1.0
 
 	if _invulnerable_left > 0.0:
 		_invulnerable_left -= delta
@@ -97,7 +152,7 @@ func _process(delta: float) -> void:
 		return
 	var player_box := _player.hitbox()
 	for vehicle in _vehicles:
-		if vehicle.hitbox().intersects(player_box):
+		if not vehicle.is_platform and vehicle.hitbox().intersects(player_box):
 			_on_hit(vehicle)
 			return
 
@@ -108,12 +163,29 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+func _camera_target() -> float:
+	var target := _player.position.y + TILE / 2.0 - VIEW_HEIGHT * CAMERA_ANCHOR
+	return clampf(target, 0.0, maxf(0.0, _rows * TILE - VIEW_HEIGHT))
+
+
+func _apply_board_position() -> void:
+	_board.position = _board_rest + Vector2(0, -roundf(_scroll)) + _shake_offset
+	if _rain:
+		_rain.position.y = roundf(_scroll)
+
+
+## Baris map yang sedang terlihat di layar (atas, bawah).
+func _visible_rows() -> Vector2i:
+	var top := floori(_scroll / TILE)
+	return Vector2i(top, mini(_rows - 1, top + VIEW_ROWS))
+
+
 func _spawn_vehicles() -> void:
 	var margin := LOOP_MARGIN_TILES * TILE
 	var loop_length := COLUMNS * TILE + margin
 	for row in _rows:
 		var lane := day.lanes[row]
-		if lane.kind != LaneData.Kind.ROAD or lane.vehicle_count <= 0:
+		if (lane.kind != LaneData.Kind.ROAD and lane.kind != LaneData.Kind.RIVER) or lane.vehicle_count <= 0:
 			continue
 		var spacing := loop_length / lane.vehicle_count
 		for i in lane.vehicle_count:
@@ -122,6 +194,28 @@ func _spawn_vehicles() -> void:
 			vehicle.position = Vector2(-margin + fposmod(lane.offset + i * spacing, loop_length), row * TILE)
 			_board.add_child(vehicle)
 			_vehicles.append(vehicle)
+			if vehicle.is_platform:
+				if not _rafts.has(row):
+					_rafts[row] = []
+				_rafts[row].append(vehicle)
+
+
+func _spawn_items() -> void:
+	for row in _rows:
+		for col: int in day.lanes[row].items:
+			var type: StringName = day.lanes[row].items[col]
+			var node := SpriteLibrary.sprite("item_%s" % type)
+			if node == null:
+				continue
+			var holder := Node2D.new()
+			holder.position = Vector2(col, row) * TILE
+			holder.add_child(node)
+			_board.add_child(holder)
+			# Item mengambang naik-turun supaya menarik perhatian.
+			var tween := node.create_tween().set_loops()
+			tween.tween_property(node, "position:y", -4.0, 0.5).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(node, "position:y", 0.0, 0.5).set_trans(Tween.TRANS_SINE)
+			_item_nodes[Vector2i(col, row)] = holder
 
 
 func _spawn_player() -> void:
@@ -132,6 +226,7 @@ func _spawn_player() -> void:
 	_player.package_id = day.package.id
 	_player.package_color = day.package.color
 	_player.place(Vector2i(floori(COLUMNS / 2.0), _rows - 1))
+	_last_safe_cell = _player.cell
 	_player.can_enter = _is_cell_free
 	_player.moved.connect(_on_player_moved)
 	_player.blocked.connect(_on_player_blocked)
@@ -155,10 +250,12 @@ func _update_cats(delta: float) -> void:
 
 
 func _spawn_cat() -> void:
-	# Kucing hanya menyeberang di jalan dan median, tidak di trotoar gudang/rumah.
+	# Kucing menyeberang di jalan dan median yang sedang terlihat, tidak di trotoar gudang/rumah.
+	var view := _visible_rows()
 	var rows: Array[int] = []
-	for row in range(1, _rows - 1):
-		if row != _player.cell.y:
+	for row in range(maxi(1, view.x), mini(_rows - 1, view.y + 1)):
+		var kind := day.lanes[row].kind
+		if row != _player.cell.y and (kind == LaneData.Kind.ROAD or kind == LaneData.Kind.MEDIAN):
 			rows.append(row)
 	if rows.is_empty():
 		return
@@ -175,6 +272,8 @@ func _spawn_cat() -> void:
 
 
 func _is_cell_free(cell: Vector2i) -> bool:
+	if day.lanes[cell.y].obstacles.get(cell.x, &"") in BLOCKERS:
+		return false
 	var area := Rect2(Vector2(cell) * TILE + Vector2(6, 6), Vector2(TILE - 12, TILE - 12))
 	for cat in _cats:
 		if is_instance_valid(cat) and cat.hitbox().intersects(area):
@@ -182,8 +281,12 @@ func _is_cell_free(cell: Vector2i) -> bool:
 	return true
 
 
-func _on_player_blocked(_cell: Vector2i) -> void:
-	if _popup_cooldown <= 0.0:
+func _on_player_blocked(cell: Vector2i) -> void:
+	if _popup_cooldown > 0.0:
+		return
+	if day.lanes[cell.y].obstacles.get(cell.x, &"") in BLOCKERS:
+		_popup("Awas!", Palette.ORANGE, _player.position)
+	else:
 		_popup("Meong!", Color("f4a259"), _player.position)
 		AudioManager.play_sfx(&"meow", 0.1)
 
@@ -227,32 +330,130 @@ func _on_player_moved(cell: Vector2i) -> void:
 	if cell.y == 0:
 		_deliver()
 		return
+	if day.lanes[cell.y].kind == LaneData.Kind.RIVER:
+		if _raft_under_player() == null:
+			_splash()
+		return
+	_last_safe_cell = cell
+	if day.lanes[cell.y].checkpoint and cell.y != _checkpoint_cell.y:
+		_reach_checkpoint(cell)
+	_collect_item(cell)
+	if day.lanes[cell.y].obstacles.get(cell.x, &"") == &"hole" and not _player.invulnerable:
+		_on_hole()
+		return
 	var on_wet_road := day.rainy and day.lanes[cell.y].kind == LaneData.Kind.ROAD
-	if on_wet_road and not _player.last_move_was_slide and not _player.invulnerable 			and randf() < day.slip_chance and _player.slide():
+	if on_wet_road and not _player.last_move_was_slide and not _player.invulnerable \
+			and randf() < day.slip_chance and _player.slide():
 		_popup("Licin!", Color("8ecae6"), _player.position)
 		AudioManager.play_sfx(&"slip")
 
 
+func _collect_item(cell: Vector2i) -> void:
+	var items := day.lanes[cell.y].items
+	if not items.has(cell.x) or _collected.has(cell):
+		return
+	# Dicatat di level, bukan dihapus dari LaneData, supaya resource map tetap utuh.
+	_collected[cell] = true
+	var type: StringName = items[cell.x]
+	if _item_nodes.has(cell):
+		var node: Node2D = _item_nodes[cell]
+		_item_nodes.erase(cell)
+		var tween := node.create_tween()
+		tween.set_parallel()
+		tween.tween_property(node, "position:y", node.position.y - 30.0, 0.3)
+		tween.tween_property(node, "modulate:a", 0.0, 0.3)
+		tween.chain().tween_callback(node.queue_free)
+	AudioManager.play_sfx(&"star", 0.15)
+	match type:
+		&"coin":
+			coins += 1
+			_popup("+%s" % GameState.rupiah(DeliveryReport.COIN_VALUE), Palette.YELLOW, _player.position)
+		&"helmet":
+			_player.shielded = true
+			_popup("Helm! Kebal 1x", Palette.TEAL, _player.position)
+		&"shoes":
+			_boost_left = SHOES_TIME
+			_player.speed_multiplier = SHOES_SPEED
+			_popup("Sepatu kilat!", Palette.CORAL, _player.position)
+
+
+## Masbro ikut terbawa rakit; keluar layar atau tanpa rakit berarti tercebur.
+func _update_river(delta: float) -> void:
+	if _player.is_moving() or day.lanes[_player.cell.y].kind != LaneData.Kind.RIVER:
+		return
+	var raft := _raft_under_player()
+	if raft == null:
+		_splash()
+		return
+	_player.ride(raft.speed * raft.direction * delta)
+	var center := _player.position.x + TILE / 2.0
+	if center < 0.0 or center > COLUMNS * TILE:
+		_splash()
+
+
+func _raft_under_player() -> Vehicle:
+	var center := _player.position.x + TILE / 2.0
+	for raft: Vehicle in _rafts.get(_player.cell.y, []):
+		if center >= raft.position.x + 4.0 and center <= raft.position.x + raft.length_px - 4.0:
+			return raft
+	return null
+
+
+func _splash() -> void:
+	Effects.splash(_board, _player.position + Vector2(TILE / 2.0, TILE * 0.7))
+	AudioManager.play_sfx(&"splash", 0.1)
+	if _player.invulnerable:
+		# Sedang kebal (baru tertabrak): cukup kembali ke tepian.
+		_player.knock_back(_last_safe_cell)
+		return
+	_popup("Paket basah!", Palette.SKY_DEEP, _player.position)
+	_damage_package(1, _last_safe_cell)
+
+
 func _on_hit(vehicle: Vehicle) -> void:
-	collisions += 1
-	damage = mini(damage + vehicle.damage * day.package.fragility, day.package.max_damage)
-	_hud.update_package(damage)
+	var back := Vector2i(_player.cell.x, mini(_player.cell.y + 1, _rows - 1))
+	_damage_package(vehicle.damage, back)
+
+
+func _on_hole() -> void:
+	# Terperosok: paket terguncang, Masbro kembali ke petak sebelumnya.
+	_popup("Lubang!", Palette.ORANGE, _player.position)
+	_damage_package(1, _player.cell - _player.last_direction)
+
+
+func _damage_package(amount: int, knock_to: Vector2i) -> void:
+	knock_to = Vector2i(clampi(knock_to.x, 0, COLUMNS - 1), clampi(knock_to.y, 0, _rows - 1))
+	if not _is_cell_free(knock_to):
+		knock_to = _player.cell
 	_shake()
+	_invulnerable_left = HIT_INVULNERABLE_TIME
+	_player.invulnerable = true
+	if _player.shielded:
+		# Helm menahan benturan; paket aman.
+		_player.shielded = false
+		_popup("Helm melindungi!", Palette.TEAL, _player.position)
+		AudioManager.play_sfx(&"hit", 0.1)
+		_player.knock_back(knock_to)
+		return
+	collisions += 1
+	damage = mini(damage + amount * day.package.fragility, day.package.max_damage)
+	_hud.update_package(damage)
 	Effects.burst(_board, _player.position + Vector2(TILE / 2.0, TILE / 2.0), day.package.color)
 	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:
+		_invulnerable_left = 0.0
+		_player.invulnerable = false
 		_fail()
 		return
 	AudioManager.play_sfx(&"package_damage", 0.05)
-	_invulnerable_left = HIT_INVULNERABLE_TIME
-	_player.invulnerable = true
-	_player.knock_back(Vector2i(_player.cell.x, mini(_player.cell.y + 1, _rows - 1)))
+	_player.knock_back(knock_to)
 
 
 func _deliver() -> void:
 	state = State.FINISHED
 	_player.input_enabled = false
-	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed)
+	_hud.update_progress(1.0)
+	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins, checkpoint_uses)
 	GameState.record_delivery(day, report.wage)
 	AudioManager.play_sfx(&"delivery")
 	_player.celebrate()
@@ -268,13 +469,37 @@ func _fail() -> void:
 	_player.invulnerable = false
 	GameState.record_delivery(day, 0)
 	AudioManager.play_sfx(&"fail")
-	_hud.show_failed(GameState.is_replay)
+	var can_continue := _checkpoint_cell.y >= 0 and day.map != null
+	_hud.show_failed(GameState.is_replay, day.map.checkpoint_penalty if can_continue else 0)
+
+
+func _reach_checkpoint(cell: Vector2i) -> void:
+	_checkpoint_cell = cell
+	_popup("Pos tercapai!", Palette.TEAL, _player.position)
+	AudioManager.play_sfx(&"star")
+	_board.queue_redraw()
+
+
+## Paket pengganti dari Pos: kondisi paket pulih, denda dicatat, waktu tetap berjalan.
+func _on_checkpoint_requested() -> void:
+	checkpoint_uses += 1
+	damage = 0
+	_hud.update_package(0)
+	_hud.hide_overlay()
+	_player.place(_checkpoint_cell)
+	_last_safe_cell = _checkpoint_cell
+	_invulnerable_left = HIT_INVULNERABLE_TIME
+	_player.invulnerable = true
+	_player.input_enabled = true
+	state = State.PLAYING
+	AudioManager.play_sfx(&"pickup")
+	_popup("Paket baru!", Palette.TEAL, _player.position)
 
 
 func _layout_board() -> void:
 	var view := get_viewport().get_visible_rect().size
 	_board_rest = Vector2(floorf(maxf(0.0, view.x - COLUMNS * TILE) / 2.0), HUD_HEIGHT)
-	_board.position = _board_rest
+	_apply_board_position()
 	_side_mask.queue_redraw()
 
 
@@ -282,10 +507,13 @@ func _draw_side_mask() -> void:
 	var view := get_viewport().get_visible_rect().size
 	var color := ProjectSettings.get_setting("rendering/environment/defaults/default_clear_color") as Color
 	var right := _board_rest.x + COLUMNS * TILE
+	var bottom := HUD_HEIGHT + VIEW_HEIGHT
 	if _board_rest.x > 0.0:
 		_side_mask.draw_rect(Rect2(0, HUD_HEIGHT, _board_rest.x, view.y), color)
 	if right < view.x:
 		_side_mask.draw_rect(Rect2(right, HUD_HEIGHT, view.x - right, view.y), color)
+	if bottom < view.y:
+		_side_mask.draw_rect(Rect2(0, bottom, view.x, view.y - bottom), color)
 
 
 func _on_pause_pressed() -> void:
@@ -294,11 +522,10 @@ func _on_pause_pressed() -> void:
 
 
 func _shake() -> void:
-	var rest := _board_rest
-	var tween := _board.create_tween()
+	var tween := create_tween()
 	for i in 6:
-		tween.tween_property(_board, "position", rest + Vector2(randf_range(-6, 6), randf_range(-6, 6)), 0.03)
-	tween.tween_property(_board, "position", rest, 0.03)
+		tween.tween_property(self, "_shake_offset", Vector2(randf_range(-6, 6), randf_range(-6, 6)), 0.03)
+	tween.tween_property(self, "_shake_offset", Vector2.ZERO, 0.03)
 
 
 func _on_retry_requested() -> void:
@@ -336,6 +563,7 @@ func _draw_board() -> void:
 		LaneData.Kind.SIDEWALK: SpriteLibrary.texture("tile_sidewalk"),
 		LaneData.Kind.ROAD: SpriteLibrary.texture("tile_road"),
 		LaneData.Kind.MEDIAN: SpriteLibrary.texture("tile_median"),
+		LaneData.Kind.RIVER: SpriteLibrary.texture("tile_water"),
 	}
 	for row in _rows:
 		var kind := day.lanes[row].kind
@@ -353,10 +581,15 @@ func _draw_board() -> void:
 				_board.draw_rect(Rect2(col * TILE, y, TILE, TILE), Color("b5ad9c"), false, 1.0)
 		elif kind == LaneData.Kind.MEDIAN:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("7fb069"))
+		elif kind == LaneData.Kind.RIVER:
+			_board.draw_rect(Rect2(0, y, width, TILE), Color("5bc0eb"))
 		else:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("4a4a52"))
 			_draw_lane_marking(row)
 
+	_draw_river_banks()
+	_draw_checkpoints()
+	_draw_obstacles()
 	_draw_building("house", 0)
 	_draw_building("warehouse", _rows - 1)
 	var font := ThemeDB.fallback_font
@@ -365,6 +598,51 @@ func _draw_board() -> void:
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
 	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), "Gudang Ngacir Express",
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
+
+
+func _draw_checkpoints() -> void:
+	var font := ThemeDB.fallback_font
+	for row in _rows:
+		if not day.lanes[row].checkpoint:
+			continue
+		var reached := row == _checkpoint_cell.y
+		var sprite_name := "checkpoint_flag_on" if reached else "checkpoint_flag"
+		var texture := SpriteLibrary.texture(sprite_name)
+		for col in [0, COLUMNS - 1]:
+			var rect := Rect2(Vector2(col, row) * TILE, Vector2(TILE, TILE))
+			if texture:
+				_board.draw_texture_rect(texture, rect, false)
+			else:
+				_board.draw_rect(rect.grow(-10), Palette.TEAL)
+		_board.draw_string(font, Vector2(TILE + 6, row * TILE + 30), "POS",
+				HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Palette.OUTLINE)
+
+
+## Garis tepian di atas dan bawah setiap blok sungai.
+func _draw_river_banks() -> void:
+	for row in _rows:
+		if day.lanes[row].kind != LaneData.Kind.RIVER:
+			continue
+		for edge: int in [row, row + 1]:
+			var neighbour := edge - 1 if edge == row else edge
+			if neighbour < 0 or neighbour >= _rows or day.lanes[neighbour].kind == LaneData.Kind.RIVER:
+				continue
+			_board.draw_line(Vector2(0, edge * TILE), Vector2(COLUMNS * TILE, edge * TILE), Palette.OUTLINE, 3.0)
+			_board.draw_line(Vector2(0, edge * TILE + (2 if edge == row else -2)),
+					Vector2(COLUMNS * TILE, edge * TILE + (2 if edge == row else -2)), Color(1, 1, 1, 0.6), 2.0)
+
+
+func _draw_obstacles() -> void:
+	for row in _rows:
+		var obstacles := day.lanes[row].obstacles
+		for col: int in obstacles:
+			var sprite_name := "obstacle_%s" % obstacles[col]
+			var texture := SpriteLibrary.texture(sprite_name)
+			var rect := Rect2(Vector2(col, row) * TILE, Vector2(TILE, TILE))
+			if texture:
+				_board.draw_texture_rect(texture, rect, false)
+			else:
+				_board.draw_rect(rect.grow(-8), Palette.ORANGE if obstacles[col] != &"hole" else Color.BLACK)
 
 
 func _draw_lane_marking(row: int) -> void:

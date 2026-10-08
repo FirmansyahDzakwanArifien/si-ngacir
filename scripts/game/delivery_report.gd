@@ -17,6 +17,10 @@ const STRICT_COMMENTS := {
 	2: "Ini jauh dari standar saya, Masbro.",
 	1: "Saya akan bicara dengan atasanmu.",
 }
+## Upah tambahan per koin yang dipungut di jalan.
+const COIN_VALUE := 1000
+## Bintang maksimal bila paket sempat diganti di Pos.
+const CHECKPOINT_MAX_STARS := 3
 ## Bintang maksimal dari pelanggan perfeksionis kalau paket rusak sedikit pun.
 const STRICT_DAMAGED_MAX_STARS := 3
 
@@ -33,11 +37,17 @@ var eta_bonus := 0
 var damage_penalty := 0
 var late_penalty := 0
 var tip := 0
+var coins := 0
+var coin_bonus := 0
+## Berapa kali paket diganti di Pos, dan dendanya.
+var checkpoint_uses := 0
+var checkpoint_penalty := 0
 var strict := false
 var wage := 0
 
 
-static func evaluate(day: DayData, damage: int, collisions: int, elapsed: float) -> DeliveryReport:
+static func evaluate(day: DayData, damage: int, collisions: int, elapsed: float, coins := 0,
+		checkpoint_uses := 0) -> DeliveryReport:
 	var report := DeliveryReport.new()
 	report.customer = day.customer_name
 	report.collisions = collisions
@@ -49,6 +59,10 @@ static func evaluate(day: DayData, damage: int, collisions: int, elapsed: float)
 	report.strict = day.strict_customer
 	if report.strict and damage > 0:
 		report.stars = mini(report.stars, STRICT_DAMAGED_MAX_STARS)
+	report.checkpoint_uses = checkpoint_uses
+	if checkpoint_uses > 0:
+		# Paket pengganti dari Pos: pelanggan tahu ada masalah di jalan.
+		report.stars = mini(report.stars, CHECKPOINT_MAX_STARS)
 	report.comment = _comment_for(report)
 
 	report.base_wage = day.base_wage
@@ -56,8 +70,12 @@ static func evaluate(day: DayData, damage: int, collisions: int, elapsed: float)
 	report.damage_penalty = damage * day.damage_penalty * (2 if report.strict else 1)
 	report.late_penalty = report.late_seconds * day.late_penalty_per_second
 	report.tip = day.perfect_tip if damage == 0 and report.on_time else 0
-	report.wage = maxi(0, report.base_wage + report.eta_bonus + report.tip
-			- report.damage_penalty - report.late_penalty)
+	report.coins = coins
+	report.coin_bonus = coins * COIN_VALUE
+	if day.map:
+		report.checkpoint_penalty = checkpoint_uses * day.map.checkpoint_penalty
+	report.wage = maxi(0, report.base_wage + report.eta_bonus + report.tip + report.coin_bonus
+			- report.damage_penalty - report.late_penalty - report.checkpoint_penalty)
 	return report
 
 

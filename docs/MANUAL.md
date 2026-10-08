@@ -62,7 +62,9 @@ Tahan tombol arah untuk melangkah terus-menerus.
 
 ## 4. Tujuan Permainan
 
-Bawa paket dari **Gudang Ngacir Express** (bawah layar) ke **rumah pelanggan** (atas layar), menyeberangi jalan yang penuh kendaraan.
+Bawa paket dari **Gudang Ngacir Express** (bawah) ke **rumah pelanggan** (atas), menyeberangi blok demi blok jalan yang penuh kendaraan. Rute bisa jauh lebih panjang dari satu layar; layar ikut bergerak naik mengikuti Masbro.
+
+Setiap kali hari dimulai, **susunan jalan dibuat ulang secara acak**, jadi tidak ada dua pengiriman yang persis sama. Makin dekat ke rumah pelanggan, kendaraan makin cepat.
 
 Kumpulkan upah dari 5 hari masa percobaan. Jika total tabungan mencukupi biaya pengobatan, Masbro lulus dan adiknya bisa berobat.
 
@@ -86,7 +88,8 @@ Kumpulkan upah dari 5 hari masa percobaan. Jika total tabungan mencukupi biaya p
 | --- | --- |
 | **HARI** | Hari ke berapa dari masa percobaan |
 | **Kotak paket ■■■** | Kondisi paket. Satu kotak hilang setiap kali paket rusak. Semua hilang = paket hancur |
-| **ETA** | Sisa waktu target pengantaran. Berubah merah "TELAT" bila lewat |
+| **Garis rute** | Titik kuning = Masbro, rumah merah = tujuan. Menunjukkan seberapa jauh lagi |
+| **ETA** | Sisa waktu target pengantaran (makin panjang rute, makin lama). Kuning saat ≤10 detik, merah "TELAT" bila lewat |
 | **ANTAR KE** | Nama pelanggan tujuan |
 
 ---
@@ -110,7 +113,7 @@ Sampai sebelum ETA habis untuk mendapat **bonus tepat waktu**. Terlambat tidak m
 ### Upah harian
 
 ```
-Upah = Upah dasar + Bonus tepat waktu (+ Tip) − Denda kerusakan − Potongan telat
+Upah = Upah dasar + Bonus tepat waktu (+ Tip) (+ Bonus koin) − Denda kerusakan − Potongan telat
 ```
 
 Upah setiap hari ditambahkan ke **tabungan pengobatan**. Jika mengulang hari, yang dihitung adalah upah **terbaik** hari itu.
@@ -138,6 +141,39 @@ Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan 
 | 3 | Telur | Pak Ojan | Paket rapuh (kerusakan 2x lipat) dan pelanggan perfeksionis |
 | 4 | Barang Sensitif | Pak Joko | Hujan deras di jam sibuk: pandangan terbatas, jalan licin |
 | 5 | Paket VIP | Bu Direktur | Semua tantangan sekaligus. Paket hancur hanya dengan 2 kerusakan |
+
+### Rintangan di jalan
+
+| Rintangan | Efek |
+| --- | --- |
+| **Cone & pembatas jalan** (di median) | Menghalangi langkah. Geser ke kiri/kanan lalu lanjut |
+| **Lubang** (di aspal) | Masbro terperosok: paket rusak 1 dan Masbro kembali ke petak sebelumnya |
+
+### Sungai
+
+Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit** yang hanyut; selama berdiri di rakit, Masbro ikut terbawa arus.
+
+* Melompat ke air tanpa rakit, rakit menjauh, atau terbawa sampai keluar layar → **paket basah** (rusak 1) dan Masbro kembali ke tepian terakhir.
+* Lane sungai yang bersebelahan mengalir berlawanan arah. Perhatikan rakit di lane berikutnya sebelum melompat.
+* Helm juga melindungi dari air.
+
+### Pos (checkpoint)
+
+Mulai Hari 2, rute panjang punya **Pos** setiap beberapa blok: median bersih bertanda bendera di kedua sisinya. Begitu Masbro menginjak Pos, benderanya berubah kuning.
+
+Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos**: paket pengganti diambil dan perjalanan dilanjutkan dari Pos. Konsekuensinya:
+
+* Denda ganti paket (Rp15.000; Rp20.000 untuk Paket VIP) dipotong dari upah.
+* Rating maksimal 3 bintang.
+* Waktu tetap berjalan.
+
+### Koin & power-up
+
+| Item | Efek |
+| --- | --- |
+| **Koin** | +Rp1.000 per koin, masuk ke upah sebagai *Bonus koin* |
+| **Helm** | Gelembung pelindung: menahan 1 tabrakan atau lubang tanpa merusak paket |
+| **Sepatu** | Langkah 40% lebih cepat selama 8 detik |
 
 ### Rintangan khusus
 

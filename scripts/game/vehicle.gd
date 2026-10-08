@@ -6,9 +6,14 @@ const TYPES := {
 	&"motor": {"length": 1, "damage": 1, "color": Color("e04f5f")},
 	&"mobil": {"length": 2, "damage": 1, "color": Color("4f8fe0")},
 	&"truk": {"length": 3, "damage": 2, "color": Color("e0a84f")},
+	# Rakit di sungai: bukan penabrak, tapi pijakan.
+	&"rakit2": {"length": 2, "damage": 0, "color": Color("c98b52"), "platform": true},
+	&"rakit3": {"length": 3, "damage": 0, "color": Color("c98b52"), "platform": true},
 }
 
 var damage := 1
+## true untuk rakit: dinaiki, bukan dihindari.
+var is_platform := false
 var direction := 1
 var speed := 60.0
 var length_px := 96.0
@@ -26,6 +31,7 @@ func setup(type: StringName, p_tile: float, p_speed: float, p_direction: int,
 	tile = p_tile
 	length_px = info["length"] * tile
 	damage = info["damage"]
+	is_platform = info.get("platform", false)
 	color = info["color"]
 	speed = p_speed
 	direction = p_direction
@@ -47,7 +53,7 @@ func hitbox() -> Rect2:
 
 func _process(delta: float) -> void:
 	position.x = loop_start + fposmod(position.x + speed * direction * delta - loop_start, loop_length)
-	if _sprite:
+	if _sprite and not is_platform:
 		# Bodi bergoyang pelan seperti mesin hidup.
 		_bob_time += delta * (6.0 + speed * 0.04)
 		_sprite.position.y = roundf(sin(_bob_time) * 1.2)

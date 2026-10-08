@@ -8,6 +8,8 @@ signal resume_requested
 signal retry_requested
 signal next_requested
 signal menu_requested
+## Lanjut dari Pos setelah paket hancur.
+signal checkpoint_requested
 ## Tombol pause di layar sentuh.
 signal pause_pressed
 
@@ -23,6 +25,7 @@ var _time_label: Label
 var _time_pill: PanelContainer
 var _time_pulse: Tween
 var _package_icons: Array[Control] = []
+var _route: RouteMeter
 var _overlay: ColorRect
 var _panel: PanelContainer
 var _panel_box: VBoxContainer
@@ -64,6 +67,11 @@ func update_timer(seconds_left: float) -> void:
 		_time_pulse.kill()
 		_time_pulse = null
 		_time_pill.scale = Vector2.ONE
+
+
+## Kemajuan perjalanan dari gudang (0) ke rumah pelanggan (1).
+func update_progress(fraction: float) -> void:
+	_route.value = clampf(fraction, 0.0, 1.0)
 
 
 func update_package(damage: int) -> void:
@@ -134,8 +142,11 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 		_money_row("Upah dasar", report.base_wage),
 		_money_row("Bonus tepat waktu", report.eta_bonus),
 		_money_row("Tip pelanggan", report.tip) if report.strict else null,
+		_money_row("Bonus koin (%d)" % report.coins, report.coin_bonus) if report.coins > 0 else null,
 		_money_row("Denda kerusakan" + (" (2x)" if report.strict else ""), -report.damage_penalty),
 		_money_row("Potongan telat", -report.late_penalty),
+		_money_row("Ganti paket di Pos (%dx)" % report.checkpoint_uses, -report.checkpoint_penalty)
+				if report.checkpoint_uses > 0 else null,
 		HSeparator.new(),
 		_counting_money_row("UPAH HARI INI", report.wage),
 		_label("Tabungan pengobatan: %s / %s" % [
@@ -148,17 +159,21 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 	])
 
 
-func show_failed(is_replay: bool) -> void:
+## checkpoint_penalty > 0: tawarkan lanjut dari Pos dengan denda tersebut.
+func show_failed(is_replay: bool, checkpoint_penalty := 0) -> void:
 	var leave: Array = ["Kembali ke Rekap", next_requested.emit] if is_replay \
 			else ["Menu Utama", menu_requested.emit]
-	_open("PAKET HANCUR!", Palette.CORAL, [
+	var buttons: Array = [["Ulangi Hari", retry_requested.emit], leave]
+	var rows: Array[Control] = [
 		_package_picture(true),
 		_quote(DeliveryReport.FAILED_COMMENT, _day.customer_name),
-		_label("Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.", 16),
-	], [
-		["Ulangi Hari", retry_requested.emit],
-		leave,
-	])
+	]
+	if checkpoint_penalty > 0:
+		rows.append(_label("Kamu sudah sampai di Pos. Ambil paket pengganti dan lanjutkan perjalanan?", 16))
+		buttons.push_front(["Lanjut dari Pos (-%s)" % GameState.rupiah(checkpoint_penalty), checkpoint_requested.emit])
+	else:
+		rows.append(_label("Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.", 16))
+	_open("PAKET HANCUR!", Palette.CORAL, rows, buttons)
 
 
 func hide_overlay() -> void:
@@ -199,13 +214,19 @@ func _build_top_bar() -> void:
 		_package_icons.append(icon)
 	row.add_child(icons)
 
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(spacer)
+	_route = RouteMeter.new()
+	_route.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(_route)
 	_time_label = _label("", 17, Palette.WHITE, false, 600)
 	_time_pill = _pill(_time_label, Palette.TEAL)
 	row.add_child(_time_pill)
-	row.add_child(_label("ke %s" % _day.customer_name, 16, Palette.TEXT, false, 600))
+	# Nama pelanggan panjang dipotong dengan "..." supaya bar tidak meluber.
+	var customer := _label("ke %s" % _day.customer_name, 16, Palette.TEXT, false, 600)
+	var natural := UiTheme.font(600).get_string_size(customer.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+	customer.clip_text = true
+	customer.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	customer.custom_minimum_size.x = minf(150.0, natural + 2.0)
+	row.add_child(customer)
 	if DisplayServer.is_touchscreen_available():
 		var pause := Button.new()
 		pause.text = "II"
@@ -330,6 +351,8 @@ func _package_icon(size: Vector2) -> Control:
 
 func _package_picture(broken := false) -> Control:
 	var icon := _package_icon(Vector2(96, 72))
+	if icon is TextureRect:
+		(icon as TextureRect).texture = SpriteLibrary.hires("package_%s" % _day.package.id, 2.5)
 	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	if broken:
 		icon.modulate = Color(1, 1, 1, 0.45)
@@ -356,6 +379,34 @@ func _money_row(caption: String, amount: int, color := Palette.TEXT, weight := 5
 	row.add_child(left)
 	row.add_child(_label(GameState.rupiah(amount), 16, color, false, weight))
 	return row
+
+
+## Garis rute kecil di bar atas: titik Masbro bergerak menuju rumah pelanggan.
+class RouteMeter extends Control:
+	var value := 0.0:
+		set(v):
+			if not is_equal_approx(v, value):
+				value = v
+				queue_redraw()
+
+	func _init() -> void:
+		custom_minimum_size = Vector2(70, 26)
+
+	func _draw() -> void:
+		var y := size.y / 2.0
+		var left := 10.0
+		var right := size.x - 14.0
+		draw_line(Vector2(left, y), Vector2(right, y), Palette.CREAM_DARK, 8.0, true)
+		var x := lerpf(left, right, value)
+		draw_line(Vector2(left, y), Vector2(x, y), Palette.TEAL, 8.0, true)
+		# Rumah tujuan di ujung kanan.
+		draw_colored_polygon(PackedVector2Array([Vector2(right - 7, y - 1), Vector2(right, y - 9),
+				Vector2(right + 7, y - 1)]), Palette.CORAL)
+		draw_rect(Rect2(right - 5, y - 1, 10, 8), Palette.CREAM)
+		draw_rect(Rect2(right - 5, y - 1, 10, 8), Palette.OUTLINE, false, 2.0)
+		# Masbro.
+		draw_circle(Vector2(x, y), 7.0, Palette.OUTLINE)
+		draw_circle(Vector2(x, y), 5.0, Palette.YELLOW)
 
 
 ## Bintang rating digambar manual supaya tidak bergantung pada font emoji.

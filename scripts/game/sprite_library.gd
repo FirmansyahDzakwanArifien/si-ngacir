@@ -32,6 +32,17 @@ static func _lookup(sprite_name: String) -> Array:
 	return _cache[sprite_name]
 
 
+## Render ulang SVG pada skala tertentu supaya tetap tajam saat ditampilkan besar.
+## Untuk PNG (atau bila gagal), mengembalikan tekstur biasa.
+static func hires(sprite_name: String, scale: float) -> Texture2D:
+	var path := DIR + sprite_name + ".svg"
+	if density(sprite_name) == FORMATS[".svg"] and FileAccess.file_exists(path):
+		var image := Image.new()
+		if image.load_svg_from_string(FileAccess.get_file_as_string(path), scale) == OK:
+			return ImageTexture.create_from_image(image)
+	return texture(sprite_name)
+
+
 ## Nama sprite beserta varian warnanya: nama, nama_2, nama_3, ... yang filenya ada.
 static func variants(sprite_name: String) -> Array[String]:
 	var names: Array[String] = []

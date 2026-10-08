@@ -21,13 +21,17 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | Enter | Pilih tombol di panel |
 | Layar sentuh | Tap = maju, swipe = arah gerak, D-pad di layar, tombol II = pause |
 
-## Status (v0.3)
+## Status (v0.4)
 
 * [x] Gerak grid, lane jalan/trotoar/median, kendaraan (motor, mobil, truk)
 * [x] Kondisi paket menggantikan nyawa (tabrakan → damage → paket hancur)
 * [x] Timer ETA, rating bintang, komentar pelanggan
 * [x] Upah harian: upah dasar + bonus ETA − denda kerusakan − potongan telat
 * [x] 5 hari masa percobaan: Bantal, Galon Air, Telur, Barang Sensitif, Paket VIP
+* [x] Map prosedural yang panjang & scroll vertikal: rute berbeda setiap main, makin jauh makin sulit
+* [x] Rintangan statis (cone, pembatas, lubang), koin, power-up helm & sepatu
+* [x] Sungai & rakit (mulai Hari 2)
+* [x] Pos (checkpoint): lanjut dari Pos dengan denda bila paket hancur
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
@@ -49,16 +53,36 @@ scenes/cutscene.tscn        Pemutar cutscene cerita
 scenes/game/level.tscn      Satu hari pengiriman
 scripts/autoload/game_state.gd   Hari aktif, tabungan, input map, format rupiah
 scripts/data/                PackageData, LaneData, DayData (Resource)
-scripts/game/                Level, Player (Masbro), Vehicle, DeliveryReport
+scripts/game/                Level, Player (Masbro), Vehicle, DeliveryReport, MapGenerator
 scripts/ui/hud.gd            HUD dan panel intro/pause/hasil/gagal
 resources/packages/*.tres    Data paket (daya tahan, kerapuhan, kecepatan langkah)
 resources/story/*.tres       Naskah cutscene (StoryData)
 resources/days/day_0N.tres   Data hari 1–5: paket, pelanggan, ETA, upah, susunan lane
 ```
 
+## Map prosedural
+
+Setiap hari punya **MapParams** (grup *Peta* → `map` di `day_0N.tres`). Map dirakit ulang setiap kali hari dimulai: gudang di bawah, beberapa **blok jalan** dipisah median aman, rumah pelanggan di atas. Kamera mengikuti Masbro dan bar atas menampilkan kemajuan rute.
+
+| Properti | Arti |
+| --- | --- |
+| `road_blocks` | Jumlah blok jalan (makin banyak = rute makin panjang) |
+| `lanes_per_block` | Jumlah lane per blok (min, max) |
+| `safe_rows_between` | Baris median di antara blok (min, max) |
+| `speed_range`, `speed_ramp` | Kecepatan kendaraan; blok terakhir dikali `speed_ramp` |
+| `vehicles_per_lane`, `vehicle_weights` | Kepadatan dan campuran motor/mobil/truk (celah minimal 3 petak dijamin) |
+| `eta_per_row` | Target waktu per baris; ETA = jumlah baris × nilai ini |
+| `fixed_seed` | 0 = acak setiap main; angka lain = map selalu sama (berguna untuk playtest) |
+| `blockers_per_safe_row` | Cone/pembatas per baris median (min, max) |
+| `checkpoint_every`, `checkpoint_penalty` | Pos setiap N blok (0 = tanpa pos) dan denda ganti paket |
+| `river_chance`, `river_lanes`, `raft_speed` | Peluang blok menjadi sungai, jumlah lane air, kecepatan arus |
+| `hole_chance`, `coin_chance`, `powerup_chance` | Peluang lubang per lane, deretan koin per baris, dan power-up per blok |
+
+Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/rumah ke bawah/gudang).
+
 ## Menambah hari baru
 
-1. Duplikat salah satu `resources/days/day_0N.tres`, lalu edit di Inspector: `day`, `package`, `customer_name`, `eta_seconds`, upah, dan `lanes` (urut dari atas/rumah ke bawah/gudang, 13 baris, baris pertama & terakhir `SIDEWALK`).
+1. Duplikat salah satu `resources/days/day_0N.tres`, lalu edit di Inspector: `day`, `package`, `customer_name`, upah, dan `map`.
 2. Tambahkan path-nya ke `DAYS` di `scripts/autoload/game_state.gd`.
 3. Untuk mengetes satu hari langsung, buka `level.tscn`, isi properti `day`, lalu **F6**.
 
@@ -79,6 +103,7 @@ resources/days/day_0N.tres   Data hari 1–5: paket, pelanggan, ETA, upah, susun
 | `sfx/star` | Tiap bintang rating muncul |
 | `sfx/meow` | Jalan terhalang kucing |
 | `sfx/slip` | Masbro tergelincir saat hujan |
+| `sfx/splash` | Tercebur ke sungai |
 | `sfx/click` | Semua tombol |
 
 ## Side conflict per hari

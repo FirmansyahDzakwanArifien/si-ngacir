@@ -1,125 +1,29 @@
-[gd_resource type="Resource" script_class="DayData" load_steps=17 format=3]
+[gd_resource type="Resource" script_class="DayData" load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/day_data.gd" id="1_day"]
-[ext_resource type="Script" path="res://scripts/data/lane_data.gd" id="2_lane"]
+[ext_resource type="Script" path="res://scripts/data/map_params.gd" id="2_map"]
 [ext_resource type="Resource" path="res://resources/packages/bantal.tres" id="3_pkg"]
 
-[sub_resource type="Resource" id="Resource_lane00"]
-script = ExtResource("2_lane")
-kind = 0
-vehicle = &"mobil"
-direction = 1
-speed = 0.0
-vehicle_count = 0
-offset = 0.0
-
-[sub_resource type="Resource" id="Resource_lane01"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"motor"
-direction = -1
-speed = 110.0
-vehicle_count = 2
-offset = 0.0
-
-[sub_resource type="Resource" id="Resource_lane02"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"mobil"
-direction = 1
-speed = 70.0
-vehicle_count = 2
-offset = 120.0
-
-[sub_resource type="Resource" id="Resource_lane03"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"truk"
-direction = -1
-speed = 45.0
-vehicle_count = 1
-offset = 300.0
-
-[sub_resource type="Resource" id="Resource_lane04"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"mobil"
-direction = 1
-speed = 85.0
-vehicle_count = 2
-offset = 40.0
-
-[sub_resource type="Resource" id="Resource_lane05"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"motor"
-direction = -1
-speed = 95.0
-vehicle_count = 2
-offset = 200.0
-
-[sub_resource type="Resource" id="Resource_lane06"]
-script = ExtResource("2_lane")
-kind = 2
-vehicle = &"mobil"
-direction = 1
-speed = 0.0
-vehicle_count = 0
-offset = 0.0
-
-[sub_resource type="Resource" id="Resource_lane07"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"mobil"
-direction = -1
-speed = 60.0
-vehicle_count = 2
-offset = 80.0
-
-[sub_resource type="Resource" id="Resource_lane08"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"motor"
-direction = 1
-speed = 100.0
-vehicle_count = 2
-offset = 0.0
-
-[sub_resource type="Resource" id="Resource_lane09"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"truk"
-direction = 1
-speed = 40.0
-vehicle_count = 1
-offset = 400.0
-
-[sub_resource type="Resource" id="Resource_lane10"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"mobil"
-direction = -1
-speed = 75.0
-vehicle_count = 2
-offset = 250.0
-
-[sub_resource type="Resource" id="Resource_lane11"]
-script = ExtResource("2_lane")
-kind = 1
-vehicle = &"motor"
-direction = 1
-speed = 80.0
-vehicle_count = 1
-offset = 100.0
-
-[sub_resource type="Resource" id="Resource_lane12"]
-script = ExtResource("2_lane")
-kind = 0
-vehicle = &"mobil"
-direction = 1
-speed = 0.0
-vehicle_count = 0
-offset = 0.0
+[sub_resource type="Resource" id="Resource_map"]
+script = ExtResource("2_map")
+road_blocks = 5
+lanes_per_block = Vector2i(2, 3)
+safe_rows_between = Vector2i(1, 2)
+speed_range = Vector2(45, 80)
+speed_ramp = 1.2
+vehicles_per_lane = Vector2i(1, 2)
+vehicle_weights = {&"motor": 2.0, &"mobil": 3.0, &"truk": 1.0}
+eta_per_row = 1.4
+fixed_seed = 0
+blockers_per_safe_row = Vector2i(0, 1)
+hole_chance = 0.0
+coin_chance = 0.4
+powerup_chance = 0.25
+river_chance = 0.0
+river_lanes = Vector2i(2, 3)
+raft_speed = Vector2(35, 60)
+checkpoint_every = 0
+checkpoint_penalty = 15000
 
 [resource]
 script = ExtResource("1_day")
@@ -132,10 +36,10 @@ base_wage = 50000
 eta_bonus = 20000
 damage_penalty = 10000
 late_penalty_per_second = 500
+map = SubResource("Resource_map")
 cat_count = 0
 rainy = false
 slip_chance = 0.25
 visibility_tiles = 4.5
 strict_customer = false
 perfect_tip = 0
-lanes = Array[ExtResource("2_lane")]([SubResource("Resource_lane00"), SubResource("Resource_lane01"), SubResource("Resource_lane02"), SubResource("Resource_lane03"), SubResource("Resource_lane04"), SubResource("Resource_lane05"), SubResource("Resource_lane06"), SubResource("Resource_lane07"), SubResource("Resource_lane08"), SubResource("Resource_lane09"), SubResource("Resource_lane10"), SubResource("Resource_lane11"), SubResource("Resource_lane12")])

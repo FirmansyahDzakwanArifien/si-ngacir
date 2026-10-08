@@ -17,7 +17,11 @@ extends Resource
 @export var late_penalty_per_second: int = 500
 
 @export_group("Peta")
-## Lane dari ATAS (rumah pelanggan) ke BAWAH (gudang). Baris pertama dan terakhir harus SIDEWALK.
+## Aturan map prosedural. Bila diisi, map dibuat acak setiap kali hari dimulai
+## dan `lanes` di bawah diabaikan.
+@export var map: MapParams
+## Map tetap (dipakai bila `map` kosong). Lane dari ATAS (rumah pelanggan) ke
+## BAWAH (gudang); baris pertama dan terakhir harus SIDEWALK.
 @export var lanes: Array[LaneData] = []
 
 @export_group("Side Conflict")
