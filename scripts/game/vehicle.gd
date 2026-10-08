@@ -16,6 +16,7 @@ var tile := 48.0
 var color := Color.WHITE
 var loop_start := 0.0
 var loop_length := 1.0
+var _sprite: Sprite2D
 
 
 func setup(type: StringName, p_tile: float, p_speed: float, p_direction: int,
@@ -29,6 +30,14 @@ func setup(type: StringName, p_tile: float, p_speed: float, p_direction: int,
 	direction = p_direction
 	loop_start = p_loop_start
 	loop_length = p_loop_length
+	var texture := SpriteLibrary.texture("vehicle_%s" % type)
+	if texture:
+		_sprite = Sprite2D.new()
+		_sprite.centered = false
+		_sprite.texture = texture
+		# Sprite kendaraan digambar menghadap kanan.
+		_sprite.flip_h = direction < 0
+		add_child(_sprite)
 	queue_redraw()
 
 
@@ -41,6 +50,8 @@ func _process(delta: float) -> void:
 
 
 func _draw() -> void:
+	if _sprite:
+		return
 	var tire := Color(0.12, 0.12, 0.14)
 	draw_rect(Rect2(6, 6, 10, 4), tire)
 	draw_rect(Rect2(length_px - 16, 6, 10, 4), tire)

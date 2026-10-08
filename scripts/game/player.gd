@@ -15,6 +15,7 @@ var tile := 48.0
 var grid_size := Vector2i(15, 13)
 var cell := Vector2i.ZERO
 var step_time := 0.12
+var package_id: StringName = &""
 var package_color := Color("efe6cf")
 var input_enabled := false
 var invulnerable := false:
@@ -22,10 +23,37 @@ var invulnerable := false:
 		invulnerable = value
 		_blink_time = 0.0
 		modulate.a = 1.0
+		if not value:
+			_play(&"idle")
 
 var _tween: Tween
 var _facing := 1
 var _blink_time := 0.0
+## Sprite Masbro dari Illustrator; null berarti memakai gambar placeholder di _draw().
+var _body: AnimatedSprite2D
+var _package_icon: Sprite2D
+
+
+func _ready() -> void:
+	var frames := SpriteLibrary.frames({
+		&"idle": "masbro_idle",
+		&"walk": "masbro_walk",
+		&"hit": "masbro_hit",
+	}, Vector2i(48, 48))
+	if frames:
+		_body = AnimatedSprite2D.new()
+		_body.centered = false
+		_body.sprite_frames = frames
+		add_child(_body)
+		_play(&"idle")
+
+	_package_icon = Sprite2D.new()
+	_package_icon.centered = false
+	_package_icon.texture = SpriteLibrary.texture("package_%s" % package_id)
+	if _package_icon.texture == null:
+		_package_icon.texture = SpriteLibrary.placeholder_box(Vector2i(20, 15), package_color, Color("6e4a2b"))
+	add_child(_package_icon)
+	_update_facing()
 
 
 func place(target: Vector2i) -> void:
@@ -46,7 +74,7 @@ func is_moving() -> bool:
 
 
 func knock_back(target: Vector2i) -> void:
-	_hop_to(target, 0.08)
+	_hop_to(target, 0.08, &"hit")
 
 
 func _process(delta: float) -> void:
@@ -64,7 +92,7 @@ func _process(delta: float) -> void:
 func _try_move(direction: Vector2i) -> void:
 	if direction.x != 0 and direction.x != _facing:
 		_facing = direction.x
-		queue_redraw()
+		_update_facing()
 	var target := Vector2i(
 		clampi(cell.x + direction.x, 0, grid_size.x - 1),
 		clampi(cell.y + direction.y, 0, grid_size.y - 1))
@@ -73,16 +101,43 @@ func _try_move(direction: Vector2i) -> void:
 		AudioManager.play_sfx(&"step", 0.08)
 
 
-func _hop_to(target: Vector2i, duration: float) -> void:
+func _hop_to(target: Vector2i, duration: float, animation := &"walk") -> void:
 	if _tween:
 		_tween.kill()
 	cell = target
+	_play(animation)
 	_tween = create_tween()
 	_tween.tween_property(self, "position", cell_to_position(target), duration)
-	_tween.tween_callback(func() -> void: moved.emit(cell))
+	_tween.tween_callback(_on_hop_finished)
+
+
+func _on_hop_finished() -> void:
+	if not invulnerable:
+		_play(&"idle")
+	moved.emit(cell)
+
+
+func _play(animation: StringName) -> void:
+	if _body == null:
+		return
+	if not _body.sprite_frames.has_animation(animation):
+		animation = &"idle"
+	if _body.sprite_frames.has_animation(animation):
+		_body.play(animation)
+
+
+func _update_facing() -> void:
+	# Sprite digambar menghadap kanan; dibalik saat Masbro menghadap kiri.
+	if _body:
+		_body.flip_h = _facing < 0
+	if _package_icon:
+		_package_icon.position = Vector2(12, 4) if _facing > 0 else Vector2(16, 4)
+	queue_redraw()
 
 
 func _draw() -> void:
+	if _body:
+		return
 	# Placeholder sampai sprite dari Illustrator siap.
 	var fur := Color("9c6b3f")
 	var dark := Color("6e4a2b")
@@ -93,5 +148,3 @@ func _draw() -> void:
 	draw_rect(Rect2(head_x + (13.0 if _facing > 0 else 0.0), 24, 3, 4), dark)
 	for x: float in [10.0, 18.0, 28.0, 35.0]:
 		draw_rect(Rect2(x, 40, 4, 4), dark)
-	draw_rect(Rect2(12, 4, 20, 15), package_color)
-	draw_rect(Rect2(12, 4, 20, 15), dark, false, 2.0)
