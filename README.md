@@ -18,7 +18,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | Esc / P | Pause |
 | Enter | Pilih tombol di panel |
 
-## Status (core loop)
+## Status (v0.1)
 
 * [x] Gerak grid, lane jalan/trotoar/median, kendaraan (motor, mobil, truk)
 * [x] Kondisi paket menggantikan nyawa (tabrakan → damage → paket hancur)
