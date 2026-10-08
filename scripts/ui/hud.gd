@@ -12,6 +12,10 @@ signal menu_requested
 signal checkpoint_requested
 ## Tombol pause di layar sentuh.
 signal pause_pressed
+## Tip tutorial selesai ditampilkan.
+signal tip_finished
+
+const TIP_TIME := 4.5
 
 const BAR_HEIGHT := 48.0
 # Alias lama, dipakai beberapa layar lain.
@@ -26,6 +30,9 @@ var _time_pill: PanelContainer
 var _time_pulse: Tween
 var _package_icons: Array[Control] = []
 var _route: RouteMeter
+var _tip: PanelContainer
+var _tip_label: Label
+var _tip_tween: Tween
 var _overlay: ColorRect
 var _panel: PanelContainer
 var _panel_box: VBoxContainer
@@ -39,6 +46,7 @@ func _init() -> void:
 func setup(day: DayData) -> void:
 	_day = day
 	_build_top_bar()
+	_build_tip()
 	_build_overlay()
 	update_timer(day.eta_seconds)
 
@@ -67,6 +75,48 @@ func update_timer(seconds_left: float) -> void:
 		_time_pulse.kill()
 		_time_pulse = null
 		_time_pill.scale = Vector2.ONE
+
+
+## Kartu tip kecil di bawah bar atas; tidak menghentikan permainan.
+func show_tip(text: String) -> void:
+	_tip_label.text = text
+	_tip.visible = true
+	_tip.modulate.a = 0.0
+	_tip.position.y = BAR_HEIGHT - 10.0
+	if _tip_tween:
+		_tip_tween.kill()
+	_tip_tween = _tip.create_tween()
+	_tip_tween.set_parallel()
+	_tip_tween.tween_property(_tip, "modulate:a", 1.0, 0.2)
+	_tip_tween.tween_property(_tip, "position:y", BAR_HEIGHT + 8.0, 0.25).set_trans(Tween.TRANS_BACK)
+	_tip_tween.chain().tween_interval(TIP_TIME)
+	_tip_tween.chain().tween_property(_tip, "modulate:a", 0.0, 0.3)
+	_tip_tween.chain().tween_callback(func() -> void:
+		_tip.visible = false
+		tip_finished.emit())
+
+
+func _build_tip() -> void:
+	_tip = PanelContainer.new()
+	var style := UiTheme.card(Palette.WHITE, Palette.TEAL)
+	style.set_content_margin_all(12)
+	style.set_corner_radius_all(16)
+	_tip.add_theme_stylebox_override("panel", style)
+	_tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_tip.visible = false
+	UiTheme.attach(_tip)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	_tip.add_child(row)
+	var badge := _label("TIPS", 14, Palette.WHITE, false, 600)
+	row.add_child(_pill(badge, Palette.TEAL))
+	_tip_label = _label("", 16)
+	_tip_label.custom_minimum_size = Vector2(420, 0)
+	row.add_child(_tip_label)
+	add_child(_tip)
+	_tip.resized.connect(func() -> void:
+		var view := get_viewport().get_visible_rect().size
+		_tip.position.x = (view.x - _tip.size.x) / 2.0)
 
 
 ## Kemajuan perjalanan dari gudang (0) ke rumah pelanggan (1).

@@ -71,6 +71,8 @@ var _collected := {}
 var _checkpoint_cell := Vector2i(-1, -1)
 var _hud: GameHud
 var _customer: CustomerNpc
+var _tips: TutorialTips
+var _tip_scan := 0.0
 ## Kalimat pelanggan yang sudah diucapkan (supaya tidak diulang).
 var _customer_said := {}
 
@@ -119,6 +121,7 @@ func _ready() -> void:
 	_hud.next_requested.connect(_on_next_requested)
 	_hud.menu_requested.connect(_on_menu_requested)
 	_hud.checkpoint_requested.connect(_on_checkpoint_requested)
+	_tips = TutorialTips.new(_hud)
 	_hud.show_intro()
 	var touch := TouchControls.new()
 	touch.player = _player
@@ -153,6 +156,7 @@ func _process(delta: float) -> void:
 	_hud.update_progress(1.0 - _player.position.y / ((_rows - 1) * TILE))
 
 	_popup_cooldown = maxf(0.0, _popup_cooldown - delta)
+	_scan_tips(delta)
 	_update_customer()
 	_update_cats(delta)
 	_update_street_npcs(delta)
@@ -257,6 +261,25 @@ func _update_customer() -> void:
 		_customer_line(&"close", "Sedikit lagi, Masbro!", CustomerNpc.Mood.WAITING)
 
 
+## Cek apa yang ada di depan Masbro untuk tips tutorial (4x per detik).
+func _scan_tips(delta: float) -> void:
+	_tip_scan -= delta
+	if _tip_scan > 0.0:
+		return
+	_tip_scan = 0.25
+	if day.eta_seconds - elapsed <= 10.0:
+		_tips.trigger(&"eta")
+	for row in range(maxi(0, _player.cell.y - 3), _player.cell.y):
+		var lane := day.lanes[row]
+		if lane.kind == LaneData.Kind.RIVER:
+			_tips.trigger(&"river")
+		for col: int in lane.items:
+			if not _collected.has(Vector2i(col, row)):
+				_tips.trigger(&"coin" if lane.items[col] == &"coin" else &"powerup")
+		if &"hole" in lane.obstacles.values() and row >= _player.cell.y - 2:
+			_tips.trigger(&"hole")
+
+
 func _customer_line(key: StringName, text: String, mood: CustomerNpc.Mood) -> void:
 	if _customer_said.has(key):
 		return
@@ -345,6 +368,8 @@ func _on_player_blocked(cell: Vector2i) -> void:
 	if _popup_cooldown > 0.0:
 		return
 	var obstacle: StringName = day.lanes[cell.y].obstacles.get(cell.x, &"")
+	if obstacle == &"":
+		_tips.trigger(&"walker")
 	if obstacle == &"gerobak":
 		_popup("Bakso, Mas?", Palette.CORAL, _player.position)
 	elif obstacle in BLOCKERS:
@@ -433,6 +458,7 @@ func _spawn_rival() -> void:
 	_board.add_child(rival)
 	_vehicles.append(rival)
 	_npc_say(rival, "Minggir, Masbro!", Vector2(TILE / 2.0, 6))
+	_tips.trigger(&"rival")
 	AudioManager.play_sfx(&"horn", 0.15)
 
 
@@ -460,6 +486,7 @@ func _on_start_requested() -> void:
 	_player.input_enabled = true
 	AudioManager.play_sfx(&"pickup")
 	_customer.say(day.customer_greeting, 3.5)
+	_tips.trigger(&"move")
 
 
 func _set_paused(value: bool) -> void:
@@ -582,6 +609,7 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 		_player.knock_back(knock_to)
 		return
 	collisions += 1
+	_tips.trigger(&"hit")
 	damage = mini(damage + amount * day.package.fragility, day.package.max_damage)
 	_hud.update_package(damage)
 	Effects.burst(_board, _player.position + Vector2(TILE / 2.0, TILE / 2.0), day.package.color)
@@ -628,6 +656,7 @@ func _fail() -> void:
 func _reach_checkpoint(cell: Vector2i) -> void:
 	_checkpoint_cell = cell
 	_popup("Pos tercapai!", Palette.TEAL, _player.position)
+	_tips.trigger(&"checkpoint")
 	AudioManager.play_sfx(&"star")
 	_board.queue_redraw()
 

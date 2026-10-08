@@ -58,6 +58,8 @@ Kebutuhan minimal: Windows 10 64-bit, kartu grafis yang mendukung OpenGL 3.3.
 
 Tahan tombol arah untuk melangkah terus-menerus.
 
+**Tips tutorial** muncul sekali di atas layar saat kamu pertama kali bertemu sesuatu yang baru (koin, power-up, lubang, sungai, Pos, dan lainnya). Tips bisa dimatikan, atau dinyalakan lagi untuk mengulang semuanya, di **Pengaturan**.
+
 ---
 
 ## 4. Tujuan Permainan
@@ -226,7 +228,7 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 | **Lanjutkan** | Melanjutkan dari hari terakhir yang belum selesai |
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
 | **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
-| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop) |
+| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial |
 | **Keluar** | Menutup game (desktop) |
 
 Progres tersimpan **otomatis** setiap kali satu hari selesai. Keluar di tengah hari berarti mengulang hari itu dari awal.

@@ -25,6 +25,8 @@ extends Resource
 @export_group("Sungai")
 ## Peluang sebuah blok menjadi sungai (bukan jalan). Blok pertama selalu jalan.
 @export_range(0.0, 1.0, 0.05) var river_chance: float = 0.0
+## Jumlah minimal blok sungai (dipaksa ada, misalnya untuk mengenalkan sungai).
+@export_range(0, 5) var min_rivers: int = 0
 ## Jumlah lane air per blok sungai (min, max).
 @export var river_lanes := Vector2i(2, 3)
 ## Kecepatan arus/rakit dalam px/detik (min, max).

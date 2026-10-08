@@ -21,6 +21,7 @@ hole_chance = 0.15
 coin_chance = 0.35
 powerup_chance = 0.35
 river_chance = 0.25
+min_rivers = 0
 river_lanes = Vector2i(2, 3)
 raft_speed = Vector2(35, 60)
 checkpoint_every = 3

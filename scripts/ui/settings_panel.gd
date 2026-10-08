@@ -47,6 +47,12 @@ func _ready() -> void:
 		fullscreen.toggled.connect(AudioManager.set_fullscreen)
 		column.add_child(fullscreen)
 
+	var tips := CheckButton.new()
+	tips.text = "Tips tutorial (nyalakan untuk mengulang)"
+	tips.button_pressed = GameState.tips_enabled
+	tips.toggled.connect(GameState.set_tips_enabled)
+	column.add_child(tips)
+
 	var back := Button.new()
 	back.text = "Kembali"
 	back.custom_minimum_size = Vector2(0, 36)
