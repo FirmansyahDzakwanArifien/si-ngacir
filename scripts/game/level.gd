@@ -52,6 +52,7 @@ func _ready() -> void:
 	_hud.next_requested.connect(_on_next_requested)
 	_hud.menu_requested.connect(_on_menu_requested)
 	_hud.show_intro()
+	AudioManager.play_music(&"gameplay")
 
 
 func _process(delta: float) -> void:
@@ -109,6 +110,7 @@ func _on_start_requested() -> void:
 	_hud.hide_overlay()
 	state = State.PLAYING
 	_player.input_enabled = true
+	AudioManager.play_sfx(&"pickup")
 
 
 func _set_paused(value: bool) -> void:
@@ -129,9 +131,11 @@ func _on_hit(vehicle: Vehicle) -> void:
 	damage = mini(damage + vehicle.damage * day.package.fragility, day.package.max_damage)
 	_hud.update_package(damage)
 	_shake()
+	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:
 		_fail()
 		return
+	AudioManager.play_sfx(&"package_damage", 0.05)
 	_invulnerable_left = HIT_INVULNERABLE_TIME
 	_player.invulnerable = true
 	_player.knock_back(Vector2i(_player.cell.x, mini(_player.cell.y + 1, _rows - 1)))
@@ -142,6 +146,7 @@ func _deliver() -> void:
 	_player.input_enabled = false
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed)
 	GameState.record_delivery(day, report.wage)
+	AudioManager.play_sfx(&"delivery")
 	_hud.show_result(report, _next_button_text())
 
 
@@ -150,6 +155,7 @@ func _fail() -> void:
 	_player.input_enabled = false
 	_player.invulnerable = false
 	GameState.record_delivery(day, 0)
+	AudioManager.play_sfx(&"fail")
 	_hud.show_failed(GameState.is_replay)
 
 

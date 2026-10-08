@@ -70,6 +70,7 @@ func _try_move(direction: Vector2i) -> void:
 		clampi(cell.y + direction.y, 0, grid_size.y - 1))
 	if target != cell:
 		_hop_to(target, step_time)
+		AudioManager.play_sfx(&"step", 0.08)
 
 
 func _hop_to(target: Vector2i, duration: float) -> void:

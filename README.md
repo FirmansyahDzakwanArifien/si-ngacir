@@ -29,7 +29,8 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
 * [ ] Kucing jalanan, hujan, Pak Ojan
-* [ ] Sprite, audio, menu settings
+* [x] Sistem audio (BGM + SFX, suara placeholder) dan menu Pengaturan (volume, layar penuh)
+* [ ] Sprite
 
 ## Struktur
 
@@ -50,6 +51,23 @@ resources/days/day_0N.tres   Data hari 1–5: paket, pelanggan, ETA, upah, susun
 1. Duplikat salah satu `resources/days/day_0N.tres`, lalu edit di Inspector: `day`, `package`, `customer_name`, `eta_seconds`, upah, dan `lanes` (urut dari atas/rumah ke bawah/gudang, 13 baris, baris pertama & terakhir `SIDEWALK`).
 2. Tambahkan path-nya ke `DAYS` di `scripts/autoload/game_state.gd`.
 3. Untuk mengetes satu hari langsung, buka `level.tscn`, isi properti `day`, lalu **F6**.
+
+## Audio
+
+`AudioManager` mencari file berdasarkan nama di `assets/audio/music/` dan `assets/audio/sfx/` (`.ogg`, `.wav`, atau `.mp3`). Semua file saat ini adalah suara placeholder sintetis — tim Audio cukup mengganti file dengan **nama yang sama**, tanpa mengubah kode. Musik otomatis di-loop.
+
+| Nama | Kapan diputar |
+| --- | --- |
+| `music/menu` | Menu utama dan rekap |
+| `music/gameplay` | Selama hari pengiriman |
+| `sfx/step` | Masbro melangkah |
+| `sfx/pickup` | Mulai hari (ambil paket) |
+| `sfx/hit` | Tertabrak |
+| `sfx/package_damage` | Paket rusak (boleh lebay/lucu) |
+| `sfx/fail` | Paket hancur |
+| `sfx/delivery` | Paket sampai |
+| `sfx/star` | Tiap bintang rating muncul |
+| `sfx/click` | Semua tombol |
 
 ## Placeholder untuk Writer Story
 
