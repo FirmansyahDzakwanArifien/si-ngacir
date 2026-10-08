@@ -413,7 +413,10 @@ func _customer_row() -> Control:
 		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		picture.custom_minimum_size = Vector2(44, 44)
 		row.add_child(picture)
-	row.add_child(_label("Antar ke: %s" % _day.customer_name, 17))
+	# Label di dalam HBox harus melebar; tanpa ini lebarnya 0 dan teks pecah per huruf.
+	var label := _label("Antar ke: %s" % _day.customer_name, 17)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label)
 	return row
 
 
