@@ -21,7 +21,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | Enter | Pilih tombol di panel |
 | Layar sentuh | Tap = maju, swipe = arah gerak, D-pad di layar, tombol II = pause |
 
-## Status (v0.4)
+## Status (v0.5)
 
 * [x] Gerak grid, lane jalan/trotoar/median, kendaraan (motor, mobil, truk)
 * [x] Kondisi paket menggantikan nyawa (tabrakan → damage → paket hancur)
@@ -200,6 +200,8 @@ Deploy opsional (Settings → Secrets and variables → Actions):
 | Tujuan | Atur | Catatan |
 | --- | --- | --- |
 | **itch.io** (link main di browser) | Variable `ITCH_GAME` = `namauser/si-ngacir`, Secret `BUTLER_API_KEY` | API key dari itch.io → Settings → API keys. Jalan saat push tag |
+
+Upload ulang rilis yang sudah ada ke itch.io (misalnya setelah secret baru diisi): `gh workflow run build.yml --ref v0.5.0`.
 | **GitHub Pages** | Variable `DEPLOY_PAGES` = `true`, Settings → Pages → Source: *GitHub Actions* | Repo private butuh GitHub Pro/Team; repo public gratis |
 
 ## Workflow Git
