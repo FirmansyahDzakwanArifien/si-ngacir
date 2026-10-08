@@ -18,7 +18,14 @@ const CAT_SPAWN_DELAY := Vector2(2.5, 5.0)
 const POPUP_COOLDOWN := 0.6
 const SHOES_TIME := 8.0
 const SHOES_SPEED := 0.6
-const BLOCKERS := [&"cone", &"barrier"]
+const BLOCKERS := [&"cone", &"barrier", &"gerobak"]
+const HONK_DISTANCE := 2.5 * 48.0
+const HONK_COOLDOWN := 2.0
+const VENDOR_COOLDOWN := 6.0
+const RIVAL_SPEED := 300.0
+const PEDESTRIANS := [["pejalan_ibu_walk", "pejalan_ibu_idle"], ["pejalan_anak_walk", "pejalan_anak_idle"]]
+## Jarak (baris) ke rumah saat pelanggan mulai menyemangati.
+const CUSTOMER_CHEER_ROWS := 6
 
 enum State { INTRO, PLAYING, FINISHED }
 
@@ -51,6 +58,10 @@ var _rafts := {}
 var _last_safe_cell := Vector2i.ZERO
 var _cats: Array[StreetCat] = []
 var _cat_timer := 1.5
+var _honk_cooldown := 0.0
+var _rival_timer := 6.0
+## Waktu teriak terakhir tiap gerobak, key: Vector2i sel.
+var _vendor_shouts := {}
 var _popup_cooldown := 0.0
 var _boost_left := 0.0
 ## Node item di papan, key: Vector2i(kolom, baris).
@@ -59,6 +70,11 @@ var _collected := {}
 ## Pos terakhir yang dicapai; Vector2i(-1, -1) = belum ada.
 var _checkpoint_cell := Vector2i(-1, -1)
 var _hud: GameHud
+var _customer: CustomerNpc
+var _tips: TutorialTips
+var _tip_scan := 0.0
+## Kalimat pelanggan yang sudah diucapkan (supaya tidak diulang).
+var _customer_said := {}
 
 
 func _ready() -> void:
@@ -82,6 +98,7 @@ func _ready() -> void:
 	add_child(_side_mask)
 	_spawn_items()
 	_spawn_vehicles()
+	_spawn_customer()
 	_spawn_player()
 	if day.rainy:
 		_rain = RainOverlay.new()
@@ -104,6 +121,7 @@ func _ready() -> void:
 	_hud.next_requested.connect(_on_next_requested)
 	_hud.menu_requested.connect(_on_menu_requested)
 	_hud.checkpoint_requested.connect(_on_checkpoint_requested)
+	_tips = TutorialTips.new(_hud)
 	_hud.show_intro()
 	var touch := TouchControls.new()
 	touch.player = _player
@@ -138,7 +156,10 @@ func _process(delta: float) -> void:
 	_hud.update_progress(1.0 - _player.position.y / ((_rows - 1) * TILE))
 
 	_popup_cooldown = maxf(0.0, _popup_cooldown - delta)
+	_scan_tips(delta)
+	_update_customer()
 	_update_cats(delta)
+	_update_street_npcs(delta)
 	_update_river(delta)
 	if _boost_left > 0.0:
 		_boost_left -= delta
@@ -218,6 +239,56 @@ func _spawn_items() -> void:
 			_item_nodes[Vector2i(col, row)] = holder
 
 
+func _spawn_customer() -> void:
+	_customer = CustomerNpc.new()
+	_customer.customer_id = day.customer_id
+	_customer.tile = TILE
+	# Berdiri di sebelah kiri rumah (rumah digambar di pojok kanan baris paling atas).
+	var house := SpriteLibrary.texture("house")
+	var house_width := house.get_width() / SpriteLibrary.density("house") if house else 0.0
+	_customer.position = Vector2(COLUMNS * TILE - house_width - 8.0 - TILE, 0)
+	_board.add_child(_customer)
+
+
+## Pelanggan bereaksi terhadap jarak Masbro dan sisa waktu.
+func _update_customer() -> void:
+	var left := day.eta_seconds - elapsed
+	if left < 0.0:
+		_customer_line(&"late", "Kok lama, ya...", CustomerNpc.Mood.IMPATIENT)
+	elif left <= 10.0:
+		_customer_line(&"hurry", "Cepetan, Masbro...", CustomerNpc.Mood.IMPATIENT)
+	elif _player.cell.y <= CUSTOMER_CHEER_ROWS:
+		_customer_line(&"close", "Sedikit lagi, Masbro!", CustomerNpc.Mood.WAITING)
+
+
+## Cek apa yang ada di depan Masbro untuk tips tutorial (4x per detik).
+func _scan_tips(delta: float) -> void:
+	_tip_scan -= delta
+	if _tip_scan > 0.0:
+		return
+	_tip_scan = 0.25
+	if day.eta_seconds - elapsed <= 10.0:
+		_tips.trigger(&"eta")
+	for row in range(maxi(0, _player.cell.y - 3), _player.cell.y):
+		var lane := day.lanes[row]
+		if lane.kind == LaneData.Kind.RIVER:
+			_tips.trigger(&"river")
+		for col: int in lane.items:
+			if not _collected.has(Vector2i(col, row)):
+				_tips.trigger(&"coin" if lane.items[col] == &"coin" else &"powerup")
+		if &"hole" in lane.obstacles.values() and row >= _player.cell.y - 2:
+			_tips.trigger(&"hole")
+
+
+func _customer_line(key: StringName, text: String, mood: CustomerNpc.Mood) -> void:
+	if _customer_said.has(key):
+		return
+	_customer_said[key] = true
+	_customer.say(text)
+	if _customer.mood != mood:
+		_customer.set_mood(mood)
+
+
 func _spawn_player() -> void:
 	_player = Player.new()
 	_player.tile = TILE
@@ -237,33 +308,45 @@ func _update_cats(delta: float) -> void:
 	for i in range(_cats.size() - 1, -1, -1):
 		if not is_instance_valid(_cats[i]):
 			_cats.remove_at(i)
-	if day.cat_count > 0:
+	if day.cat_count > 0 or day.pedestrian_count > 0:
 		_cat_timer -= delta
 		if _cat_timer <= 0.0:
 			_cat_timer = randf_range(CAT_SPAWN_DELAY.x, CAT_SPAWN_DELAY.y)
-			if _cats.size() < day.cat_count:
-				_spawn_cat()
+			var cats := _cats.filter(func(w: StreetCat) -> bool: return w.kind == &"cat").size()
+			var walkers := _cats.size() - cats
+			var want_walker := walkers < day.pedestrian_count and (cats >= day.cat_count or randf() < 0.5)
+			if want_walker:
+				_spawn_cat(&"pedestrian")
+			elif cats < day.cat_count:
+				_spawn_cat(&"cat")
 	var player_box := _player.hitbox()
 	for cat in _cats:
 		if cat.hitbox().intersects(player_box) and cat.notice_player():
-			_popup("Meong?", Color("f4a259"), cat.position)
+			_popup("Meong?" if cat.kind == &"cat" else "Eh, maaf!", Color("f4a259"), cat.position)
 
 
-func _spawn_cat() -> void:
-	# Kucing menyeberang di jalan dan median yang sedang terlihat, tidak di trotoar gudang/rumah.
+## Kucing menyeberang di jalan & median; pejalan kaki hanya berjalan di median.
+## Keduanya muncul di baris yang sedang terlihat, tidak di trotoar gudang/rumah.
+func _spawn_cat(kind: StringName = &"cat") -> void:
 	var view := _visible_rows()
 	var rows: Array[int] = []
 	for row in range(maxi(1, view.x), mini(_rows - 1, view.y + 1)):
-		var kind := day.lanes[row].kind
-		if row != _player.cell.y and (kind == LaneData.Kind.ROAD or kind == LaneData.Kind.MEDIAN):
+		var lane_kind := day.lanes[row].kind
+		var allowed := lane_kind == LaneData.Kind.MEDIAN or (kind == &"cat" and lane_kind == LaneData.Kind.ROAD)
+		if row != _player.cell.y and allowed:
 			rows.append(row)
 	if rows.is_empty():
 		return
 	var cat := StreetCat.new()
+	cat.kind = kind
+	if kind == &"pedestrian":
+		var look: Array = PEDESTRIANS.pick_random()
+		cat.walk_sprite = look[0]
+		cat.idle_sprite = look[1]
 	cat.tile = TILE
 	cat.board_width = COLUMNS * TILE
 	cat.direction = 1 if randf() < 0.5 else -1
-	cat.speed = randf_range(30.0, 55.0)
+	cat.speed = randf_range(30.0, 55.0) if kind == &"cat" else randf_range(22.0, 38.0)
 	cat.position = Vector2(-TILE if cat.direction > 0 else COLUMNS * TILE, rows.pick_random() * TILE)
 	_board.add_child(cat)
 	# Kucing di bawah Masbro supaya Masbro tetap terlihat.
@@ -284,11 +367,99 @@ func _is_cell_free(cell: Vector2i) -> bool:
 func _on_player_blocked(cell: Vector2i) -> void:
 	if _popup_cooldown > 0.0:
 		return
-	if day.lanes[cell.y].obstacles.get(cell.x, &"") in BLOCKERS:
+	var obstacle: StringName = day.lanes[cell.y].obstacles.get(cell.x, &"")
+	if obstacle == &"":
+		_tips.trigger(&"walker")
+	if obstacle == &"gerobak":
+		_popup("Bakso, Mas?", Palette.CORAL, _player.position)
+	elif obstacle in BLOCKERS:
 		_popup("Awas!", Palette.ORANGE, _player.position)
+	elif _walker_at(cell) and _walker_at(cell).kind == &"pedestrian":
+		_popup("Permisi, Mas!", Palette.CORAL, _player.position)
 	else:
 		_popup("Meong!", Color("f4a259"), _player.position)
 		AudioManager.play_sfx(&"meow", 0.1)
+
+
+func _walker_at(cell: Vector2i) -> StreetCat:
+	var area := Rect2(Vector2(cell) * TILE + Vector2(6, 6), Vector2(TILE - 12, TILE - 12))
+	for walker in _cats:
+		if is_instance_valid(walker) and walker.hitbox().intersects(area):
+			return walker
+	return null
+
+
+## Klakson pengemudi, teriakan pedagang bakso, dan Bang Kilat.
+func _update_street_npcs(delta: float) -> void:
+	_honk_cooldown = maxf(0.0, _honk_cooldown - delta)
+	var row := _player.cell.y
+	if _honk_cooldown <= 0.0 and day.lanes[row].kind == LaneData.Kind.ROAD:
+		for vehicle in _vehicles:
+			if not is_instance_valid(vehicle) or vehicle.is_platform or vehicle.type == &"kilat":
+				continue
+			if roundi(vehicle.position.y / TILE) != row:
+				continue
+			var gap := _player.position.x - (vehicle.position.x + vehicle.length_px) if vehicle.direction > 0 \
+					else vehicle.position.x - (_player.position.x + TILE)
+			if gap >= 0.0 and gap <= HONK_DISTANCE:
+				_honk_cooldown = HONK_COOLDOWN
+				_npc_say(vehicle, "Tin tin!", Vector2(vehicle.length_px / 2.0, 6))
+				AudioManager.play_sfx(&"horn", 0.08)
+				break
+
+	for check_row in range(maxi(0, row - 1), mini(_rows, row + 2)):
+		var obstacles := day.lanes[check_row].obstacles
+		for col: int in obstacles:
+			if obstacles[col] != &"gerobak" or absi(col - _player.cell.x) > 2:
+				continue
+			var cell := Vector2i(col, check_row)
+			if elapsed - _vendor_shouts.get(cell, -VENDOR_COOLDOWN) >= VENDOR_COOLDOWN:
+				_vendor_shouts[cell] = elapsed
+				var bubble := _npc_say(_board, "Bakso! Bakso!", Vector2(cell) * TILE + Vector2(TILE / 2.0, 6))
+				bubble.get_parent().move_child(bubble, -1)
+
+	if day.rival_interval > 0.0:
+		for i in range(_vehicles.size() - 1, -1, -1):
+			if not is_instance_valid(_vehicles[i]):
+				_vehicles.remove_at(i)
+		_rival_timer -= delta
+		if _rival_timer <= 0.0:
+			_rival_timer = day.rival_interval * randf_range(0.8, 1.2)
+			_spawn_rival()
+
+
+## Balon ucapan sementara yang menempel pada node (ikut bergerak bersamanya).
+func _npc_say(owner: Node2D, text: String, offset: Vector2) -> SpeechBubble:
+	var bubble := SpeechBubble.new()
+	bubble.side = SpeechBubble.Side.ABOVE
+	bubble.position = offset
+	owner.add_child(bubble)
+	bubble.say(text, 1.6)
+	get_tree().create_timer(1.8, false).timeout.connect(func() -> void:
+		if is_instance_valid(bubble):
+			bubble.queue_free())
+	return bubble
+
+
+## Bang Kilat melesat sekali di lane jalan yang terlihat di depan Masbro.
+func _spawn_rival() -> void:
+	var view := _visible_rows()
+	var rows: Array[int] = []
+	for row in range(maxi(1, view.x), mini(_rows - 1, view.y + 1)):
+		if day.lanes[row].kind == LaneData.Kind.ROAD and row <= _player.cell.y:
+			rows.append(row)
+	if rows.is_empty():
+		return
+	var rival := Vehicle.new()
+	var direction := 1 if randf() < 0.5 else -1
+	rival.setup(&"kilat", TILE, RIVAL_SPEED, direction, -TILE * 2.0, COLUMNS * TILE + TILE * 4.0)
+	rival.one_shot = true
+	rival.position = Vector2(-TILE * 2.0 if direction > 0 else COLUMNS * TILE + TILE, rows.pick_random() * TILE)
+	_board.add_child(rival)
+	_vehicles.append(rival)
+	_npc_say(rival, "Minggir, Masbro!", Vector2(TILE / 2.0, 6))
+	_tips.trigger(&"rival")
+	AudioManager.play_sfx(&"horn", 0.15)
 
 
 func _popup(text: String, color: Color, at: Vector2) -> void:
@@ -314,6 +485,8 @@ func _on_start_requested() -> void:
 	state = State.PLAYING
 	_player.input_enabled = true
 	AudioManager.play_sfx(&"pickup")
+	_customer.say(day.customer_greeting, 3.5)
+	_tips.trigger(&"move")
 
 
 func _set_paused(value: bool) -> void:
@@ -436,6 +609,7 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 		_player.knock_back(knock_to)
 		return
 	collisions += 1
+	_tips.trigger(&"hit")
 	damage = mini(damage + amount * day.package.fragility, day.package.max_damage)
 	_hud.update_package(damage)
 	Effects.burst(_board, _player.position + Vector2(TILE / 2.0, TILE / 2.0), day.package.color)
@@ -455,8 +629,12 @@ func _deliver() -> void:
 	_hud.update_progress(1.0)
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins, checkpoint_uses)
 	GameState.record_delivery(day, report.wage)
+	# Koin yang dipungut masuk dompet untuk belanja di toko.
+	GameState.add_coins(coins)
 	AudioManager.play_sfx(&"delivery")
 	_player.celebrate()
+	_customer.set_mood(CustomerNpc.Mood.HAPPY)
+	_customer.say("Makasih, Masbro!" if report.stars >= 3 else "Hmm... ya sudah, makasih.", 0.0)
 	# Konfeti di lapisan HUD supaya jatuh di depan kartu hasil.
 	var view := get_viewport().get_visible_rect().size
 	Effects.confetti(_hud, Vector2(view.x / 2.0, 0), view.x)
@@ -469,6 +647,8 @@ func _fail() -> void:
 	_player.invulnerable = false
 	GameState.record_delivery(day, 0)
 	AudioManager.play_sfx(&"fail")
+	_customer.set_mood(CustomerNpc.Mood.SAD)
+	_customer.say("Yah... paketnya...", 0.0)
 	var can_continue := _checkpoint_cell.y >= 0 and day.map != null
 	_hud.show_failed(GameState.is_replay, day.map.checkpoint_penalty if can_continue else 0)
 
@@ -476,6 +656,7 @@ func _fail() -> void:
 func _reach_checkpoint(cell: Vector2i) -> void:
 	_checkpoint_cell = cell
 	_popup("Pos tercapai!", Palette.TEAL, _player.position)
+	_tips.trigger(&"checkpoint")
 	AudioManager.play_sfx(&"star")
 	_board.queue_redraw()
 
@@ -494,6 +675,7 @@ func _on_checkpoint_requested() -> void:
 	state = State.PLAYING
 	AudioManager.play_sfx(&"pickup")
 	_popup("Paket baru!", Palette.TEAL, _player.position)
+	_customer.set_mood(CustomerNpc.Mood.WAITING)
 
 
 func _layout_board() -> void:

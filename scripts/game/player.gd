@@ -53,6 +53,7 @@ var _package_icon: Sprite2D
 var _visual: Node2D
 var _hop_tween: Tween
 var _shield: Node2D
+var _accessories: Node2D
 
 
 func _ready() -> void:
@@ -71,6 +72,11 @@ func _ready() -> void:
 		_body = SpriteLibrary.animated(frames)
 		rig.add_child(_body)
 		_play(&"idle")
+
+	if _body:
+		_accessories = Cosmetics.dress(rig, GameState.equipped_ids())
+		_body.frame_changed.connect(func() -> void: Cosmetics.sync_bob(_accessories, _body))
+		_body.animation_changed.connect(func() -> void: Cosmetics.sync_bob(_accessories, _body))
 
 	_package_icon = SpriteLibrary.sprite("package_%s" % package_id)
 	if _package_icon == null:
@@ -234,6 +240,8 @@ func _update_facing() -> void:
 	# Sprite digambar menghadap kanan; dibalik saat Masbro menghadap kiri.
 	if _body:
 		_body.flip_h = _facing < 0
+	if _accessories:
+		Cosmetics.set_flip(_accessories, _facing < 0)
 	if _package_icon:
 		# Paket di punggung Masbro (di belakang kepala).
 		_package_icon.position = Vector2(4, 6) if _facing > 0 else Vector2(24, 6)

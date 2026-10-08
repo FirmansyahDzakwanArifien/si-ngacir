@@ -12,6 +12,10 @@ signal menu_requested
 signal checkpoint_requested
 ## Tombol pause di layar sentuh.
 signal pause_pressed
+## Tip tutorial selesai ditampilkan.
+signal tip_finished
+
+const TIP_TIME := 4.5
 
 const BAR_HEIGHT := 48.0
 # Alias lama, dipakai beberapa layar lain.
@@ -26,6 +30,9 @@ var _time_pill: PanelContainer
 var _time_pulse: Tween
 var _package_icons: Array[Control] = []
 var _route: RouteMeter
+var _tip: PanelContainer
+var _tip_label: Label
+var _tip_tween: Tween
 var _overlay: ColorRect
 var _panel: PanelContainer
 var _panel_box: VBoxContainer
@@ -39,6 +46,7 @@ func _init() -> void:
 func setup(day: DayData) -> void:
 	_day = day
 	_build_top_bar()
+	_build_tip()
 	_build_overlay()
 	update_timer(day.eta_seconds)
 
@@ -69,6 +77,48 @@ func update_timer(seconds_left: float) -> void:
 		_time_pill.scale = Vector2.ONE
 
 
+## Kartu tip kecil di bawah bar atas; tidak menghentikan permainan.
+func show_tip(text: String) -> void:
+	_tip_label.text = text
+	_tip.visible = true
+	_tip.modulate.a = 0.0
+	_tip.position.y = BAR_HEIGHT - 10.0
+	if _tip_tween:
+		_tip_tween.kill()
+	_tip_tween = _tip.create_tween()
+	_tip_tween.set_parallel()
+	_tip_tween.tween_property(_tip, "modulate:a", 1.0, 0.2)
+	_tip_tween.tween_property(_tip, "position:y", BAR_HEIGHT + 8.0, 0.25).set_trans(Tween.TRANS_BACK)
+	_tip_tween.chain().tween_interval(TIP_TIME)
+	_tip_tween.chain().tween_property(_tip, "modulate:a", 0.0, 0.3)
+	_tip_tween.chain().tween_callback(func() -> void:
+		_tip.visible = false
+		tip_finished.emit())
+
+
+func _build_tip() -> void:
+	_tip = PanelContainer.new()
+	var style := UiTheme.card(Palette.WHITE, Palette.TEAL)
+	style.set_content_margin_all(12)
+	style.set_corner_radius_all(16)
+	_tip.add_theme_stylebox_override("panel", style)
+	_tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_tip.visible = false
+	UiTheme.attach(_tip)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	_tip.add_child(row)
+	var badge := _label("TIPS", 14, Palette.WHITE, false, 600)
+	row.add_child(_pill(badge, Palette.TEAL))
+	_tip_label = _label("", 16)
+	_tip_label.custom_minimum_size = Vector2(420, 0)
+	row.add_child(_tip_label)
+	add_child(_tip)
+	_tip.resized.connect(func() -> void:
+		var view := get_viewport().get_visible_rect().size
+		_tip.position.x = (view.x - _tip.size.x) / 2.0)
+
+
 ## Kemajuan perjalanan dari gudang (0) ke rumah pelanggan (1).
 func update_progress(fraction: float) -> void:
 	_route.value = clampf(fraction, 0.0, 1.0)
@@ -94,7 +144,7 @@ func show_intro() -> void:
 		_package_picture(),
 		_label("Paket: %s" % pkg.display_name, 20, Palette.TEXT, true, 600),
 		_label(pkg.description, 16, Palette.TEXT_SOFT),
-		_label("Antar ke: %s" % _day.customer_name, 17),
+		_customer_row(),
 		_label("Target ETA: %s   Upah dasar: %s" % [
 				format_time(_day.eta_seconds), GameState.rupiah(_day.base_wage)], 17),
 	]
@@ -113,6 +163,8 @@ func _day_warnings() -> PackedStringArray:
 		warnings.append("Hujan deras: jarak pandang terbatas dan aspal licin.")
 	if _day.cat_count > 0:
 		warnings.append("Kucing jalanan suka menghalangi jalan. Cari jalur lain!")
+	if _day.rival_interval > 0.0:
+		warnings.append("Bang Kilat, kurir rival, suka ngebut tiba-tiba. Hati-hati!")
 	return warnings
 
 
@@ -142,7 +194,7 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 		_money_row("Upah dasar", report.base_wage),
 		_money_row("Bonus tepat waktu", report.eta_bonus),
 		_money_row("Tip pelanggan", report.tip) if report.strict else null,
-		_money_row("Bonus koin (%d)" % report.coins, report.coin_bonus) if report.coins > 0 else null,
+		_money_row("Bonus koin (%d, juga masuk dompet)" % report.coins, report.coin_bonus) if report.coins > 0 else null,
 		_money_row("Denda kerusakan" + (" (2x)" if report.strict else ""), -report.damage_penalty),
 		_money_row("Potongan telat", -report.late_penalty),
 		_money_row("Ganti paket di Pos (%dx)" % report.checkpoint_uses, -report.checkpoint_penalty)
@@ -347,6 +399,22 @@ func _package_icon(size: Vector2) -> Control:
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.custom_minimum_size = size
 	return icon
+
+
+## "Antar ke: <nama>" dengan potret kecil pelanggan.
+func _customer_row() -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	var portrait := SpriteLibrary.hires("customer_%s" % _day.customer_id, 1.0)
+	if portrait:
+		var picture := TextureRect.new()
+		picture.texture = portrait
+		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		picture.custom_minimum_size = Vector2(44, 44)
+		row.add_child(picture)
+	row.add_child(_label("Antar ke: %s" % _day.customer_name, 17))
+	return row
 
 
 func _package_picture(broken := false) -> Control:

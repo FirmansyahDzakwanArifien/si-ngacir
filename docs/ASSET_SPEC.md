@@ -32,6 +32,18 @@ Lokasi: `assets/sprites/`
 
 Catatan: paket digambar **terpisah** (lihat di bawah) dan diletakkan di punggung Masbro pada posisi x=4, y=6 (dalam frame 48 × 48). Sisakan ruang di area punggung.
 
+## NPC pelanggan
+
+Tampak depan, 48 × 48, berdiri di samping rumah tujuan.
+
+| File | Tokoh |
+| --- | --- |
+| `customer_bu_sri.png` | Bu Sri (Hari 1) |
+| `customer_pak_budi.png` | Pak Budi (Hari 2) |
+| `customer_pak_ojan.png` | Pak Ojan (Hari 3) |
+| `customer_pak_joko.png` | Pak Joko (Hari 4) |
+| `customer_bu_direktur.png` | Bu Direktur Ngacir (Hari 5) |
+
 ## Kucing jalanan
 
 | File | Ukuran frame | Frame | Keterangan |
@@ -66,6 +78,30 @@ Semua 48 × 48 (1 petak), tampak samping/depan, berdiri di tengah petak.
 | `item_coin.png` | Koin bonus |
 | `item_helmet.png` | Power-up helm |
 | `item_shoes.png` | Power-up sepatu |
+
+## NPC jalanan
+
+| File | Ukuran frame | Frame | Keterangan |
+| --- | --- | --- | --- |
+| `pejalan_ibu_walk.png` / `_idle.png` | 48 × 48 | 4 / 1 | Ibu-ibu membawa belanjaan |
+| `pejalan_anak_walk.png` / `_idle.png` | 48 × 48 | 4 / 1 | Anak membawa balon |
+| `obstacle_gerobak.png` | 48 × 48 | 1 | Gerobak bakso + pedagang |
+| `vehicle_kilat.png` | 48 × 48 | 1 | Bang Kilat, kurir rival bermotor |
+
+Pengemudi mobil/truk digambar di jendela depan sprite kendaraan.
+
+## Aksesori toko
+
+Frame **48 × 48 sejajar sprite Masbro** (menghadap kanan): gambar hanya aksesorinya di posisi kepala/badan Masbro, sisanya transparan. Game menggeser aksesori naik-turun mengikuti animasi.
+
+| File | Slot |
+| --- | --- |
+| `acc_caping.png`, `acc_beanie.png`, `acc_koki.png`, `acc_mahkota.png` | Topi |
+| `acc_kacamata_bulat.png`, `acc_kacamata_hitam.png`, `acc_kacamata_bintang.png` | Kacamata |
+| `acc_tas_pink.png`, `acc_tas_oranye.png`, `acc_tas_kucing.png` | Tas |
+| `icon_coin.png` (20 × 20) | Ikon koin di toko |
+
+Daftar barang dan harga ada di `scripts/data/cosmetics.gd`.
 
 ## Paket
 

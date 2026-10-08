@@ -21,7 +21,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | Enter | Pilih tombol di panel |
 | Layar sentuh | Tap = maju, swipe = arah gerak, D-pad di layar, tombol II = pause |
 
-## Status (v0.4)
+## Status (v0.5)
 
 * [x] Gerak grid, lane jalan/trotoar/median, kendaraan (motor, mobil, truk)
 * [x] Kondisi paket menggantikan nyawa (tabrakan → damage → paket hancur)
@@ -32,6 +32,10 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Rintangan statis (cone, pembatas, lubang), koin, power-up helm & sepatu
 * [x] Sungai & rakit (mulai Hari 2)
 * [x] Pos (checkpoint): lanjut dari Pos dengan denda bila paket hancur
+* [x] NPC pelanggan dengan balon ucapan dan reaksi (sapaan diatur di `customer_greeting`)
+* [x] NPC jalanan: pengemudi berklakson, pejalan kaki, pedagang bakso, Bang Kilat (kurir rival)
+* [x] Toko Masbro: dompet koin permanen, aksesori topi/kacamata/tas (`scripts/data/cosmetics.gd`)
+* [x] Tips tutorial kontekstual (teks di `scripts/game/tutorial_tips.gd`), Hari 2 selalu ada sungai
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
@@ -75,6 +79,7 @@ Setiap hari punya **MapParams** (grup *Peta* → `map` di `day_0N.tres`). Map di
 | `fixed_seed` | 0 = acak setiap main; angka lain = map selalu sama (berguna untuk playtest) |
 | `blockers_per_safe_row` | Cone/pembatas per baris median (min, max) |
 | `checkpoint_every`, `checkpoint_penalty` | Pos setiap N blok (0 = tanpa pos) dan denda ganti paket |
+| `min_rivers` | Jumlah blok sungai yang dijamin ada |
 | `river_chance`, `river_lanes`, `raft_speed` | Peluang blok menjadi sungai, jumlah lane air, kecepatan arus |
 | `hole_chance`, `coin_chance`, `powerup_chance` | Peluang lubang per lane, deretan koin per baris, dan power-up per blok |
 
@@ -104,6 +109,7 @@ Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/r
 | `sfx/meow` | Jalan terhalang kucing |
 | `sfx/slip` | Masbro tergelincir saat hujan |
 | `sfx/splash` | Tercebur ke sungai |
+| `sfx/horn` | Klakson pengemudi & Bang Kilat |
 | `sfx/click` | Semua tombol |
 
 ## Side conflict per hari
@@ -194,6 +200,8 @@ Deploy opsional (Settings → Secrets and variables → Actions):
 | Tujuan | Atur | Catatan |
 | --- | --- | --- |
 | **itch.io** (link main di browser) | Variable `ITCH_GAME` = `namauser/si-ngacir`, Secret `BUTLER_API_KEY` | API key dari itch.io → Settings → API keys. Jalan saat push tag |
+
+Upload ulang rilis yang sudah ada ke itch.io (misalnya setelah secret baru diisi): `gh workflow run build.yml --ref v0.5.0`.
 | **GitHub Pages** | Variable `DEPLOY_PAGES` = `true`, Settings → Pages → Source: *GitHub Actions* | Repo private butuh GitHub Pro/Team; repo public gratis |
 
 ## Workflow Git

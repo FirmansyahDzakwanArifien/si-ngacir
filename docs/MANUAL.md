@@ -58,6 +58,8 @@ Kebutuhan minimal: Windows 10 64-bit, kartu grafis yang mendukung OpenGL 3.3.
 
 Tahan tombol arah untuk melangkah terus-menerus.
 
+**Tips tutorial** muncul sekali di atas layar saat kamu pertama kali bertemu sesuatu yang baru (koin, power-up, lubang, sungai, Pos, dan lainnya). Tips bisa dimatikan, atau dinyalakan lagi untuk mengulang semuanya, di **Pengaturan**.
+
 ---
 
 ## 4. Tujuan Permainan
@@ -118,6 +120,10 @@ Upah = Upah dasar + Bonus tepat waktu (+ Tip) (+ Bonus koin) − Denda kerusakan
 
 Upah setiap hari ditambahkan ke **tabungan pengobatan**. Jika mengulang hari, yang dihitung adalah upah **terbaik** hari itu.
 
+### Pelanggan menunggu
+
+Pelanggan berdiri di depan rumahnya dan bereaksi lewat balon ucapan: menyapa saat paket diambil, menyemangati saat Masbro sudah dekat, mulai gelisah saat ETA hampir habis, dan girang (atau kecewa) saat paket tiba.
+
 ### Rating pelanggan
 
 Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan kondisi paket dan ketepatan waktu.
@@ -157,6 +163,15 @@ Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit
 * Lane sungai yang bersebelahan mengalir berlawanan arah. Perhatikan rakit di lane berikutnya sebelum melompat.
 * Helm juga melindungi dari air.
 
+### Warga Kota Ngacir
+
+| NPC | Perilaku |
+| --- | --- |
+| **Pengemudi** | Membunyikan klakson "Tin tin!" bila Masbro berdiri tepat di depan kendaraannya. Tanda untuk segera menyingkir! |
+| **Pejalan kaki** | Ibu-ibu belanja dan anak berbalon berjalan pelan di median. Tidak merusak paket, tapi menghalangi ("Permisi, Mas!") |
+| **Pedagang bakso** | Gerobak diam di median, menghalangi langkah dan berteriak "Bakso! Bakso!" |
+| **Bang Kilat** | Kurir rival yang tiba-tiba melesat sangat cepat di salah satu lane ("Minggir, Masbro!"), mulai Hari 3. Menabraknya tetap merusak paket |
+
 ### Pos (checkpoint)
 
 Mulai Hari 2, rute panjang punya **Pos** setiap beberapa blok: median bersih bertanda bendera di kedua sisinya. Begitu Masbro menginjak Pos, benderanya berubah kuning.
@@ -185,7 +200,19 @@ Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos*
 
 ---
 
-## 8. Akhir Cerita
+## 8. Toko Masbro
+
+Koin yang dipungut di jalan menambah upah (*Bonus koin*) **dan** masuk ke **dompet** saat paket sampai. Belanjakan di **Toko Masbro** (menu utama):
+
+| Slot | Pilihan |
+| --- | --- |
+| Topi | Caping, Beanie, Topi Koki, Mahkota |
+| Kacamata | Bulat, Hitam, Bintang |
+| Tas | Pink, Oranye, Kucing |
+
+Klik barang untuk membeli; klik barang milikmu untuk memakai atau melepasnya. Aksesori langsung terlihat saat mengantar paket. Dompet dan koleksi **tidak hilang** saat memilih Mulai Baru.
+
+## 9. Akhir Cerita
 
 Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 
@@ -194,13 +221,14 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 
 ---
 
-## 9. Menu dan Penyimpanan
+## 10. Menu dan Penyimpanan
 
 | Menu | Fungsi |
 | --- | --- |
 | **Lanjutkan** | Melanjutkan dari hari terakhir yang belum selesai |
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
-| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop) |
+| **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
+| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial |
 | **Keluar** | Menutup game (desktop) |
 
 Progres tersimpan **otomatis** setiap kali satu hari selesai. Keluar di tengah hari berarti mengulang hari itu dari awal.
@@ -209,7 +237,7 @@ Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
 
 ---
 
-## 10. Tips
+## 11. Tips
 
 1. **Median hijau adalah zona aman.** Berhenti di sana untuk membaca pola lalu lintas berikutnya.
 2. **Truk lambat tapi panjang** dan merusak paket 2x. Jangan memotong tepat di depannya.
@@ -222,7 +250,7 @@ Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
 
 ---
 
-## 11. Masalah Umum
+## 12. Masalah Umum
 
 | Masalah | Solusi |
 | --- | --- |
@@ -234,7 +262,7 @@ Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
 
 ---
 
-## 12. Tim Pengembang
+## 13. Tim Pengembang
 
 **Varmintz KW Studio** — Pemrograman Game (7TI02), Program Studi Teknik Informatika, Depok, 2026
 

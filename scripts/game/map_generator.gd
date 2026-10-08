@@ -12,11 +12,18 @@ const MIN_GAP_TILES := 3
 
 static func generate(params: MapParams, rng: RandomNumberGenerator) -> Array[LaneData]:
 	var rows: Array[LaneData] = [_safe(LaneData.Kind.SIDEWALK)]  # gudang
+	# Blok yang dipaksa menjadi sungai (blok pertama selalu jalan).
+	var forced_rivers: Array[int] = []
+	var candidates := range(1, params.road_blocks)
+	while forced_rivers.size() < mini(params.min_rivers, candidates.size()):
+		var pick: int = candidates[rng.randi() % candidates.size()]
+		if not pick in forced_rivers:
+			forced_rivers.append(pick)
 	for block in params.road_blocks:
 		var progress := float(block) / maxf(1.0, params.road_blocks - 1.0)
 		var speed_scale := lerpf(1.0, params.speed_ramp, progress)
 		var direction := 1 if rng.randf() < 0.5 else -1
-		if block > 0 and rng.randf() < params.river_chance:
+		if block in forced_rivers or (block > 0 and rng.randf() < params.river_chance):
 			for i in rng.randi_range(params.river_lanes.x, params.river_lanes.y):
 				rows.append(_river(params, rng, direction))
 				direction = -direction
@@ -65,8 +72,11 @@ static func _decorate(rows: Array[LaneData], params: MapParams, rng: RandomNumbe
 			continue
 		if lane.kind == LaneData.Kind.MEDIAN:
 			var count := rng.randi_range(params.blockers_per_safe_row.x, params.blockers_per_safe_row.y)
-			for col in _distinct_columns(rng, count):
-				lane.obstacles[col] = [&"cone", &"barrier"][rng.randi() % 2]
+			var columns := _distinct_columns(rng, count + 1)
+			for i in count:
+				lane.obstacles[columns[i]] = [&"cone", &"barrier"][rng.randi() % 2]
+			if rng.randf() < params.vendor_chance:
+				lane.obstacles[columns[count]] = &"gerobak"
 		elif lane.kind == LaneData.Kind.ROAD:
 			road_rows.append(row)
 			if rng.randf() < params.hole_chance:

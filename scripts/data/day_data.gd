@@ -6,6 +6,10 @@ extends Resource
 @export var title: String = ""
 @export var package: PackageData
 @export var customer_name: String = "Bu Sri"
+## Nama sprite pelanggan: assets/sprites/customer_<id>.
+@export var customer_id: StringName = &"bu_sri"
+## Sapaan pelanggan saat pengiriman dimulai (balon ucapan di depan rumah).
+@export_multiline var customer_greeting: String = "Ditunggu ya, Masbro!"
 ## Target waktu antar (Timer ETA) dalam detik.
 @export var eta_seconds: float = 30.0
 
@@ -27,6 +31,10 @@ extends Resource
 @export_group("Side Conflict")
 ## Jumlah maksimal kucing jalanan yang muncul bersamaan (0 = tidak ada).
 @export_range(0, 5) var cat_count: int = 0
+## Jumlah maksimal pejalan kaki di median yang muncul bersamaan.
+@export_range(0, 5) var pedestrian_count: int = 0
+## Bang Kilat (kurir rival) melesat setiap sekian detik (0 = tidak muncul).
+@export_range(0.0, 60.0, 1.0) var rival_interval: float = 0.0
 ## Hujan: jarak pandang terbatas dan jalan aspal licin.
 @export var rainy: bool = false
 ## Peluang Masbro tergelincir satu petak tambahan saat melangkah di aspal basah.
