@@ -7,26 +7,20 @@ signal closed
 
 
 func _init() -> void:
-	color = Color(0, 0, 0, 0.7)
+	color = Color(0.1, 0.09, 0.2, 0.55)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 func _ready() -> void:
+	UiTheme.attach(self)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(center)
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = GameHud.INK
-	style.border_color = GameHud.GOLD
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(12)
-	style.set_content_margin_all(24)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(420, 0)
-	panel.add_theme_stylebox_override("panel", style)
 	center.add_child(panel)
 
 	var column := VBoxContainer.new()
@@ -36,8 +30,11 @@ func _ready() -> void:
 	var title := Label.new()
 	title.text = "PENGATURAN"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 26)
-	title.add_theme_color_override("font_color", GameHud.GOLD)
+	title.add_theme_font_override("font", UiTheme.font(600))
+	title.add_theme_font_size_override("font_size", 30)
+	title.add_theme_color_override("font_color", Palette.YELLOW)
+	title.add_theme_color_override("font_outline_color", Palette.OUTLINE)
+	title.add_theme_constant_override("outline_size", 9)
 	column.add_child(title)
 
 	var music := _slider_row(column, "Musik", AudioManager.music_volume, AudioManager.set_music_volume)

@@ -51,6 +51,7 @@ var pending_scene := ""
 
 func _ready() -> void:
 	_setup_input()
+	UiTheme.apply(get_tree().root)
 	load_game()
 
 
