@@ -32,6 +32,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Sistem audio (BGM + SFX, suara placeholder) dan menu Pengaturan (volume, layar penuh)
 * [x] Siap sprite: game otomatis memakai gambar di `assets/sprites/` (spesifikasi di `docs/ASSET_SPEC.md`)
 * [x] Cutscene cerita: pembuka, sebelum Hari 2–5, dan ending (naskah draf)
+* [x] Export Web (HTML5) dan Windows
 * [ ] Gambar final dari tim Illustrator
 * [ ] Naskah final dari tim Writer Story
 
@@ -119,6 +120,26 @@ Di `scripts/autoload/game_state.gd`:
   * `BAD_ENDING`: masa percobaan langsung berakhir dengan ending gagal
 
 Teks ending ada di `scripts/ending.gd`.
+
+## Build
+
+Preset export sudah disiapkan di `export_presets.cfg`. Pertama kali, install export template: **Editor → Manage Export Templates → Download and Install** (Godot 4.3).
+
+| Target | Cara | Hasil |
+| --- | --- | --- |
+| Web (itch.io) | Project → Export → **Web** → Export Project | `builds/web/index.html` (+ .js, .wasm, .pck) |
+| Windows | Project → Export → **Windows Desktop** → Export Project | `builds/windows/SiNgacir.exe` (satu file, PCK tertanam) |
+
+Lewat terminal:
+
+```bash
+godot --headless --export-release "Web" builds/web/index.html
+godot --headless --export-release "Windows Desktop" builds/windows/SiNgacir.exe
+```
+
+**Upload ke itch.io:** zip isi folder `builds/web/` (dengan `index.html` di root zip), upload sebagai *HTML*, centang "This file will be played in the browser", ukuran viewport 720 × 672. Build web memakai mode tanpa thread, jadi tidak perlu pengaturan SharedArrayBuffer.
+
+Catatan: di browser, suara baru berbunyi setelah klik/tombol pertama (aturan browser). Mencoba build web secara lokal harus lewat server (misal `python -m http.server` di folder `builds/web`), tidak bisa dibuka langsung dari file.
 
 ## Workflow Git
 
