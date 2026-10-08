@@ -16,6 +16,10 @@ vehicles_per_lane = Vector2i(2, 3)
 vehicle_weights = {&"motor": 2.0, &"mobil": 3.0, &"truk": 1.5}
 eta_per_row = 1.7
 fixed_seed = 0
+blockers_per_safe_row = Vector2i(1, 2)
+hole_chance = 0.2
+coin_chance = 0.3
+powerup_chance = 0.35
 
 [resource]
 script = ExtResource("1_day")

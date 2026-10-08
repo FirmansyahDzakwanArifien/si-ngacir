@@ -113,7 +113,7 @@ Sampai sebelum ETA habis untuk mendapat **bonus tepat waktu**. Terlambat tidak m
 ### Upah harian
 
 ```
-Upah = Upah dasar + Bonus tepat waktu (+ Tip) − Denda kerusakan − Potongan telat
+Upah = Upah dasar + Bonus tepat waktu (+ Tip) (+ Bonus koin) − Denda kerusakan − Potongan telat
 ```
 
 Upah setiap hari ditambahkan ke **tabungan pengobatan**. Jika mengulang hari, yang dihitung adalah upah **terbaik** hari itu.
@@ -141,6 +141,21 @@ Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan 
 | 3 | Telur | Pak Ojan | Paket rapuh (kerusakan 2x lipat) dan pelanggan perfeksionis |
 | 4 | Barang Sensitif | Pak Joko | Hujan deras di jam sibuk: pandangan terbatas, jalan licin |
 | 5 | Paket VIP | Bu Direktur | Semua tantangan sekaligus. Paket hancur hanya dengan 2 kerusakan |
+
+### Rintangan di jalan
+
+| Rintangan | Efek |
+| --- | --- |
+| **Cone & pembatas jalan** (di median) | Menghalangi langkah. Geser ke kiri/kanan lalu lanjut |
+| **Lubang** (di aspal) | Masbro terperosok: paket rusak 1 dan Masbro kembali ke petak sebelumnya |
+
+### Koin & power-up
+
+| Item | Efek |
+| --- | --- |
+| **Koin** | +Rp1.000 per koin, masuk ke upah sebagai *Bonus koin* |
+| **Helm** | Gelembung pelindung: menahan 1 tabrakan atau lubang tanpa merusak paket |
+| **Sepatu** | Langkah 40% lebih cepat selama 8 detik |
 
 ### Rintangan khusus
 

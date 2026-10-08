@@ -29,6 +29,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Upah harian: upah dasar + bonus ETA − denda kerusakan − potongan telat
 * [x] 5 hari masa percobaan: Bantal, Galon Air, Telur, Barang Sensitif, Paket VIP
 * [x] Map prosedural yang panjang & scroll vertikal: rute berbeda setiap main, makin jauh makin sulit
+* [x] Rintangan statis (cone, pembatas, lubang), koin, power-up helm & sepatu
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
@@ -70,6 +71,8 @@ Setiap hari punya **MapParams** (grup *Peta* → `map` di `day_0N.tres`). Map di
 | `vehicles_per_lane`, `vehicle_weights` | Kepadatan dan campuran motor/mobil/truk (celah minimal 3 petak dijamin) |
 | `eta_per_row` | Target waktu per baris; ETA = jumlah baris × nilai ini |
 | `fixed_seed` | 0 = acak setiap main; angka lain = map selalu sama (berguna untuk playtest) |
+| `blockers_per_safe_row` | Cone/pembatas per baris median (min, max) |
+| `hole_chance`, `coin_chance`, `powerup_chance` | Peluang lubang per lane, deretan koin per baris, dan power-up per blok |
 
 Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/rumah ke bawah/gudang).
 

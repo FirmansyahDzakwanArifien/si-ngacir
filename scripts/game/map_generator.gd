@@ -25,7 +25,47 @@ static func generate(params: MapParams, rng: RandomNumberGenerator) -> Array[Lan
 				rows.append(_safe(LaneData.Kind.MEDIAN))
 	rows.append(_safe(LaneData.Kind.SIDEWALK))  # rumah pelanggan
 	rows.reverse()
+	_decorate(rows, params, rng)
 	return rows
+
+
+## Taruh rintangan statis dan item. Baris gudang dan rumah dibiarkan kosong.
+static func _decorate(rows: Array[LaneData], params: MapParams, rng: RandomNumberGenerator) -> void:
+	var road_rows: Array[int] = []
+	for row in range(1, rows.size() - 1):
+		var lane := rows[row]
+		if lane.kind == LaneData.Kind.MEDIAN:
+			var count := rng.randi_range(params.blockers_per_safe_row.x, params.blockers_per_safe_row.y)
+			for col in _distinct_columns(rng, count):
+				lane.obstacles[col] = [&"cone", &"barrier"][rng.randi() % 2]
+		elif lane.kind == LaneData.Kind.ROAD:
+			road_rows.append(row)
+			if rng.randf() < params.hole_chance:
+				lane.obstacles[rng.randi_range(0, COLUMNS - 1)] = &"hole"
+		if rng.randf() < params.coin_chance:
+			var start := rng.randi_range(0, COLUMNS - 3)
+			for col in range(start, start + rng.randi_range(1, 3)):
+				if not lane.obstacles.has(col):
+					lane.items[col] = &"coin"
+	for block in params.road_blocks:
+		if road_rows.is_empty() or rng.randf() >= params.powerup_chance:
+			continue
+		var lane := rows[road_rows[rng.randi() % road_rows.size()]]
+		var col := rng.randi_range(0, COLUMNS - 1)
+		if not lane.obstacles.has(col):
+			lane.items[col] = [&"helmet", &"shoes"][rng.randi() % 2]
+
+
+static func _distinct_columns(rng: RandomNumberGenerator, count: int) -> Array[int]:
+	var columns: Array[int] = []
+	for col in COLUMNS:
+		columns.append(col)
+	for i in range(columns.size() - 1, 0, -1):
+		var j := rng.randi_range(0, i)
+		var tmp := columns[i]
+		columns[i] = columns[j]
+		columns[j] = tmp
+	return columns.slice(0, count)
 
 
 static func _safe(kind: LaneData.Kind) -> LaneData:
