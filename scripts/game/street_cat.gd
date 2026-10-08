@@ -21,9 +21,7 @@ var _body: AnimatedSprite2D
 func _ready() -> void:
 	var frames := SpriteLibrary.frames({&"walk": "cat_walk", &"sit": "cat_sit"}, Vector2i(48, 48))
 	if frames:
-		_body = AnimatedSprite2D.new()
-		_body.centered = false
-		_body.sprite_frames = frames
+		_body = SpriteLibrary.animated(frames)
 		_body.flip_h = direction < 0
 		add_child(_body)
 		_play(&"walk")

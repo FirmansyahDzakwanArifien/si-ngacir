@@ -30,11 +30,10 @@ func setup(type: StringName, p_tile: float, p_speed: float, p_direction: int,
 	direction = p_direction
 	loop_start = p_loop_start
 	loop_length = p_loop_length
-	var texture := SpriteLibrary.texture("vehicle_%s" % type)
-	if texture:
-		_sprite = Sprite2D.new()
-		_sprite.centered = false
-		_sprite.texture = texture
+	# Pilih varian warna secara acak supaya jalanan lebih ramai.
+	var names := SpriteLibrary.variants("vehicle_%s" % type)
+	_sprite = SpriteLibrary.sprite(names.pick_random()) if not names.is_empty() else null
+	if _sprite:
 		# Sprite kendaraan digambar menghadap kanan.
 		_sprite.flip_h = direction < 0
 		add_child(_sprite)

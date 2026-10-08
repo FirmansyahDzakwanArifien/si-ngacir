@@ -50,16 +50,14 @@ func _ready() -> void:
 		&"hit": "masbro_hit",
 	}, Vector2i(48, 48))
 	if frames:
-		_body = AnimatedSprite2D.new()
-		_body.centered = false
-		_body.sprite_frames = frames
+		_body = SpriteLibrary.animated(frames)
 		add_child(_body)
 		_play(&"idle")
 
-	_package_icon = Sprite2D.new()
-	_package_icon.centered = false
-	_package_icon.texture = SpriteLibrary.texture("package_%s" % package_id)
-	if _package_icon.texture == null:
+	_package_icon = SpriteLibrary.sprite("package_%s" % package_id)
+	if _package_icon == null:
+		_package_icon = Sprite2D.new()
+		_package_icon.centered = false
 		_package_icon.texture = SpriteLibrary.placeholder_box(Vector2i(20, 15), package_color, Color("6e4a2b"))
 	add_child(_package_icon)
 	_update_facing()
@@ -174,7 +172,8 @@ func _update_facing() -> void:
 	if _body:
 		_body.flip_h = _facing < 0
 	if _package_icon:
-		_package_icon.position = Vector2(12, 4) if _facing > 0 else Vector2(16, 4)
+		# Paket di punggung Masbro (di belakang kepala).
+		_package_icon.position = Vector2(4, 6) if _facing > 0 else Vector2(24, 6)
 	queue_redraw()
 
 

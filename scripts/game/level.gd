@@ -337,7 +337,10 @@ func _draw_board() -> void:
 		var y := row * TILE
 		var tile_texture: Texture2D = tiles[kind]
 		if tile_texture:
-			_board.draw_texture_rect(tile_texture, Rect2(0, y, width, TILE), true)
+			for col in COLUMNS:
+				_board.draw_texture_rect(tile_texture, Rect2(col * TILE, y, TILE, TILE), false)
+			if kind == LaneData.Kind.ROAD:
+				_draw_lane_marking(row)
 		# Placeholder latar sampai tileset dari Illustrator siap.
 		elif kind == LaneData.Kind.SIDEWALK:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("c9c2b3"))
@@ -347,11 +350,7 @@ func _draw_board() -> void:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("7fb069"))
 		else:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("4a4a52"))
-			if row + 1 < _rows and day.lanes[row + 1].kind == LaneData.Kind.ROAD:
-				var x := 8.0
-				while x < width:
-					_board.draw_line(Vector2(x, y + TILE), Vector2(x + 20, y + TILE), Color("d8d8d8"), 2.0)
-					x += 40.0
+			_draw_lane_marking(row)
 
 	_draw_building("house", 0)
 	_draw_building("warehouse", _rows - 1)
@@ -363,8 +362,20 @@ func _draw_board() -> void:
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
 
 
+func _draw_lane_marking(row: int) -> void:
+	# Marka putus-putus di antara dua lane jalan.
+	if row + 1 >= _rows or day.lanes[row + 1].kind != LaneData.Kind.ROAD:
+		return
+	var y := (row + 1) * TILE
+	var x := 8.0
+	while x < COLUMNS * TILE:
+		_board.draw_line(Vector2(x, y), Vector2(x + 20, y), Color(1, 0.96, 0.86, 0.75), 3.0)
+		x += 40.0
+
+
 func _draw_building(sprite_name: String, row: int) -> void:
 	var texture := SpriteLibrary.texture(sprite_name)
 	if texture:
-		var size := texture.get_size()
-		_board.draw_texture(texture, Vector2(COLUMNS * TILE - size.x - 8, row * TILE + TILE - size.y))
+		var size := texture.get_size() / SpriteLibrary.density(sprite_name)
+		_board.draw_texture_rect(texture,
+				Rect2(Vector2(COLUMNS * TILE - size.x - 8, row * TILE + TILE - size.y), size), false)
