@@ -110,7 +110,7 @@ Naskah cutscene ada di `resources/story/` dan bisa diedit langsung di Inspector 
 | `ending_success.tres` | Setelah Hari 5 bila tabungan cukup |
 | `ending_bad.tres` | Setelah Hari 5 bila tabungan kurang dan `SHORTFALL_RULE = BAD_ENDING` |
 
-Gambar ilustrasi per halaman (opsional): taruh PNG 480 × 270 di `assets/story/`, lalu isi nama filenya (tanpa `.png`) di properti `images` dengan urutan yang sama seperti `pages`.
+Ilustrasi per halaman ada di `assets/story/` (SVG bawaan: `home`, `sick`, `office`, `road`, `galon`, `eggs`, `rain`, `vip`, `celebrate`, `sunset`) dan dipilih lewat properti `images` dengan urutan yang sama seperti `pages`. Untuk mengganti, edit SVG-nya atau taruh PNG 480 × 270 dengan nama sama (PNG diutamakan).
 
 Kontrol cutscene: Enter / klik untuk lanjut, Esc untuk lewati.
 

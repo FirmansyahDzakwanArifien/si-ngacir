@@ -73,6 +73,23 @@ Diulang (tile) memanjang sepanjang baris, jadi sisi kiri dan kanan harus menyamb
 | `house.png` | bebas, tinggi ≤ 48 | Rumah pelanggan, digambar di pojok kanan baris atas |
 | `warehouse.png` | bebas, tinggi ≤ 48 | Gudang Ngacir Express, pojok kanan baris bawah |
 
+## Ilustrasi cutscene
+
+Lokasi: `assets/story/`. Ukuran **480 × 270 px** (PNG) atau 960 × 540 (SVG bawaan, 2x). Bingkai bulat dengan outline gelap.
+
+| File | Adegan |
+| --- | --- |
+| `home` | Masbro dan adiknya di rumah |
+| `sick` | Adik sakit di tempat tidur |
+| `office` | Masbro melamar di Ngacir Express |
+| `road` | Jalan raya Kota Ngacir |
+| `galon` | Galon untuk Pak Budi (Hari 2) |
+| `eggs` | Pak Ojan memeriksa telur (Hari 3) |
+| `rain` | Hujan di jam sibuk (Hari 4) |
+| `vip` | Paket VIP (Hari 5) |
+| `celebrate` | Lulus, adik sembuh |
+| `sunset` | Ending gagal |
+
 ## Audio
 
 Lokasi: `assets/audio/music/` dan `assets/audio/sfx/`. Format `.ogg` (disarankan), `.wav`, atau `.mp3`. Daftar nama file ada di README bagian **Audio**. Musik otomatis di-loop, jadi buat ujung dan awal lagu menyambung.

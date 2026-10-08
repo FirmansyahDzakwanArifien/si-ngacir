@@ -104,8 +104,13 @@ func _next_page() -> void:
 		_finish()
 		return
 	var image_name := _story.images[_page] if _page < _story.images.size() else ""
-	var image_path := IMAGE_DIR + image_name + ".png"
-	_image.texture = load(image_path) if image_name != "" and ResourceLoader.exists(image_path) else null
+	_image.texture = null
+	if image_name != "":
+		# PNG dari Illustrator diutamakan, SVG bawaan sebagai cadangan.
+		for extension in [".png", ".svg"]:
+			if ResourceLoader.exists(IMAGE_DIR + image_name + extension):
+				_image.texture = load(IMAGE_DIR + image_name + extension)
+				break
 	_image.visible = _image.texture != null
 
 	_text.text = _story.pages[_page]
