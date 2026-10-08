@@ -2,6 +2,15 @@
 
 Panduan untuk tim Illustrator & Audio. Simpan file di folder yang disebut dengan **nama persis** seperti tabel di bawah. Game otomatis memakai file yang ada; yang belum ada tetap tampil sebagai placeholder, jadi aset bisa dicicil satu per satu.
 
+## Sprite bawaan (SVG)
+
+Game sudah punya sprite bawaan bergaya **flat kawaii** dalam format SVG di `assets/sprites/` (dibuat 2x lebih besar: 1 petak = 96 px, supaya tajam di HP). Ada dua cara mengganti:
+
+1. **Edit SVG-nya** di Inkscape / Figma / Illustrator (ukuran kanvas jangan diubah), atau
+2. **Taruh PNG** dengan nama yang sama sesuai tabel di bawah. PNG selalu diutamakan daripada SVG.
+
+Palet: outline `#3D2C2E` (tebal 3–4 px pada skala 2x), bulu Masbro `#D19A66`, kuning `#FFD166`, toska `#2EC4B6`, coral `#FF6B6B`, oranye `#FF9F1C`, krem `#FFF4DC`, pipi `#FF8FA3`.
+
 ## Aturan umum sprite
 
 * Format **PNG** dengan latar transparan.
@@ -21,7 +30,14 @@ Lokasi: `assets/sprites/`
 | `masbro_walk.png` | 48 × 48 | 4–6 | Melangkah satu petak. Diputar 8 fps |
 | `masbro_hit.png` | 48 × 48 | 2–4 | Kaget / terpental saat tertabrak |
 
-Catatan: paket digambar **terpisah** (lihat di bawah) dan diletakkan di punggung Masbro pada posisi x=12, y=4. Sisakan ruang di area punggung.
+Catatan: paket digambar **terpisah** (lihat di bawah) dan diletakkan di punggung Masbro pada posisi x=4, y=6 (dalam frame 48 × 48). Sisakan ruang di area punggung.
+
+## Kucing jalanan
+
+| File | Ukuran frame | Frame | Keterangan |
+| --- | --- | --- | --- |
+| `cat_walk.png` | 48 × 48 | 4 | Berjalan menyeberang, menghadap kanan |
+| `cat_sit.png` | 48 × 48 | 2 | Duduk penasaran (saat menyentuh Masbro) |
 
 ## Paket
 
@@ -43,7 +59,7 @@ Ikon paket di punggung Masbro, **20 × 15 px**.
 | `vehicle_mobil.png` | 96 × 48 | 1 |
 | `vehicle_truk.png` | 144 × 48 | 2 |
 
-Pandangan dari atas (top-down) atau samping, menghadap kanan. Kendaraan sebaiknya mengisi tinggi ±30 px di tengah petak supaya area tabrakan terasa adil.
+Tampak samping, menghadap kanan. **Varian warna** opsional: tambahkan `vehicle_mobil_2.png`, `vehicle_mobil_3.png`, dst. Game memilih varian secara acak. Kendaraan sebaiknya mengisi tinggi ±30 px di tengah petak supaya area tabrakan terasa adil.
 
 ## Latar (tile)
 
@@ -56,6 +72,23 @@ Diulang (tile) memanjang sepanjang baris, jadi sisi kiri dan kanan harus menyamb
 | `tile_median.png` | 48 × 48 | Taman pembatas di tengah (zona aman) |
 | `house.png` | bebas, tinggi ≤ 48 | Rumah pelanggan, digambar di pojok kanan baris atas |
 | `warehouse.png` | bebas, tinggi ≤ 48 | Gudang Ngacir Express, pojok kanan baris bawah |
+
+## Ilustrasi cutscene
+
+Lokasi: `assets/story/`. Ukuran **480 × 270 px** (PNG) atau 960 × 540 (SVG bawaan, 2x). Bingkai bulat dengan outline gelap.
+
+| File | Adegan |
+| --- | --- |
+| `home` | Masbro dan adiknya di rumah |
+| `sick` | Adik sakit di tempat tidur |
+| `office` | Masbro melamar di Ngacir Express |
+| `road` | Jalan raya Kota Ngacir |
+| `galon` | Galon untuk Pak Budi (Hari 2) |
+| `eggs` | Pak Ojan memeriksa telur (Hari 3) |
+| `rain` | Hujan di jam sibuk (Hari 4) |
+| `vip` | Paket VIP (Hari 5) |
+| `celebrate` | Lulus, adik sembuh |
+| `sunset` | Ending gagal |
 
 ## Audio
 

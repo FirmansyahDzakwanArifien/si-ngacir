@@ -21,7 +21,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | Enter | Pilih tombol di panel |
 | Layar sentuh | Tap = maju, swipe = arah gerak, D-pad di layar, tombol II = pause |
 
-## Status (v0.1)
+## Status (v0.3)
 
 * [x] Gerak grid, lane jalan/trotoar/median, kendaraan (motor, mobil, truk)
 * [x] Kondisi paket menggantikan nyawa (tabrakan → damage → paket hancur)
@@ -37,7 +37,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Cutscene cerita: pembuka, sebelum Hari 2–5, dan ending (naskah draf)
 * [x] Export Web (HTML5) dan Windows
 * [x] Kontrol sentuh (swipe/tap + D-pad) dan layar responsif (potret, lanskap, layar lebar)
-* [ ] Gambar final dari tim Illustrator
+* [x] Tampilan flat kawaii: sprite, ilustrasi cutscene, UI, animasi & efek (bawaan, bisa diganti tim Illustrator)
 * [ ] Naskah final dari tim Writer Story
 
 ## Struktur
@@ -110,7 +110,7 @@ Naskah cutscene ada di `resources/story/` dan bisa diedit langsung di Inspector 
 | `ending_success.tres` | Setelah Hari 5 bila tabungan cukup |
 | `ending_bad.tres` | Setelah Hari 5 bila tabungan kurang dan `SHORTFALL_RULE = BAD_ENDING` |
 
-Gambar ilustrasi per halaman (opsional): taruh PNG 480 × 270 di `assets/story/`, lalu isi nama filenya (tanpa `.png`) di properti `images` dengan urutan yang sama seperti `pages`.
+Ilustrasi per halaman ada di `assets/story/` (SVG bawaan: `home`, `sick`, `office`, `road`, `galon`, `eggs`, `rain`, `vip`, `celebrate`, `sunset`) dan dipilih lewat properti `images` dengan urutan yang sama seperti `pages`. Untuk mengganti, edit SVG-nya atau taruh PNG 480 × 270 dengan nama sama (PNG diutamakan).
 
 Kontrol cutscene: Enter / klik untuk lanjut, Esc untuk lewati.
 

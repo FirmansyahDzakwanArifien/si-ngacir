@@ -14,32 +14,31 @@ func _ready() -> void:
 	GameState.is_replay = false
 	AudioManager.play_music(&"menu")
 
-	var background := ColorRect.new()
-	background.color = GameHud.INK
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(background)
+	add_child(MenuBackdrop.new())
 
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(center)
 
+	var card := PanelContainer.new()
+	center.add_child(card)
 	var column := VBoxContainer.new()
-	column.custom_minimum_size = Vector2(520, 0)
+	column.custom_minimum_size = Vector2(500, 0)
 	column.add_theme_constant_override("separation", 8)
-	center.add_child(column)
+	card.add_child(column)
 
 	var enough := GameState.savings_enough()
 	var can_replay := not enough and GameState.SHORTFALL_RULE == GameState.ShortfallRule.REPLAY_DAYS
 	if enough:
-		column.add_child(_label("MASA PERCOBAAN LULUS!", 32, GameHud.GREEN, true))
-		column.add_child(_label(SUCCESS_TEXT, 16, Color.WHITE, true))
+		column.add_child(_label("MASA PERCOBAAN LULUS!", 32, Palette.TEAL, true))
+		column.add_child(_label(SUCCESS_TEXT, 16, Palette.TEXT, true))
 	elif can_replay:
-		column.add_child(_label("TABUNGAN BELUM CUKUP", 32, GameHud.GOLD, true))
+		column.add_child(_label("TABUNGAN BELUM CUKUP", 32, Palette.YELLOW, true))
 		var missing := GameState.MEDICAL_COST - GameState.total_savings()
-		column.add_child(_label(SHORTFALL_TEXT % GameState.rupiah(missing), 16, Color.WHITE, true))
+		column.add_child(_label(SHORTFALL_TEXT % GameState.rupiah(missing), 16, Palette.TEXT, true))
 	else:
-		column.add_child(_label("MASA PERCOBAAN BERAKHIR", 32, GameHud.RED, true))
-		column.add_child(_label(BAD_ENDING_TEXT, 16, Color.WHITE, true))
+		column.add_child(_label("MASA PERCOBAAN BERAKHIR", 32, Palette.CORAL, true))
+		column.add_child(_label(BAD_ENDING_TEXT, 16, Palette.TEXT, true))
 
 	column.add_child(HSeparator.new())
 	var first_button: Button = null
@@ -55,15 +54,16 @@ func _ready() -> void:
 			if first_button == null:
 				first_button = button
 		else:
-			column.add_child(_money_row(caption, wage, Color.WHITE))
+			column.add_child(_money_row(caption, wage, Palette.TEXT))
 	column.add_child(HSeparator.new())
-	column.add_child(_money_row("Total tabungan", GameState.total_savings(), GameHud.GREEN if enough else GameHud.GOLD))
-	column.add_child(_money_row("Biaya pengobatan", GameState.MEDICAL_COST, Color(1, 1, 1, 0.7)))
+	column.add_child(_money_row("Total tabungan", GameState.total_savings(),
+			Palette.TEAL_DARK if enough else Palette.CORAL_DARK))
+	column.add_child(_money_row("Biaya pengobatan", GameState.MEDICAL_COST, Palette.TEXT_SOFT))
 
 	var menu := Button.new()
 	menu.text = "Menu Utama"
-	menu.custom_minimum_size = Vector2(0, 40)
-	menu.pressed.connect(get_tree().change_scene_to_file.bind(GameState.MENU_SCENE))
+	menu.custom_minimum_size = Vector2(0, 44)
+	menu.pressed.connect(Transition.change_scene.bind(GameState.MENU_SCENE))
 	column.add_child(menu)
 	(first_button if first_button else menu).grab_focus.call_deferred()
 
@@ -74,6 +74,11 @@ func _label(text: String, size: int, color: Color, centered := false) -> Label:
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if centered:
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if size >= 30:
+		# Judul: tebal dengan outline gelap, seperti logo.
+		label.add_theme_font_override("font", UiTheme.font(600))
+		label.add_theme_color_override("font_outline_color", Palette.OUTLINE)
+		label.add_theme_constant_override("outline_size", 9)
 	label.add_theme_font_size_override("font_size", size)
 	label.add_theme_color_override("font_color", color)
 	return label

@@ -51,6 +51,7 @@ var pending_scene := ""
 
 func _ready() -> void:
 	_setup_input()
+	UiTheme.apply(get_tree().root)
 	load_game()
 
 
@@ -87,7 +88,7 @@ func finish_probation() -> void:
 func replay_day(index: int) -> void:
 	current_day_index = index
 	is_replay = true
-	get_tree().change_scene_to_file(LEVEL_SCENE)
+	Transition.change_scene(LEVEL_SCENE)
 
 
 func record_delivery(day: DayData, wage: int) -> void:
@@ -109,11 +110,11 @@ func savings_enough() -> bool:
 ## Putar cutscene lalu pindah ke next_scene. Tanpa cerita, langsung pindah.
 func play_story(story: StoryData, next_scene: String) -> void:
 	if story == null or story.pages.is_empty():
-		get_tree().change_scene_to_file(next_scene)
+		Transition.change_scene(next_scene)
 		return
 	pending_story = story
 	pending_scene = next_scene
-	get_tree().change_scene_to_file(CUTSCENE_SCENE)
+	Transition.change_scene(CUTSCENE_SCENE)
 
 
 ## Cutscene penutup sesuai hasil masa percobaan (null bila pemain masih boleh mengulang hari).

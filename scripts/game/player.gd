@@ -41,6 +41,9 @@ var _blink_time := 0.0
 ## Sprite Masbro dari Illustrator; null berarti memakai gambar placeholder di _draw().
 var _body: AnimatedSprite2D
 var _package_icon: Sprite2D
+## Titik kaki Masbro; lompatan dan squash/stretch berporos di sini.
+var _visual: Node2D
+var _hop_tween: Tween
 
 
 func _ready() -> void:
@@ -49,19 +52,23 @@ func _ready() -> void:
 		&"walk": "masbro_walk",
 		&"hit": "masbro_hit",
 	}, Vector2i(48, 48))
+	_visual = Node2D.new()
+	_visual.position = Vector2(tile / 2.0, tile)
+	add_child(_visual)
+	var rig := Node2D.new()
+	rig.position = -_visual.position
+	_visual.add_child(rig)
 	if frames:
-		_body = AnimatedSprite2D.new()
-		_body.centered = false
-		_body.sprite_frames = frames
-		add_child(_body)
+		_body = SpriteLibrary.animated(frames)
+		rig.add_child(_body)
 		_play(&"idle")
 
-	_package_icon = Sprite2D.new()
-	_package_icon.centered = false
-	_package_icon.texture = SpriteLibrary.texture("package_%s" % package_id)
-	if _package_icon.texture == null:
+	_package_icon = SpriteLibrary.sprite("package_%s" % package_id)
+	if _package_icon == null:
+		_package_icon = Sprite2D.new()
+		_package_icon.centered = false
 		_package_icon.texture = SpriteLibrary.placeholder_box(Vector2i(20, 15), package_color, Color("6e4a2b"))
-	add_child(_package_icon)
+	rig.add_child(_package_icon)
 	_update_facing()
 
 
@@ -151,12 +158,43 @@ func _hop_to(target: Vector2i, duration: float, animation := &"walk") -> void:
 	_play(animation)
 	_tween = create_tween()
 	_tween.tween_property(self, "position", cell_to_position(target), duration)
-	_tween.tween_callback(_on_hop_finished)
+	_tween.tween_callback(_on_hop_finished.bind(animation == &"walk"))
+	if animation == &"walk":
+		_bounce(duration)
 
 
-func _on_hop_finished() -> void:
+## Lompatan kecil dengan squash & stretch, berporos di kaki.
+func _bounce(duration: float, height := 7.0) -> void:
+	if _hop_tween:
+		_hop_tween.kill()
+	_visual.position.y = tile
+	_hop_tween = create_tween()
+	_hop_tween.tween_property(_visual, "position:y", tile - height, duration * 0.5) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_hop_tween.parallel().tween_property(_visual, "scale", Vector2(0.9, 1.12), duration * 0.5)
+	_hop_tween.tween_property(_visual, "position:y", tile, duration * 0.5) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_hop_tween.parallel().tween_property(_visual, "scale", Vector2(1.15, 0.86), duration * 0.5)
+	_hop_tween.tween_property(_visual, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_BACK)
+
+
+## Lompat girang saat paket sampai.
+func celebrate() -> void:
+	if _hop_tween:
+		_hop_tween.kill()
+	_hop_tween = create_tween().set_loops(2)
+	_hop_tween.tween_property(_visual, "position:y", tile - 16.0, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_hop_tween.parallel().tween_property(_visual, "scale", Vector2(0.9, 1.15), 0.16)
+	_hop_tween.tween_property(_visual, "position:y", tile, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_hop_tween.parallel().tween_property(_visual, "scale", Vector2(1.15, 0.85), 0.16)
+	_hop_tween.tween_property(_visual, "scale", Vector2.ONE, 0.08)
+
+
+func _on_hop_finished(walked: bool) -> void:
 	if not invulnerable:
 		_play(&"idle")
+	if walked and get_parent():
+		Effects.dust(get_parent(), position + Vector2(tile / 2.0, tile - 4.0))
 	moved.emit(cell)
 
 
@@ -174,7 +212,8 @@ func _update_facing() -> void:
 	if _body:
 		_body.flip_h = _facing < 0
 	if _package_icon:
-		_package_icon.position = Vector2(12, 4) if _facing > 0 else Vector2(16, 4)
+		# Paket di punggung Masbro (di belakang kepala).
+		_package_icon.position = Vector2(4, 6) if _facing > 0 else Vector2(24, 6)
 	queue_redraw()
 
 

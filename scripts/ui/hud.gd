@@ -1,6 +1,6 @@
 class_name GameHud
 extends CanvasLayer
-## Bar atas in-game (hari, kondisi paket, ETA, tujuan) dan panel overlay
+## Bar atas in-game (hari, kondisi paket, ETA, tujuan) dan kartu dialog
 ## untuk intro hari, pause, hasil pengiriman, dan paket hancur.
 
 signal start_requested
@@ -12,15 +12,19 @@ signal menu_requested
 signal pause_pressed
 
 const BAR_HEIGHT := 48.0
-const INK := Color("2b2d42")
-const GOLD := Color("ffd166")
-const RED := Color("ef476f")
-const GREEN := Color("06d6a0")
+# Alias lama, dipakai beberapa layar lain.
+const INK := Palette.NIGHT
+const GOLD := Palette.YELLOW
+const RED := Palette.CORAL
+const GREEN := Palette.TEAL
 
 var _day: DayData
 var _time_label: Label
-var _package_boxes: Array[ColorRect] = []
+var _time_pill: PanelContainer
+var _time_pulse: Tween
+var _package_icons: Array[Control] = []
 var _overlay: ColorRect
+var _panel: PanelContainer
 var _panel_box: VBoxContainer
 
 
@@ -37,33 +41,59 @@ func setup(day: DayData) -> void:
 
 
 func update_timer(seconds_left: float) -> void:
-	if seconds_left >= 0.0:
-		_time_label.text = "ETA %s" % format_time(seconds_left)
-		_time_label.modulate = Color.WHITE if seconds_left > 10.0 else GOLD
-	else:
+	var fill := Palette.TEAL
+	var text_color := Palette.WHITE
+	if seconds_left < 0.0:
 		_time_label.text = "TELAT +%s" % format_time(-seconds_left)
-		_time_label.modulate = RED
+		fill = Palette.CORAL
+	else:
+		_time_label.text = "ETA %s" % format_time(seconds_left)
+		if seconds_left <= 10.0:
+			fill = Palette.YELLOW
+			text_color = Palette.TEXT
+	_time_pill.add_theme_stylebox_override("panel", UiTheme.pill(fill))
+	_time_label.add_theme_color_override("font_color", text_color)
+	# Pil ETA berdenyut saat waktu menipis.
+	var hurry := seconds_left <= 10.0 and seconds_left > -1.0
+	if hurry and _time_pulse == null:
+		_time_pill.pivot_offset = _time_pill.size / 2.0
+		_time_pulse = _time_pill.create_tween().set_loops()
+		_time_pulse.tween_property(_time_pill, "scale", Vector2(1.08, 1.08), 0.25)
+		_time_pulse.tween_property(_time_pill, "scale", Vector2.ONE, 0.25)
+	elif not hurry and _time_pulse:
+		_time_pulse.kill()
+		_time_pulse = null
+		_time_pill.scale = Vector2.ONE
 
 
 func update_package(damage: int) -> void:
 	var remaining := _day.package.max_damage - damage
-	for i in _package_boxes.size():
-		_package_boxes[i].color = _day.package.color if i < remaining else Color(1, 1, 1, 0.15)
+	for i in _package_icons.size():
+		var icon := _package_icons[i]
+		var lost := i >= remaining
+		if lost and icon.modulate.a > 0.5:
+			# Ikon yang baru hilang meletup kecil dulu.
+			icon.pivot_offset = icon.size / 2.0
+			var tween := icon.create_tween()
+			tween.tween_property(icon, "scale", Vector2(1.5, 1.5), 0.08)
+			tween.tween_property(icon, "scale", Vector2.ONE, 0.12)
+		icon.modulate = Color(1, 1, 1, 0.25) if lost else Color.WHITE
 
 
 func show_intro() -> void:
 	var pkg := _day.package
 	var rows: Array[Control] = [
-		_label("Paket: %s" % pkg.display_name, 18),
-		_label(pkg.description, 16, Color(1, 1, 1, 0.8)),
-		_label("Antar ke: %s" % _day.customer_name, 16),
+		_package_picture(),
+		_label("Paket: %s" % pkg.display_name, 20, Palette.TEXT, true, 600),
+		_label(pkg.description, 16, Palette.TEXT_SOFT),
+		_label("Antar ke: %s" % _day.customer_name, 17),
 		_label("Target ETA: %s   Upah dasar: %s" % [
-				format_time(_day.eta_seconds), GameState.rupiah(_day.base_wage)], 16),
+				format_time(_day.eta_seconds), GameState.rupiah(_day.base_wage)], 17),
 	]
 	for warning in _day_warnings():
-		rows.append(_label("! " + warning, 15, Color("8ecae6")))
-	rows.append(_label("Gerak: WASD / panah   Pause: Esc / P", 14, Color(1, 1, 1, 0.6)))
-	_open("Hari %d: %s" % [_day.day, _day.title], GOLD, rows, [["Trobos Ajalah!", start_requested.emit]])
+		rows.append(_label("! " + warning, 15, Palette.TEAL_DARK, true, 600))
+	rows.append(_label("Gerak: WASD / panah / swipe   Pause: Esc / P", 14, Palette.TEXT_SOFT))
+	_open("Hari %d: %s" % [_day.day, _day.title], Palette.YELLOW, rows, [["Trobos Ajalah!", start_requested.emit]])
 
 
 func _day_warnings() -> PackedStringArray:
@@ -79,7 +109,7 @@ func _day_warnings() -> PackedStringArray:
 
 
 func show_pause() -> void:
-	_open("PAUSE", GOLD, [], [
+	_open("PAUSE", Palette.YELLOW, [], [
 		["Lanjut", resume_requested.emit],
 		["Ulangi Hari", retry_requested.emit],
 		["Pengaturan", _open_settings],
@@ -97,7 +127,7 @@ func _open_settings() -> void:
 func show_result(report: DeliveryReport, next_text: String) -> void:
 	var rows: Array[Control] = [
 		StarRow.new(report.stars),
-		_label("\"%s\"\n- %s" % [report.comment, report.customer], 16, GOLD),
+		_quote(report.comment, report.customer),
 		_label("Kondisi paket: %d%%   Tabrakan: %d" % [roundi(report.integrity * 100.0), report.collisions], 16),
 		_label("Waktu: %s (ETA %s)" % [format_time(report.elapsed), format_time(_day.eta_seconds)], 16),
 		HSeparator.new(),
@@ -107,12 +137,12 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 		_money_row("Denda kerusakan" + (" (2x)" if report.strict else ""), -report.damage_penalty),
 		_money_row("Potongan telat", -report.late_penalty),
 		HSeparator.new(),
-		_money_row("UPAH HARI INI", report.wage, GREEN),
+		_counting_money_row("UPAH HARI INI", report.wage),
 		_label("Tabungan pengobatan: %s / %s" % [
 				GameState.rupiah(GameState.total_savings()), GameState.rupiah(GameState.MEDICAL_COST)],
-				14, Color(1, 1, 1, 0.7)),
+				14, Palette.TEXT_SOFT),
 	]
-	_open("PAKET SAMPAI!", GREEN, rows, [
+	_open("PAKET SAMPAI!", Palette.TEAL, rows, [
 		[next_text, next_requested.emit],
 		["Ulangi Hari", retry_requested.emit],
 	])
@@ -121,8 +151,9 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 func show_failed(is_replay: bool) -> void:
 	var leave: Array = ["Kembali ke Rekap", next_requested.emit] if is_replay \
 			else ["Menu Utama", menu_requested.emit]
-	_open("PAKET HANCUR!", RED, [
-		_label("\"%s\"\n- %s" % [DeliveryReport.FAILED_COMMENT, _day.customer_name], 16, GOLD),
+	_open("PAKET HANCUR!", Palette.CORAL, [
+		_package_picture(true),
+		_quote(DeliveryReport.FAILED_COMMENT, _day.customer_name),
 		_label("Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.", 16),
 	], [
 		["Ulangi Hari", retry_requested.emit],
@@ -141,71 +172,68 @@ static func format_time(seconds: float) -> String:
 
 
 func _build_top_bar() -> void:
-	var bar := ColorRect.new()
-	bar.color = INK
+	var bar := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Palette.CREAM
+	style.border_color = Palette.OUTLINE
+	style.border_width_bottom = 3
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	bar.add_theme_stylebox_override("panel", style)
 	bar.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	bar.offset_bottom = BAR_HEIGHT
+	UiTheme.attach(bar)
 	add_child(bar)
 
 	var row := HBoxContainer.new()
-	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	row.offset_left = 12
-	row.offset_right = -12
-	row.add_theme_constant_override("separation", 14)
+	row.add_theme_constant_override("separation", 10)
 	bar.add_child(row)
 
-	row.add_child(_label("HARI %d" % _day.day, 18, GOLD, false))
-	row.add_child(_label(_day.package.display_name.to_upper(), 16, Color.WHITE, false))
-	var boxes := HBoxContainer.new()
-	boxes.add_theme_constant_override("separation", 4)
+	row.add_child(_pill(_label("HARI %d" % _day.day, 17, Palette.WHITE, false, 600), Palette.CORAL))
+	var icons := HBoxContainer.new()
+	icons.add_theme_constant_override("separation", 3)
 	for i in _day.package.max_damage:
-		var box := ColorRect.new()
-		box.custom_minimum_size = Vector2(14, 14)
-		box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		box.color = _day.package.color
-		boxes.add_child(box)
-		_package_boxes.append(box)
-	row.add_child(boxes)
+		var icon := _package_icon(Vector2(30, 22))
+		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		icons.add_child(icon)
+		_package_icons.append(icon)
+	row.add_child(icons)
 
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(spacer)
-	_time_label = _label("", 18, Color.WHITE, false)
-	row.add_child(_time_label)
-	row.add_child(_label("ANTAR KE: %s" % _day.customer_name.to_upper(), 14, Color(1, 1, 1, 0.7), false))
+	_time_label = _label("", 17, Palette.WHITE, false, 600)
+	_time_pill = _pill(_time_label, Palette.TEAL)
+	row.add_child(_time_pill)
+	row.add_child(_label("ke %s" % _day.customer_name, 16, Palette.TEXT, false, 600))
 	if DisplayServer.is_touchscreen_available():
 		var pause := Button.new()
 		pause.text = "II"
 		pause.focus_mode = Control.FOCUS_NONE
 		pause.custom_minimum_size = Vector2(40, 0)
+		pause.add_theme_font_size_override("font_size", 16)
 		pause.pressed.connect(pause_pressed.emit)
 		row.add_child(pause)
 
 
 func _build_overlay() -> void:
 	_overlay = ColorRect.new()
-	_overlay.color = Color(0, 0, 0, 0.55)
+	_overlay.color = Color(0.1, 0.09, 0.2, 0.5)
 	_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	UiTheme.attach(_overlay)
 	add_child(_overlay)
 
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_overlay.add_child(center)
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = INK
-	style.border_color = GOLD
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(12)
-	style.set_content_margin_all(24)
-	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(440, 0)
-	panel.add_theme_stylebox_override("panel", style)
-	center.add_child(panel)
+	_panel = PanelContainer.new()
+	_panel.custom_minimum_size = Vector2(460, 0)
+	center.add_child(_panel)
 
 	_panel_box = VBoxContainer.new()
-	_panel_box.add_theme_constant_override("separation", 8)
-	panel.add_child(_panel_box)
+	_panel_box.add_theme_constant_override("separation", 6)
+	_panel.add_child(_panel_box)
 	_overlay.hide()
 
 
@@ -213,44 +241,120 @@ func _open(title: String, title_color: Color, rows: Array, buttons: Array) -> vo
 	for child in _panel_box.get_children():
 		_panel_box.remove_child(child)
 		child.queue_free()
-	var heading := _label(title, 26, title_color)
+	var heading := _label(title, 30, title_color, true, 600)
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	heading.add_theme_color_override("font_outline_color", Palette.OUTLINE)
+	heading.add_theme_constant_override("outline_size", 9)
 	_panel_box.add_child(heading)
 	for row: Control in rows:
 		if row:
 			_panel_box.add_child(row)
 
 	var first_button: Button = null
+	var buttons_box := VBoxContainer.new()
+	buttons_box.add_theme_constant_override("separation", 10)
 	for entry: Array in buttons:
 		var button := Button.new()
 		button.text = entry[0]
-		button.custom_minimum_size = Vector2(0, 36)
+		button.custom_minimum_size = Vector2(0, 44)
 		button.pressed.connect(entry[1])
-		_panel_box.add_child(button)
+		buttons_box.add_child(button)
 		if first_button == null:
 			first_button = button
+	if buttons_box.get_child_count() > 0:
+		var gap := Control.new()
+		gap.custom_minimum_size = Vector2(0, 4)
+		_panel_box.add_child(gap)
+		_panel_box.add_child(buttons_box)
 	_overlay.show()
+	_pop_in.call_deferred()
 	if first_button:
 		first_button.grab_focus.call_deferred()
 
 
-func _label(text: String, size: int, color := Color.WHITE, wrap := true) -> Label:
+func _pop_in() -> void:
+	# Kartu muncul memantul kecil.
+	_panel.pivot_offset = _panel.size / 2.0
+	_panel.scale = Vector2(0.85, 0.85)
+	var tween := _panel.create_tween()
+	tween.tween_property(_panel, "scale", Vector2.ONE, 0.25) \
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _label(text: String, size: int, color := Palette.TEXT, wrap := true, weight := 500) -> Label:
 	var label := Label.new()
 	label.text = text
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	if wrap:
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if weight != 500:
+		label.add_theme_font_override("font", UiTheme.font(weight))
 	label.add_theme_font_size_override("font_size", size)
 	label.add_theme_color_override("font_color", color)
 	return label
 
 
-func _money_row(caption: String, amount: int, color := Color.WHITE) -> Control:
+func _quote(comment: String, customer: String) -> Control:
+	var box := PanelContainer.new()
+	var style := UiTheme.pill(Color.WHITE)
+	style.set_corner_radius_all(16)
+	style.set_content_margin_all(10)
+	box.add_theme_stylebox_override("panel", style)
+	var label := _label("\"%s\"\n- %s" % [comment, customer], 16, Palette.TEXT, true, 500)
+	box.add_child(label)
+	return box
+
+
+func _pill(content: Control, fill: Color) -> PanelContainer:
+	var pill := PanelContainer.new()
+	pill.add_theme_stylebox_override("panel", UiTheme.pill(fill))
+	pill.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	pill.add_child(content)
+	return pill
+
+
+func _package_icon(size: Vector2) -> Control:
+	var texture := SpriteLibrary.texture("package_%s" % _day.package.id)
+	if texture == null:
+		var box := ColorRect.new()
+		box.color = _day.package.color
+		box.custom_minimum_size = size * 0.6
+		return box
+	var icon := TextureRect.new()
+	icon.texture = texture
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.custom_minimum_size = size
+	return icon
+
+
+func _package_picture(broken := false) -> Control:
+	var icon := _package_icon(Vector2(96, 72))
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	if broken:
+		icon.modulate = Color(1, 1, 1, 0.45)
+		icon.rotation_degrees = -12.0
+		icon.pivot_offset = Vector2(48, 36)
+	return icon
+
+
+## Baris upah yang angkanya menghitung naik dari Rp0.
+func _counting_money_row(caption: String, amount: int) -> Control:
+	var row := _money_row(caption, 0, Palette.TEAL_DARK, 600)
+	var value := row.get_child(1) as Label
+	var tween := value.create_tween()
+	tween.tween_interval(0.5)
+	tween.tween_method(func(v: float) -> void: value.text = GameState.rupiah(roundi(v)),
+			0.0, float(amount), 0.7).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	return row
+
+
+func _money_row(caption: String, amount: int, color := Palette.TEXT, weight := 500) -> Control:
 	var row := HBoxContainer.new()
-	var left := _label(caption, 16, color, false)
+	var left := _label(caption, 16, color, false, weight)
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(left)
-	row.add_child(_label(GameState.rupiah(amount), 16, color, false))
+	row.add_child(_label(GameState.rupiah(amount), 16, color, false, weight))
 	return row
 
 
@@ -259,29 +363,38 @@ class StarRow extends Control:
 	var stars := 0
 
 	var _shown := 0
+	var _pop := 1.0
 
 	func _init(p_stars: int) -> void:
 		stars = p_stars
-		custom_minimum_size = Vector2(0, 40)
+		custom_minimum_size = Vector2(0, 46)
 
 	func _ready() -> void:
-		# Bintang muncul satu per satu.
+		# Bintang muncul satu per satu sambil memantul.
 		var tween := create_tween()
 		for i in stars:
-			tween.tween_interval(0.18)
+			tween.tween_interval(0.16)
 			tween.tween_callback(_show_next_star)
+			tween.tween_method(_set_pop, 1.6, 1.0, 0.18).set_trans(Tween.TRANS_BACK)
 
 	func _show_next_star() -> void:
 		_shown += 1
 		AudioManager.play_sfx(&"star")
+
+	func _set_pop(value: float) -> void:
+		_pop = value
 		queue_redraw()
 
 	func _draw() -> void:
-		var spacing := 40.0
+		var spacing := 50.0
 		var start_x := size.x / 2.0 - spacing * 2.0
 		for i in 5:
-			var color := GOLD if i < _shown else Color(1, 1, 1, 0.2)
-			draw_colored_polygon(_star_points(Vector2(start_x + i * spacing, 20), 16.0, 7.0), color)
+			var lit := i < _shown
+			var scale := _pop if i == _shown - 1 else 1.0
+			var points := _star_points(Vector2(start_x + i * spacing, 23), 19.0 * scale, 8.5 * scale)
+			draw_colored_polygon(points, Palette.YELLOW if lit else Palette.CREAM_DARK)
+			points.append(points[0])
+			draw_polyline(points, Palette.OUTLINE, 3.0, true)
 
 	func _star_points(center: Vector2, outer: float, inner: float) -> PackedVector2Array:
 		var points := PackedVector2Array()
