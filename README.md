@@ -28,7 +28,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
-* [ ] Kucing jalanan, hujan, Pak Ojan
+* [x] Side conflict: kucing jalanan, hujan (jarak pandang & licin), Pak Ojan (pelanggan perfeksionis)
 * [x] Sistem audio (BGM + SFX, suara placeholder) dan menu Pengaturan (volume, layar penuh)
 * [x] Siap sprite: game otomatis memakai gambar di `assets/sprites/` (spesifikasi di `docs/ASSET_SPEC.md`)
 * [ ] Gambar final dari tim Illustrator
@@ -68,13 +68,33 @@ resources/days/day_0N.tres   Data hari 1–5: paket, pelanggan, ETA, upah, susun
 | `sfx/fail` | Paket hancur |
 | `sfx/delivery` | Paket sampai |
 | `sfx/star` | Tiap bintang rating muncul |
+| `sfx/meow` | Jalan terhalang kucing |
+| `sfx/slip` | Masbro tergelincir saat hujan |
 | `sfx/click` | Semua tombol |
+
+## Side conflict per hari
+
+Diatur di grup **Side Conflict** pada tiap `day_0N.tres`:
+
+| Properti | Efek |
+| --- | --- |
+| `cat_count` | Jumlah kucing jalanan bersamaan. Kucing tidak merusak paket, tapi menghalangi petak |
+| `rainy`, `slip_chance`, `visibility_tiles` | Hujan: gelap di luar jarak pandang, peluang tergelincir di aspal |
+| `strict_customer`, `perfect_tip` | Pelanggan perfeksionis: denda kerusakan 2x, maks 3 bintang bila paket rusak, tip bila sempurna |
+
+| Hari | Kucing | Hujan | Pelanggan perfeksionis |
+| --- | --- | --- | --- |
+| 1 | – | – | – |
+| 2 | 1 | – | – |
+| 3 | 1 | – | Pak Ojan (tip Rp25.000) |
+| 4 | 1 | Ya | – |
+| 5 | 2 | Ya (lebih ringan) | – |
 
 ## Placeholder untuk Writer Story
 
 Di `scripts/autoload/game_state.gd`:
 
-* `MEDICAL_COST` (sekarang Rp350.000; upah maksimal 5 hari Rp480.000)
+* `MEDICAL_COST` (sekarang Rp350.000; upah maksimal 5 hari Rp505.000 termasuk tip Pak Ojan)
 * `SHORTFALL_RULE` — kalau tabungan kurang setelah Hari 5:
   * `REPLAY_DAYS` (aktif): pemain boleh mengulang hari mana pun dari layar rekap
   * `BAD_ENDING`: masa percobaan langsung berakhir dengan ending gagal
