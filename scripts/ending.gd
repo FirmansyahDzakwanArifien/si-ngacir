@@ -35,7 +35,7 @@ func _ready() -> void:
 	elif can_replay:
 		column.add_child(_label("TABUNGAN BELUM CUKUP", 32, Palette.YELLOW, true))
 		var missing := GameState.MEDICAL_COST - GameState.total_savings()
-		column.add_child(_label(SHORTFALL_TEXT % GameState.rupiah(missing), 16, Palette.TEXT, true))
+		column.add_child(_label(tr(SHORTFALL_TEXT) % GameState.rupiah(missing), 16, Palette.TEXT, true))
 	else:
 		column.add_child(_label("MASA PERCOBAAN BERAKHIR", 32, Palette.CORAL, true))
 		column.add_child(_label(BAD_ENDING_TEXT, 16, Palette.TEXT, true))
@@ -45,10 +45,10 @@ func _ready() -> void:
 	for i in GameState.DAYS.size():
 		var day := load(GameState.DAYS[i]) as DayData
 		var wage: int = GameState.wages.get(day.day, 0)
-		var caption := "Hari %d: %s" % [day.day, day.package.display_name]
+		var caption := tr("Hari %d: %s") % [day.day, tr(day.package.display_name)]
 		if can_replay:
 			var button := Button.new()
-			button.text = "Ulangi %s   (%s)" % [caption, GameState.rupiah(wage)]
+			button.text = tr("Ulangi %s   (%s)") % [caption, GameState.rupiah(wage)]
 			button.pressed.connect(GameState.replay_day.bind(i))
 			column.add_child(button)
 			if first_button == null:

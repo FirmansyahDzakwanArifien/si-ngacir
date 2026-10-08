@@ -22,7 +22,7 @@ func _init() -> void:
 
 ## Tampilkan teks selama duration detik (0 = terus tampil).
 func say(message: String, duration := 2.5) -> void:
-	text = message
+	text = tr(message)
 	visible = true
 	queue_redraw()
 	scale = Vector2(0.6, 0.6)

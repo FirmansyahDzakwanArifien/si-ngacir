@@ -5,6 +5,11 @@ extends ColorRect
 
 signal closed
 
+const LANGUAGES := [["id", "Bahasa Indonesia"], ["en", "English"]]
+
+## Tampilkan pilihan bahasa (hanya dari menu utama; mengganti bahasa memuat ulang layar).
+var allow_language := false
+
 
 func _init() -> void:
 	color = Color(0.1, 0.09, 0.2, 0.55)
@@ -47,6 +52,23 @@ func _ready() -> void:
 		fullscreen.toggled.connect(AudioManager.set_fullscreen)
 		column.add_child(fullscreen)
 
+	if allow_language:
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 12)
+		var label := Label.new()
+		label.text = "Bahasa"
+		label.custom_minimum_size = Vector2(110, 0)
+		row.add_child(label)
+		var picker := OptionButton.new()
+		picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		for i in LANGUAGES.size():
+			picker.add_item(LANGUAGES[i][1], i)
+			if LANGUAGES[i][0] == AudioManager.language:
+				picker.select(i)
+		picker.item_selected.connect(_on_language_selected)
+		row.add_child(picker)
+		column.add_child(row)
+
 	var tips := CheckButton.new()
 	tips.text = "Tips tutorial (nyalakan untuk mengulang)"
 	tips.button_pressed = GameState.tips_enabled
@@ -71,6 +93,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"pause") or event.is_action_pressed(&"ui_cancel"):
 		get_viewport().set_input_as_handled()
 		close()
+
+
+func _on_language_selected(index: int) -> void:
+	AudioManager.set_language(LANGUAGES[index][0])
+	AudioManager.save_settings()
+	# Muat ulang layar supaya semua teks memakai bahasa baru.
+	get_tree().reload_current_scene()
 
 
 func _on_sfx_changed(value: float) -> void:
