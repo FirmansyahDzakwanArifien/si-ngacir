@@ -21,6 +21,10 @@ var collisions := 0
 var elapsed := 0.0
 
 var _rows := 0
+## Posisi diam papan (papan di tengah layar; layar bisa lebih lebar/tinggi di HP).
+var _board_rest := Vector2(0, HUD_HEIGHT)
+## Menutup area di kiri/kanan papan supaya kendaraan di luar papan tidak terlihat.
+var _side_mask: Node2D
 var _invulnerable_left := 0.0
 var _board: Node2D
 var _player: Player
@@ -41,12 +45,17 @@ func _ready() -> void:
 
 	_board = Node2D.new()
 	_board.name = "Board"
-	_board.position = Vector2(0, HUD_HEIGHT)
 	_board.process_mode = Node.PROCESS_MODE_PAUSABLE
 	_board.draw.connect(_draw_board)
 	add_child(_board)
+	_side_mask = Node2D.new()
+	_side_mask.z_index = 50
+	_side_mask.draw.connect(_draw_side_mask)
+	add_child(_side_mask)
 	_spawn_vehicles()
 	_spawn_player()
+	_layout_board()
+	get_viewport().size_changed.connect(_layout_board)
 	if day.rainy:
 		var rain := RainOverlay.new()
 		rain.area = Vector2(COLUMNS * TILE, _rows * TILE)
@@ -64,6 +73,11 @@ func _ready() -> void:
 	_hud.next_requested.connect(_on_next_requested)
 	_hud.menu_requested.connect(_on_menu_requested)
 	_hud.show_intro()
+	var touch := TouchControls.new()
+	touch.player = _player
+	touch.board_rect = Rect2(Vector2.ZERO, Vector2(COLUMNS * TILE, _rows * TILE))
+	add_child(touch)
+	_hud.pause_pressed.connect(_on_pause_pressed)
 	AudioManager.play_music(&"gameplay")
 
 
@@ -252,8 +266,30 @@ func _fail() -> void:
 	_hud.show_failed(GameState.is_replay)
 
 
+func _layout_board() -> void:
+	var view := get_viewport().get_visible_rect().size
+	_board_rest = Vector2(floorf(maxf(0.0, view.x - COLUMNS * TILE) / 2.0), HUD_HEIGHT)
+	_board.position = _board_rest
+	_side_mask.queue_redraw()
+
+
+func _draw_side_mask() -> void:
+	var view := get_viewport().get_visible_rect().size
+	var color := ProjectSettings.get_setting("rendering/environment/defaults/default_clear_color") as Color
+	var right := _board_rest.x + COLUMNS * TILE
+	if _board_rest.x > 0.0:
+		_side_mask.draw_rect(Rect2(0, HUD_HEIGHT, _board_rest.x, view.y), color)
+	if right < view.x:
+		_side_mask.draw_rect(Rect2(right, HUD_HEIGHT, view.x - right, view.y), color)
+
+
+func _on_pause_pressed() -> void:
+	if state == State.PLAYING and not get_tree().paused:
+		_set_paused(true)
+
+
 func _shake() -> void:
-	var rest := Vector2(0, HUD_HEIGHT)
+	var rest := _board_rest
 	var tween := _board.create_tween()
 	for i in 6:
 		tween.tween_property(_board, "position", rest + Vector2(randf_range(-6, 6), randf_range(-6, 6)), 0.03)

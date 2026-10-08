@@ -26,9 +26,11 @@ AudioManager="*res://scripts/autoload/audio_manager.gd"
 window/size/viewport_width=720
 window/size/viewport_height=672
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
+window/stretch/aspect="expand"
+window/handheld/orientation=6
 
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.105, 0.11, 0.165, 1)
