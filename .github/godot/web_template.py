@@ -10,9 +10,9 @@ lto = "full"
 threads = "no"
 disable_3d = "yes"
 
-# Font: server teks sederhana cukup untuk huruf Latin.
-module_text_server_adv_enabled = "no"
-module_text_server_fb_enabled = "yes"
+# Font: server teks lengkap tetap dipakai (server sederhana salah mengukur Fredoka
+# variabel sehingga teks tombol terpotong), tanpa dukungan font Graphite.
+graphite = "no"
 
 for _name in [
     "astcenc", "basis_universal", "bmp", "camera", "csg", "cvtt", "dds", "enet", "etcpak",
