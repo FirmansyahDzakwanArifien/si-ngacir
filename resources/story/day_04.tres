@@ -4,5 +4,6 @@
 
 [resource]
 script = ExtResource("1_story")
-pages = PackedStringArray("Hari keempat. Langit Kota Ngacir mendung sejak pagi, lalu hujan turun deras tepat di jam sibuk.", "Barang sensitif untuk Pak Joko tetap harus sampai. Jalanan licin, pandangan terbatas.")
-images = PackedStringArray("rain", "rain")
+pages = PackedStringArray("Hari keempat. Hujan deras turun tepat di jam sibuk.", "Masbro... jalanan licin. Aku tadi ngebut, paketku pecah. Upahku hari ini habis buat ganti rugi.", "Bang Kilat! Kamu nggak apa-apa?", "Cuma gengsiku yang lecet. Sudah, sana antar paketmu.", "Barang sensitif untuk Pak Joko. Jarak pandang pendek, aspal basah bisa bikin tergelincir.")
+images = PackedStringArray("rain", "depot", "depot", "depot", "rain")
+speakers = PackedStringArray("", "kilat:sedih", "masbro:kaget", "kilat:sedih", "")

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StoryData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/story_data.gd" id="1_story"]
+
+[resource]
+script = ExtResource("1_story")
+pages = PackedStringArray("Hujan reda. Di rumah sakit, demam Nana mulai turun.", "Obatnya bekerja. Tinggal pelunasan, ya. Kurang {left} lagi.", "Besok hari terakhir. Paket VIP dari Bu Direktur sendiri.")
+images = PackedStringArray("hospital", "hospital", "hospital")
+speakers = PackedStringArray("", "dokter:senang", "masbro:mantap")
