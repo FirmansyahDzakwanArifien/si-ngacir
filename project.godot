@@ -23,6 +23,7 @@ Screen="*res://scripts/autoload/screen.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
 Transition="*res://scripts/autoload/transition.gd"
+Accessibility="*res://scripts/autoload/accessibility.gd"
 
 [display]
 

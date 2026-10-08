@@ -14,8 +14,6 @@ var sfx_volume := 0.8
 var fullscreen := false
 ## Kode bahasa: "id" (Indonesia) atau "en" (Inggris).
 var language := ""
-## Kurangi efek gerak (goyangan layar, animasi pop).
-var reduce_motion := false
 
 var _music_player: AudioStreamPlayer
 var _sfx_players: Array[AudioStreamPlayer] = []
@@ -106,6 +104,8 @@ func set_language(code: String) -> void:
 
 func save_settings() -> void:
 	var config := ConfigFile.new()
+	# Bagian lain (misalnya aksesibilitas) ikut disimpan di file yang sama.
+	config.load(SETTINGS_PATH)
 	config.set_value("audio", "music_volume", music_volume)
 	config.set_value("audio", "sfx_volume", sfx_volume)
 	config.set_value("display", "fullscreen", fullscreen)
