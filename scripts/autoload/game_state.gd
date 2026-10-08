@@ -23,6 +23,7 @@ const SHORTFALL_RULE := ShortfallRule.REPLAY_DAYS
 const LEVEL_SCENE := "res://scenes/game/level.tscn"
 const ENDING_SCENE := "res://scenes/ending.tscn"
 const MENU_SCENE := "res://scenes/main.tscn"
+const SAVE_PATH := "user://save.cfg"
 
 const INPUT_KEYS := {
 	&"move_up": [KEY_W, KEY_UP],
@@ -37,15 +38,19 @@ var current_day_index := 0
 var is_replay := false
 ## Upah terbaik per hari (key: nomor hari). Hari yang gagal tercatat Rp0.
 var wages := {}
+## true setelah Hari 5 selesai; "Lanjutkan" langsung membuka layar rekap.
+var probation_done := false
 
 
 func _ready() -> void:
 	_setup_input()
+	load_game()
 
 
 func reset_run() -> void:
 	current_day_index = 0
 	is_replay = false
+	probation_done = false
 	wages.clear()
 
 
@@ -61,7 +66,15 @@ func advance_day() -> bool:
 	if is_replay or not has_next_day():
 		return false
 	current_day_index += 1
+	save_game()
 	return true
+
+
+func finish_probation() -> void:
+	if is_replay:
+		return
+	probation_done = true
+	save_game()
 
 
 func replay_day(index: int) -> void:
@@ -72,6 +85,7 @@ func replay_day(index: int) -> void:
 
 func record_delivery(day: DayData, wage: int) -> void:
 	wages[day.day] = maxi(wage, wages.get(day.day, 0))
+	save_game()
 
 
 func total_savings() -> int:
@@ -83,6 +97,35 @@ func total_savings() -> int:
 
 func savings_enough() -> bool:
 	return total_savings() >= MEDICAL_COST
+
+
+func has_save() -> bool:
+	return FileAccess.file_exists(SAVE_PATH)
+
+
+func save_game() -> void:
+	var config := ConfigFile.new()
+	config.set_value("run", "day_index", current_day_index)
+	config.set_value("run", "probation_done", probation_done)
+	config.set_value("run", "wages", wages)
+	config.save(SAVE_PATH)
+
+
+func load_game() -> bool:
+	var config := ConfigFile.new()
+	if config.load(SAVE_PATH) != OK:
+		return false
+	current_day_index = clampi(config.get_value("run", "day_index", 0), 0, DAYS.size() - 1)
+	probation_done = config.get_value("run", "probation_done", false)
+	wages = config.get_value("run", "wages", {})
+	is_replay = false
+	return true
+
+
+func delete_save() -> void:
+	reset_run()
+	if has_save():
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
 
 
 func rupiah(amount: int) -> String:

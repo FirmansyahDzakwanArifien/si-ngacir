@@ -179,6 +179,7 @@ func _on_next_requested() -> void:
 	if GameState.advance_day():
 		get_tree().reload_current_scene()
 	else:
+		GameState.finish_probation()
 		get_tree().change_scene_to_file(GameState.ENDING_SCENE)
 
 
