@@ -144,7 +144,7 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 		_money_row("Upah dasar", report.base_wage),
 		_money_row("Bonus tepat waktu", report.eta_bonus),
 		_money_row("Tip pelanggan", report.tip) if report.strict else null,
-		_money_row("Bonus koin (%d)" % report.coins, report.coin_bonus) if report.coins > 0 else null,
+		_money_row("Bonus koin (%d, juga masuk dompet)" % report.coins, report.coin_bonus) if report.coins > 0 else null,
 		_money_row("Denda kerusakan" + (" (2x)" if report.strict else ""), -report.damage_penalty),
 		_money_row("Potongan telat", -report.late_penalty),
 		_money_row("Ganti paket di Pos (%dx)" % report.checkpoint_uses, -report.checkpoint_penalty)
