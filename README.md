@@ -19,9 +19,9 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | W A S D / panah | Gerak |
 | Esc / P | Pause |
 | Enter | Pilih tombol di panel |
-| Layar sentuh | Tap = maju, swipe = arah gerak, D-pad di layar, tombol II = pause |
+| Layar sentuh | Swipe kiri / kanan / atas (maju), tap = maju, swipe bawah = mundur, tombol II = pause |
 
-## Status (v0.5)
+## Status (v0.6)
 
 * [x] Gerak grid, lane jalan/trotoar/median, kendaraan (motor, mobil, truk)
 * [x] Kondisi paket menggantikan nyawa (tabrakan → damage → paket hancur)
@@ -44,7 +44,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Siap sprite: game otomatis memakai gambar di `assets/sprites/` (spesifikasi di `docs/ASSET_SPEC.md`)
 * [x] Cutscene cerita: pembuka, sebelum Hari 2–5, dan ending (naskah draf)
 * [x] Export Web (HTML5) dan Windows
-* [x] Kontrol sentuh (swipe/tap + D-pad) dan layar responsif (potret, lanskap, layar lebar)
+* [x] Kontrol sentuh swipe (kiri/kanan/maju, tap = maju) dan layar responsif: HP potret (UI diperbesar, kamera geser samping), lanskap, layar lebar (`scripts/autoload/screen.gd`)
 * [x] Tampilan flat kawaii: sprite, ilustrasi cutscene, UI, animasi & efek (bawaan, bisa diganti tim Illustrator)
 * [ ] Naskah final dari tim Writer Story
 

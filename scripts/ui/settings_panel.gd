@@ -20,7 +20,7 @@ func _ready() -> void:
 	add_child(center)
 
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(420, 0)
+	panel.custom_minimum_size = Vector2(Screen.card_width(420), 0)
 	center.add_child(panel)
 
 	var column := VBoxContainer.new()

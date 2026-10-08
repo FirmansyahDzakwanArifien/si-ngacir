@@ -23,7 +23,7 @@ func _ready() -> void:
 	var card := PanelContainer.new()
 	center.add_child(card)
 	var column := VBoxContainer.new()
-	column.custom_minimum_size = Vector2(500, 0)
+	column.custom_minimum_size = Vector2(Screen.card_width(500, 40), 0)
 	column.add_theme_constant_override("separation", 8)
 	card.add_child(column)
 

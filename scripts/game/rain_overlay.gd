@@ -48,6 +48,14 @@ func _ready() -> void:
 	_follow_target()
 
 
+## Ubah ukuran area hujan (saat layar berubah ukuran).
+func resize(new_area: Vector2) -> void:
+	area = new_area
+	if _darkness:
+		_darkness.size = area
+		_material.set_shader_parameter("rect_size", area)
+
+
 func _process(delta: float) -> void:
 	for i in _drops.size():
 		var drop := _drops[i]

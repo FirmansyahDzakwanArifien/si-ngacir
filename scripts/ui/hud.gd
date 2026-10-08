@@ -111,7 +111,7 @@ func _build_tip() -> void:
 	var badge := _label("TIPS", 14, Palette.WHITE, false, 600)
 	row.add_child(_pill(badge, Palette.TEAL))
 	_tip_label = _label("", 16)
-	_tip_label.custom_minimum_size = Vector2(420, 0)
+	_tip_label.custom_minimum_size = Vector2(Screen.card_width(420, 60), 0)
 	row.add_child(_tip_label)
 	add_child(_tip)
 	_tip.resized.connect(func() -> void:
@@ -267,6 +267,7 @@ func _build_top_bar() -> void:
 	row.add_child(icons)
 
 	_route = RouteMeter.new()
+	_route.custom_minimum_size.x = 40.0 if Screen.is_compact() else 70.0
 	_route.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(_route)
 	_time_label = _label("", 17, Palette.WHITE, false, 600)
@@ -278,6 +279,8 @@ func _build_top_bar() -> void:
 	customer.clip_text = true
 	customer.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	customer.custom_minimum_size.x = minf(150.0, natural + 2.0)
+	# Layar sempit: nama pelanggan sudah ada di kartu intro, bar atas cukup ringkas.
+	customer.visible = not Screen.is_compact()
 	row.add_child(customer)
 	if DisplayServer.is_touchscreen_available():
 		var pause := Button.new()
@@ -301,7 +304,6 @@ func _build_overlay() -> void:
 	_overlay.add_child(center)
 
 	_panel = PanelContainer.new()
-	_panel.custom_minimum_size = Vector2(460, 0)
 	center.add_child(_panel)
 
 	_panel_box = VBoxContainer.new()
@@ -311,6 +313,7 @@ func _build_overlay() -> void:
 
 
 func _open(title: String, title_color: Color, rows: Array, buttons: Array) -> void:
+	_panel.custom_minimum_size.x = Screen.card_width(460)
 	for child in _panel_box.get_children():
 		_panel_box.remove_child(child)
 		child.queue_free()
@@ -339,6 +342,7 @@ func _open(title: String, title_color: Color, rows: Array, buttons: Array) -> vo
 		gap.custom_minimum_size = Vector2(0, 4)
 		_panel_box.add_child(gap)
 		_panel_box.add_child(buttons_box)
+		UiTheme.make_primary(first_button)
 	_overlay.show()
 	_pop_in.call_deferred()
 	if first_button:
