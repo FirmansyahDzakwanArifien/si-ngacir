@@ -241,12 +241,22 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 | **Lanjutkan** | Melanjutkan dari hari terakhir yang belum selesai |
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
 | **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
-| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama) |
+| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama), aksesibilitas |
 | **Keluar** | Menutup game (desktop) |
 
 Progres tersimpan **otomatis** setiap kali satu hari selesai. Keluar di tengah hari berarti mengulang hari itu dari awal.
 
 Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
+
+### Aksesibilitas
+
+Di **Pengaturan → Aksesibilitas**:
+
+| Opsi | Fungsi |
+| --- | --- |
+| **Ukuran teks** | Normal, Besar, atau Sangat Besar. Berlaku langsung di semua layar |
+| **Buta warna** | Filter koreksi warna untuk Protanopia (merah), Deuteranopia (hijau), atau Tritanopia (biru) |
+| **Kurangi efek gerak** | Mematikan goyangan layar, konfeti, animasi pop, dan denyut timer; transisi layar menjadi pudar biasa |
 
 ---
 

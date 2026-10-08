@@ -656,7 +656,8 @@ func _deliver() -> void:
 	_customer.say("Makasih, Masbro!" if report.stars >= 3 else "Hmm... ya sudah, makasih.", 0.0)
 	# Konfeti di lapisan HUD supaya jatuh di depan kartu hasil.
 	var view := get_viewport().get_visible_rect().size
-	Effects.confetti(_hud, Vector2(view.x / 2.0, 0), view.x)
+	if not Accessibility.reduce_motion:
+		Effects.confetti(_hud, Vector2(view.x / 2.0, 0), view.x)
 	_hud.show_result(report, _next_button_text())
 
 
@@ -746,6 +747,8 @@ func _on_pause_pressed() -> void:
 
 
 func _shake() -> void:
+	if Accessibility.reduce_motion:
+		return
 	var tween := create_tween()
 	for i in 6:
 		tween.tween_property(self, "_shake_offset", Vector2(randf_range(-6, 6), randf_range(-6, 6)), 0.03)

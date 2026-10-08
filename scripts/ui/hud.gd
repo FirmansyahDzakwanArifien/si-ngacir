@@ -36,6 +36,7 @@ var _tip_tween: Tween
 var _overlay: ColorRect
 var _panel: PanelContainer
 var _panel_box: VBoxContainer
+var _panel_scroll: ScrollContainer
 
 
 func _init() -> void:
@@ -65,7 +66,7 @@ func update_timer(seconds_left: float) -> void:
 	_time_pill.add_theme_stylebox_override("panel", UiTheme.pill(fill))
 	_time_label.add_theme_color_override("font_color", text_color)
 	# Pil ETA berdenyut saat waktu menipis.
-	var hurry := seconds_left <= 10.0 and seconds_left > -1.0
+	var hurry := seconds_left <= 10.0 and seconds_left > -1.0 and not Accessibility.reduce_motion
 	if hurry and _time_pulse == null:
 		_time_pill.pivot_offset = _time_pill.size / 2.0
 		_time_pulse = _time_pill.create_tween().set_loops()
@@ -307,9 +308,14 @@ func _build_overlay() -> void:
 	_panel = PanelContainer.new()
 	center.add_child(_panel)
 
+	# Kartu yang lebih tinggi dari layar (teks besar, HP mendatar) bisa digulir.
+	_panel_scroll = ScrollContainer.new()
+	_panel_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_panel.add_child(_panel_scroll)
 	_panel_box = VBoxContainer.new()
+	_panel_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_panel_box.add_theme_constant_override("separation", 6)
-	_panel.add_child(_panel_box)
+	_panel_scroll.add_child(_panel_box)
 	_overlay.hide()
 
 
@@ -345,13 +351,23 @@ func _open(title: String, title_color: Color, rows: Array, buttons: Array) -> vo
 		_panel_box.add_child(buttons_box)
 		UiTheme.make_primary(first_button)
 	_overlay.show()
+	_fit_panel.call_deferred()
 	_pop_in.call_deferred()
 	if first_button:
 		first_button.grab_focus.call_deferred()
 
 
+## Tinggi kartu mengikuti isinya, maksimal setinggi layar.
+func _fit_panel() -> void:
+	var available := get_viewport().get_visible_rect().size.y - 24.0 - 44.0
+	_panel_scroll.custom_minimum_size.y = minf(_panel_box.get_combined_minimum_size().y, maxf(160.0, available))
+	_panel_scroll.scroll_vertical = 0
+
+
 func _pop_in() -> void:
 	# Kartu muncul memantul kecil.
+	if Accessibility.reduce_motion:
+		return
 	_panel.pivot_offset = _panel.size / 2.0
 	_panel.scale = Vector2(0.85, 0.85)
 	var tween := _panel.create_tween()

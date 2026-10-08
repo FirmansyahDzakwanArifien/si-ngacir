@@ -61,6 +61,17 @@ func _run(swap: Callable) -> void:
 	_cover.visible = true
 	_cover.mouse_filter = Control.MOUSE_FILTER_STOP
 	var tween := create_tween()
+	if Accessibility.reduce_motion:
+		# Pudar biasa, tanpa lingkaran yang mengecil.
+		_set_progress(1.0)
+		_cover.modulate.a = 0.0
+		tween.tween_property(_cover, "modulate:a", 1.0, DURATION)
+		tween.tween_callback(swap)
+		tween.tween_interval(0.05)
+		tween.tween_property(_cover, "modulate:a", 0.0, DURATION)
+		tween.tween_callback(_finish)
+		return
+	_cover.modulate.a = 1.0
 	tween.tween_method(_set_progress, 0.0, 1.0, DURATION).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 	tween.tween_callback(swap)
 	tween.tween_interval(0.05)

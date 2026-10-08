@@ -22,10 +22,19 @@ func _ready() -> void:
 
 	var card := PanelContainer.new()
 	center.add_child(card)
+	# Rekap bisa digulir bila lebih tinggi dari layar (teks besar, HP mendatar).
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	card.add_child(scroll)
 	var column := VBoxContainer.new()
 	column.custom_minimum_size = Vector2(Screen.card_width(500, 40), 0)
 	column.add_theme_constant_override("separation", 8)
-	card.add_child(column)
+	scroll.add_child(column)
+	var fit := func() -> void:
+		var available := get_viewport().get_visible_rect().size.y - 64.0
+		scroll.custom_minimum_size.y = minf(column.get_combined_minimum_size().y, available)
+	fit.call_deferred()
 
 	var enough := GameState.savings_enough()
 	var can_replay := not enough and GameState.SHORTFALL_RULE == GameState.ShortfallRule.REPLAY_DAYS

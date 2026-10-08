@@ -35,6 +35,7 @@ func _ready() -> void:
 
 	_logo = Label.new()
 	_logo.text = "SI NGACIR"
+	_logo.set_meta(Accessibility.FIXED_SIZE_META, true)
 	_logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_logo.add_theme_font_override("font", UiTheme.font(700))
 	_logo.add_theme_color_override("font_color", Palette.YELLOW)
@@ -109,7 +110,11 @@ func _fit() -> void:
 	var view := get_viewport().get_visible_rect().size
 	_column.custom_minimum_size.x = Screen.card_width(380)
 	var short := view.y - STREET_HEIGHT < 420.0
-	_logo.add_theme_font_size_override("font_size", 52 if short or Screen.is_compact() else 76)
+	var logo_size := 52 if short or Screen.is_compact() else 76
+	if short and Accessibility.text_size > 0:
+		# Teks menu diperbesar: logo mengalah supaya menu tetap di atas jalan.
+		logo_size = 40
+	_logo.add_theme_font_size_override("font_size", logo_size)
 	_logo.add_theme_constant_override("outline_size", 12 if short else 16)
 
 

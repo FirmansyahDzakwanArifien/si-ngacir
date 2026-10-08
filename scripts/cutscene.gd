@@ -177,7 +177,7 @@ func _show_image(image_name: String) -> void:
 				_image.texture = load(IMAGE_DIR + image_name + extension)
 				break
 	_image.visible = _image.texture != null
-	if _image.visible and _page > 0 and not AudioManager.reduce_motion:
+	if _image.visible and _page > 0 and not Accessibility.reduce_motion:
 		_image.modulate.a = 0.0
 		create_tween().tween_property(_image, "modulate:a", 1.0, 0.25)
 
@@ -199,7 +199,7 @@ func _show_speaker(entry: String) -> void:
 	frame.set_content_margin_all(4)
 	_portrait_frame.add_theme_stylebox_override("panel", frame)
 	_portrait.texture = Speakers.portrait(id, parsed[1])
-	if changed and not AudioManager.reduce_motion:
+	if changed and not Accessibility.reduce_motion:
 		_portrait_frame.scale = Vector2(0.7, 0.7)
 		create_tween().tween_property(_portrait_frame, "scale", Vector2.ONE, 0.25) \
 				.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
