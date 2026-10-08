@@ -25,6 +25,14 @@ var can_enter: Callable
 var last_direction := Vector2i.UP
 ## true kalau langkah terakhir adalah tergelincir (bukan input pemain).
 var last_move_was_slide := false
+## Pengali durasi langkah (power-up sepatu membuatnya < 1).
+var speed_multiplier := 1.0
+## Helm aktif: gelembung pelindung terlihat di sekitar Masbro.
+var shielded := false:
+	set(value):
+		shielded = value
+		if _shield:
+			_shield.visible = value
 var invulnerable := false:
 	set(value):
 		invulnerable = value
@@ -44,6 +52,7 @@ var _package_icon: Sprite2D
 ## Titik kaki Masbro; lompatan dan squash/stretch berporos di sini.
 var _visual: Node2D
 var _hop_tween: Tween
+var _shield: Node2D
 
 
 func _ready() -> void:
@@ -69,6 +78,14 @@ func _ready() -> void:
 		_package_icon.centered = false
 		_package_icon.texture = SpriteLibrary.placeholder_box(Vector2i(20, 15), package_color, Color("6e4a2b"))
 	rig.add_child(_package_icon)
+	_shield = Node2D.new()
+	_shield.position = Vector2(0, -tile / 2.0)
+	_shield.visible = shielded
+	_shield.draw.connect(func() -> void:
+		_shield.draw_circle(Vector2.ZERO, tile * 0.62, Color(Palette.TEAL, 0.18))
+		_shield.draw_arc(Vector2.ZERO, tile * 0.62, 0.0, TAU, 40, Color(Palette.TEAL, 0.85), 3.0, true)
+		_shield.draw_arc(Vector2.ZERO, tile * 0.5, -2.4, -1.6, 10, Color(1, 1, 1, 0.8), 3.0, true))
+	_visual.add_child(_shield)
 	_update_facing()
 
 
@@ -139,7 +156,7 @@ func _try_move(direction: Vector2i) -> void:
 		return
 	last_direction = direction
 	last_move_was_slide = false
-	_hop_to(target, step_time)
+	_hop_to(target, step_time * speed_multiplier)
 	AudioManager.play_sfx(&"step", 0.08)
 
 

@@ -39,6 +39,19 @@ Catatan: paket digambar **terpisah** (lihat di bawah) dan diletakkan di punggung
 | `cat_walk.png` | 48 × 48 | 4 | Berjalan menyeberang, menghadap kanan |
 | `cat_sit.png` | 48 × 48 | 2 | Duduk penasaran (saat menyentuh Masbro) |
 
+## Rintangan & item
+
+Semua 48 × 48 (1 petak), tampak samping/depan, berdiri di tengah petak.
+
+| File | Keterangan |
+| --- | --- |
+| `obstacle_cone.png` | Cone lalu lintas (menghalangi) |
+| `obstacle_barrier.png` | Pembatas jalan (menghalangi) |
+| `obstacle_hole.png` | Lubang di aspal, tampak atas |
+| `item_coin.png` | Koin bonus |
+| `item_helmet.png` | Power-up helm |
+| `item_shoes.png` | Power-up sepatu |
+
 ## Paket
 
 Ikon paket di punggung Masbro, **20 × 15 px**.

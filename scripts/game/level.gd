@@ -16,6 +16,9 @@ const LOOP_MARGIN_TILES := 4
 const HIT_INVULNERABLE_TIME := 1.2
 const CAT_SPAWN_DELAY := Vector2(2.5, 5.0)
 const POPUP_COOLDOWN := 0.6
+const SHOES_TIME := 8.0
+const SHOES_SPEED := 0.6
+const BLOCKERS := [&"cone", &"barrier"]
 
 enum State { INTRO, PLAYING, FINISHED }
 
@@ -26,6 +29,7 @@ var state := State.INTRO
 var damage := 0
 var collisions := 0
 var elapsed := 0.0
+var coins := 0
 
 var _rows := 0
 ## Posisi papan saat kamera di paling atas (papan di tengah layar secara horizontal).
@@ -43,6 +47,10 @@ var _vehicles: Array[Vehicle] = []
 var _cats: Array[StreetCat] = []
 var _cat_timer := 1.5
 var _popup_cooldown := 0.0
+var _boost_left := 0.0
+## Node item di papan, key: Vector2i(kolom, baris).
+var _item_nodes := {}
+var _collected := {}
 var _hud: GameHud
 
 
@@ -65,6 +73,7 @@ func _ready() -> void:
 	_side_mask.z_index = 50
 	_side_mask.draw.connect(_draw_side_mask)
 	add_child(_side_mask)
+	_spawn_items()
 	_spawn_vehicles()
 	_spawn_player()
 	if day.rainy:
@@ -122,6 +131,10 @@ func _process(delta: float) -> void:
 
 	_popup_cooldown = maxf(0.0, _popup_cooldown - delta)
 	_update_cats(delta)
+	if _boost_left > 0.0:
+		_boost_left -= delta
+		if _boost_left <= 0.0:
+			_player.speed_multiplier = 1.0
 
 	if _invulnerable_left > 0.0:
 		_invulnerable_left -= delta
@@ -172,6 +185,24 @@ func _spawn_vehicles() -> void:
 			vehicle.position = Vector2(-margin + fposmod(lane.offset + i * spacing, loop_length), row * TILE)
 			_board.add_child(vehicle)
 			_vehicles.append(vehicle)
+
+
+func _spawn_items() -> void:
+	for row in _rows:
+		for col: int in day.lanes[row].items:
+			var type: StringName = day.lanes[row].items[col]
+			var node := SpriteLibrary.sprite("item_%s" % type)
+			if node == null:
+				continue
+			var holder := Node2D.new()
+			holder.position = Vector2(col, row) * TILE
+			holder.add_child(node)
+			_board.add_child(holder)
+			# Item mengambang naik-turun supaya menarik perhatian.
+			var tween := node.create_tween().set_loops()
+			tween.tween_property(node, "position:y", -4.0, 0.5).set_trans(Tween.TRANS_SINE)
+			tween.tween_property(node, "position:y", 0.0, 0.5).set_trans(Tween.TRANS_SINE)
+			_item_nodes[Vector2i(col, row)] = holder
 
 
 func _spawn_player() -> void:
@@ -227,6 +258,8 @@ func _spawn_cat() -> void:
 
 
 func _is_cell_free(cell: Vector2i) -> bool:
+	if day.lanes[cell.y].obstacles.get(cell.x, &"") in BLOCKERS:
+		return false
 	var area := Rect2(Vector2(cell) * TILE + Vector2(6, 6), Vector2(TILE - 12, TILE - 12))
 	for cat in _cats:
 		if is_instance_valid(cat) and cat.hitbox().intersects(area):
@@ -234,8 +267,12 @@ func _is_cell_free(cell: Vector2i) -> bool:
 	return true
 
 
-func _on_player_blocked(_cell: Vector2i) -> void:
-	if _popup_cooldown <= 0.0:
+func _on_player_blocked(cell: Vector2i) -> void:
+	if _popup_cooldown > 0.0:
+		return
+	if day.lanes[cell.y].obstacles.get(cell.x, &"") in BLOCKERS:
+		_popup("Awas!", Palette.ORANGE, _player.position)
+	else:
 		_popup("Meong!", Color("f4a259"), _player.position)
 		AudioManager.play_sfx(&"meow", 0.1)
 
@@ -279,6 +316,10 @@ func _on_player_moved(cell: Vector2i) -> void:
 	if cell.y == 0:
 		_deliver()
 		return
+	_collect_item(cell)
+	if day.lanes[cell.y].obstacles.get(cell.x, &"") == &"hole" and not _player.invulnerable:
+		_on_hole()
+		return
 	var on_wet_road := day.rainy and day.lanes[cell.y].kind == LaneData.Kind.ROAD
 	if on_wet_road and not _player.last_move_was_slide and not _player.invulnerable \
 			and randf() < day.slip_chance and _player.slide():
@@ -286,27 +327,79 @@ func _on_player_moved(cell: Vector2i) -> void:
 		AudioManager.play_sfx(&"slip")
 
 
+func _collect_item(cell: Vector2i) -> void:
+	var items := day.lanes[cell.y].items
+	if not items.has(cell.x) or _collected.has(cell):
+		return
+	# Dicatat di level, bukan dihapus dari LaneData, supaya resource map tetap utuh.
+	_collected[cell] = true
+	var type: StringName = items[cell.x]
+	if _item_nodes.has(cell):
+		var node: Node2D = _item_nodes[cell]
+		_item_nodes.erase(cell)
+		var tween := node.create_tween()
+		tween.set_parallel()
+		tween.tween_property(node, "position:y", node.position.y - 30.0, 0.3)
+		tween.tween_property(node, "modulate:a", 0.0, 0.3)
+		tween.chain().tween_callback(node.queue_free)
+	AudioManager.play_sfx(&"star", 0.15)
+	match type:
+		&"coin":
+			coins += 1
+			_popup("+%s" % GameState.rupiah(DeliveryReport.COIN_VALUE), Palette.YELLOW, _player.position)
+		&"helmet":
+			_player.shielded = true
+			_popup("Helm! Kebal 1x", Palette.TEAL, _player.position)
+		&"shoes":
+			_boost_left = SHOES_TIME
+			_player.speed_multiplier = SHOES_SPEED
+			_popup("Sepatu kilat!", Palette.CORAL, _player.position)
+
+
 func _on_hit(vehicle: Vehicle) -> void:
-	collisions += 1
-	damage = mini(damage + vehicle.damage * day.package.fragility, day.package.max_damage)
-	_hud.update_package(damage)
+	var back := Vector2i(_player.cell.x, mini(_player.cell.y + 1, _rows - 1))
+	_damage_package(vehicle.damage, back)
+
+
+func _on_hole() -> void:
+	# Terperosok: paket terguncang, Masbro kembali ke petak sebelumnya.
+	_popup("Lubang!", Palette.ORANGE, _player.position)
+	_damage_package(1, _player.cell - _player.last_direction)
+
+
+func _damage_package(amount: int, knock_to: Vector2i) -> void:
+	knock_to = Vector2i(clampi(knock_to.x, 0, COLUMNS - 1), clampi(knock_to.y, 0, _rows - 1))
+	if not _is_cell_free(knock_to):
+		knock_to = _player.cell
 	_shake()
+	_invulnerable_left = HIT_INVULNERABLE_TIME
+	_player.invulnerable = true
+	if _player.shielded:
+		# Helm menahan benturan; paket aman.
+		_player.shielded = false
+		_popup("Helm melindungi!", Palette.TEAL, _player.position)
+		AudioManager.play_sfx(&"hit", 0.1)
+		_player.knock_back(knock_to)
+		return
+	collisions += 1
+	damage = mini(damage + amount * day.package.fragility, day.package.max_damage)
+	_hud.update_package(damage)
 	Effects.burst(_board, _player.position + Vector2(TILE / 2.0, TILE / 2.0), day.package.color)
 	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:
+		_invulnerable_left = 0.0
+		_player.invulnerable = false
 		_fail()
 		return
 	AudioManager.play_sfx(&"package_damage", 0.05)
-	_invulnerable_left = HIT_INVULNERABLE_TIME
-	_player.invulnerable = true
-	_player.knock_back(Vector2i(_player.cell.x, mini(_player.cell.y + 1, _rows - 1)))
+	_player.knock_back(knock_to)
 
 
 func _deliver() -> void:
 	state = State.FINISHED
 	_player.input_enabled = false
 	_hud.update_progress(1.0)
-	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed)
+	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins)
 	GameState.record_delivery(day, report.wage)
 	AudioManager.play_sfx(&"delivery")
 	_player.celebrate()
@@ -413,6 +506,7 @@ func _draw_board() -> void:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("4a4a52"))
 			_draw_lane_marking(row)
 
+	_draw_obstacles()
 	_draw_building("house", 0)
 	_draw_building("warehouse", _rows - 1)
 	var font := ThemeDB.fallback_font
@@ -421,6 +515,19 @@ func _draw_board() -> void:
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
 	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), "Gudang Ngacir Express",
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
+
+
+func _draw_obstacles() -> void:
+	for row in _rows:
+		var obstacles := day.lanes[row].obstacles
+		for col: int in obstacles:
+			var sprite_name := "obstacle_%s" % obstacles[col]
+			var texture := SpriteLibrary.texture(sprite_name)
+			var rect := Rect2(Vector2(col, row) * TILE, Vector2(TILE, TILE))
+			if texture:
+				_board.draw_texture_rect(texture, rect, false)
+			else:
+				_board.draw_rect(rect.grow(-8), Palette.ORANGE if obstacles[col] != &"hole" else Color.BLACK)
 
 
 func _draw_lane_marking(row: int) -> void:
