@@ -30,6 +30,12 @@ extends Resource
 ## Kecepatan arus/rakit dalam px/detik (min, max).
 @export var raft_speed := Vector2(35, 60)
 
+@export_group("Pos (Checkpoint)")
+## Pos muncul setiap N blok jalan (0 = tanpa pos).
+@export_range(0, 10) var checkpoint_every: int = 3
+## Denda ganti paket bila lanjut dari pos setelah paket hancur.
+@export var checkpoint_penalty: int = 15000
+
 @export_group("Rintangan & Item")
 ## Jumlah cone/pembatas di tiap baris median (min, max).
 @export var blockers_per_safe_row := Vector2i(0, 2)

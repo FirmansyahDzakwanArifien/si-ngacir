@@ -17,3 +17,5 @@ enum Kind { SIDEWALK, ROAD, MEDIAN, RIVER }
 @export var obstacles: Dictionary = {}
 ## Item per kolom: &"coin", &"helmet", atau &"shoes".
 @export var items: Dictionary = {}
+## Baris ini adalah Pos (checkpoint): tempat lanjut bila paket hancur.
+@export var checkpoint: bool = false
