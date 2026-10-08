@@ -6,6 +6,10 @@ extends Resource
 @export var title: String = ""
 @export var package: PackageData
 @export var customer_name: String = "Bu Sri"
+## Nama sprite pelanggan: assets/sprites/customer_<id>.
+@export var customer_id: StringName = &"bu_sri"
+## Sapaan pelanggan saat pengiriman dimulai (balon ucapan di depan rumah).
+@export_multiline var customer_greeting: String = "Ditunggu ya, Masbro!"
 ## Target waktu antar (Timer ETA) dalam detik.
 @export var eta_seconds: float = 30.0
 

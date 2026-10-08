@@ -32,6 +32,18 @@ Lokasi: `assets/sprites/`
 
 Catatan: paket digambar **terpisah** (lihat di bawah) dan diletakkan di punggung Masbro pada posisi x=4, y=6 (dalam frame 48 × 48). Sisakan ruang di area punggung.
 
+## NPC pelanggan
+
+Tampak depan, 48 × 48, berdiri di samping rumah tujuan.
+
+| File | Tokoh |
+| --- | --- |
+| `customer_bu_sri.png` | Bu Sri (Hari 1) |
+| `customer_pak_budi.png` | Pak Budi (Hari 2) |
+| `customer_pak_ojan.png` | Pak Ojan (Hari 3) |
+| `customer_pak_joko.png` | Pak Joko (Hari 4) |
+| `customer_bu_direktur.png` | Bu Direktur Ngacir (Hari 5) |
+
 ## Kucing jalanan
 
 | File | Ukuran frame | Frame | Keterangan |

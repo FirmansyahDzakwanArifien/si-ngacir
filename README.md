@@ -32,6 +32,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Rintangan statis (cone, pembatas, lubang), koin, power-up helm & sepatu
 * [x] Sungai & rakit (mulai Hari 2)
 * [x] Pos (checkpoint): lanjut dari Pos dengan denda bila paket hancur
+* [x] NPC pelanggan dengan balon ucapan dan reaksi (sapaan diatur di `customer_greeting`)
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)

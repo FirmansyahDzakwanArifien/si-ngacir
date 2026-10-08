@@ -118,6 +118,10 @@ Upah = Upah dasar + Bonus tepat waktu (+ Tip) (+ Bonus koin) − Denda kerusakan
 
 Upah setiap hari ditambahkan ke **tabungan pengobatan**. Jika mengulang hari, yang dihitung adalah upah **terbaik** hari itu.
 
+### Pelanggan menunggu
+
+Pelanggan berdiri di depan rumahnya dan bereaksi lewat balon ucapan: menyapa saat paket diambil, menyemangati saat Masbro sudah dekat, mulai gelisah saat ETA hampir habis, dan girang (atau kecewa) saat paket tiba.
+
 ### Rating pelanggan
 
 Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan kondisi paket dan ketepatan waktu.
