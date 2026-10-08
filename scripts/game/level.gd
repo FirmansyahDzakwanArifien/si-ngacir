@@ -238,6 +238,7 @@ func _on_hit(vehicle: Vehicle) -> void:
 	damage = mini(damage + vehicle.damage * day.package.fragility, day.package.max_damage)
 	_hud.update_package(damage)
 	_shake()
+	Effects.burst(_board, _player.position + Vector2(TILE / 2.0, TILE / 2.0), day.package.color)
 	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:
 		_fail()
@@ -254,6 +255,10 @@ func _deliver() -> void:
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed)
 	GameState.record_delivery(day, report.wage)
 	AudioManager.play_sfx(&"delivery")
+	_player.celebrate()
+	# Konfeti di lapisan HUD supaya jatuh di depan kartu hasil.
+	var view := get_viewport().get_visible_rect().size
+	Effects.confetti(_hud, Vector2(view.x / 2.0, 0), view.x)
 	_hud.show_result(report, _next_button_text())
 
 
@@ -298,7 +303,7 @@ func _shake() -> void:
 
 func _on_retry_requested() -> void:
 	get_tree().paused = false
-	get_tree().reload_current_scene()
+	Transition.reload()
 
 
 func _next_button_text() -> String:
@@ -314,7 +319,7 @@ func _on_next_requested() -> void:
 	if GameState.advance_day():
 		GameState.play_story(GameState.current_day().story, GameState.LEVEL_SCENE)
 	elif GameState.is_replay:
-		get_tree().change_scene_to_file(GameState.ENDING_SCENE)
+		Transition.change_scene(GameState.ENDING_SCENE)
 	else:
 		GameState.finish_probation()
 		GameState.play_story(GameState.ending_story(), GameState.ENDING_SCENE)
@@ -322,7 +327,7 @@ func _on_next_requested() -> void:
 
 func _on_menu_requested() -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file(GameState.MENU_SCENE)
+	Transition.change_scene(GameState.MENU_SCENE)
 
 
 func _draw_board() -> void:

@@ -63,7 +63,7 @@ func _ready() -> void:
 	var menu := Button.new()
 	menu.text = "Menu Utama"
 	menu.custom_minimum_size = Vector2(0, 44)
-	menu.pressed.connect(get_tree().change_scene_to_file.bind(GameState.MENU_SCENE))
+	menu.pressed.connect(Transition.change_scene.bind(GameState.MENU_SCENE))
 	column.add_child(menu)
 	(first_button if first_button else menu).grab_focus.call_deferred()
 

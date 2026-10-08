@@ -17,6 +17,7 @@ var color := Color.WHITE
 var loop_start := 0.0
 var loop_length := 1.0
 var _sprite: Sprite2D
+var _bob_time := randf() * TAU
 
 
 func setup(type: StringName, p_tile: float, p_speed: float, p_direction: int,
@@ -46,6 +47,10 @@ func hitbox() -> Rect2:
 
 func _process(delta: float) -> void:
 	position.x = loop_start + fposmod(position.x + speed * direction * delta - loop_start, loop_length)
+	if _sprite:
+		# Bodi bergoyang pelan seperti mesin hidup.
+		_bob_time += delta * (6.0 + speed * 0.04)
+		_sprite.position.y = roundf(sin(_bob_time) * 1.2)
 
 
 func _draw() -> void:

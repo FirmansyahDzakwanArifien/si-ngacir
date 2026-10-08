@@ -21,6 +21,7 @@ const GREEN := Palette.TEAL
 var _day: DayData
 var _time_label: Label
 var _time_pill: PanelContainer
+var _time_pulse: Tween
 var _package_icons: Array[Control] = []
 var _overlay: ColorRect
 var _panel: PanelContainer
@@ -52,6 +53,17 @@ func update_timer(seconds_left: float) -> void:
 			text_color = Palette.TEXT
 	_time_pill.add_theme_stylebox_override("panel", UiTheme.pill(fill))
 	_time_label.add_theme_color_override("font_color", text_color)
+	# Pil ETA berdenyut saat waktu menipis.
+	var hurry := seconds_left <= 10.0 and seconds_left > -1.0
+	if hurry and _time_pulse == null:
+		_time_pill.pivot_offset = _time_pill.size / 2.0
+		_time_pulse = _time_pill.create_tween().set_loops()
+		_time_pulse.tween_property(_time_pill, "scale", Vector2(1.08, 1.08), 0.25)
+		_time_pulse.tween_property(_time_pill, "scale", Vector2.ONE, 0.25)
+	elif not hurry and _time_pulse:
+		_time_pulse.kill()
+		_time_pulse = null
+		_time_pill.scale = Vector2.ONE
 
 
 func update_package(damage: int) -> void:
@@ -125,7 +137,7 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 		_money_row("Denda kerusakan" + (" (2x)" if report.strict else ""), -report.damage_penalty),
 		_money_row("Potongan telat", -report.late_penalty),
 		HSeparator.new(),
-		_money_row("UPAH HARI INI", report.wage, Palette.TEAL_DARK, 600),
+		_counting_money_row("UPAH HARI INI", report.wage),
 		_label("Tabungan pengobatan: %s / %s" % [
 				GameState.rupiah(GameState.total_savings()), GameState.rupiah(GameState.MEDICAL_COST)],
 				14, Palette.TEXT_SOFT),
@@ -324,6 +336,17 @@ func _package_picture(broken := false) -> Control:
 		icon.rotation_degrees = -12.0
 		icon.pivot_offset = Vector2(48, 36)
 	return icon
+
+
+## Baris upah yang angkanya menghitung naik dari Rp0.
+func _counting_money_row(caption: String, amount: int) -> Control:
+	var row := _money_row(caption, 0, Palette.TEAL_DARK, 600)
+	var value := row.get_child(1) as Label
+	var tween := value.create_tween()
+	tween.tween_interval(0.5)
+	tween.tween_method(func(v: float) -> void: value.text = GameState.rupiah(roundi(v)),
+			0.0, float(amount), 0.7).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	return row
 
 
 func _money_row(caption: String, amount: int, color := Palette.TEXT, weight := 500) -> Control:
