@@ -5,9 +5,6 @@ extends Node2D
 const TILE := 48.0
 const COLUMNS := 15
 const HUD_HEIGHT := 48.0
-## Tinggi jendela map yang terlihat, dalam baris.
-const VIEW_ROWS := 13
-const VIEW_HEIGHT := VIEW_ROWS * TILE
 ## Posisi Masbro di layar (0 = atas, 1 = bawah); lebih ke bawah supaya jalan di depan terlihat.
 const CAMERA_ANCHOR := 0.65
 const CAMERA_SMOOTHING := 8.0
@@ -44,6 +41,11 @@ var _rows := 0
 var _board_rest := Vector2(0, HUD_HEIGHT)
 ## Jarak kamera dari atas map, dalam piksel.
 var _scroll := 0.0
+## Geser papan ke kiri di layar yang lebih sempit dari papan (0 = tidak digeser).
+var _scroll_x := 0.0
+## Tinggi jendela map yang terlihat (mengikuti tinggi layar), dalam piksel dan baris.
+var _view_height := 13 * TILE
+var _view_rows := 13
 var _shake_offset := Vector2.ZERO
 ## Menutup area di luar jendela map supaya kendaraan di luar papan tidak terlihat.
 var _side_mask: Node2D
@@ -102,7 +104,7 @@ func _ready() -> void:
 	_spawn_player()
 	if day.rainy:
 		_rain = RainOverlay.new()
-		_rain.area = Vector2(COLUMNS * TILE, VIEW_HEIGHT)
+		_rain.area = Vector2(COLUMNS * TILE, _view_height)
 		_rain.visibility_radius = day.visibility_tiles * TILE
 		_rain.target = _player
 		_rain.z_index = 10
@@ -110,6 +112,7 @@ func _ready() -> void:
 	_layout_board()
 	get_viewport().size_changed.connect(_layout_board)
 	_scroll = _camera_target()
+	_scroll_x = _camera_target_x()
 	_apply_board_position()
 
 	_hud = GameHud.new()
@@ -125,7 +128,6 @@ func _ready() -> void:
 	_hud.show_intro()
 	var touch := TouchControls.new()
 	touch.player = _player
-	touch.board_rect = Rect2(Vector2.ZERO, Vector2(COLUMNS * TILE, VIEW_HEIGHT))
 	add_child(touch)
 	_hud.pause_pressed.connect(_on_pause_pressed)
 	AudioManager.play_music(&"gameplay")
@@ -147,7 +149,9 @@ func _generate_map() -> void:
 func _process(delta: float) -> void:
 	if get_tree().paused:
 		return
-	_scroll = lerpf(_scroll, _camera_target(), 1.0 - exp(-CAMERA_SMOOTHING * delta))
+	var smoothing := 1.0 - exp(-CAMERA_SMOOTHING * delta)
+	_scroll = lerpf(_scroll, _camera_target(), smoothing)
+	_scroll_x = lerpf(_scroll_x, _camera_target_x(), smoothing)
 	_apply_board_position()
 	if state != State.PLAYING:
 		return
@@ -185,20 +189,32 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _camera_target() -> float:
-	var target := _player.position.y + TILE / 2.0 - VIEW_HEIGHT * CAMERA_ANCHOR
-	return clampf(target, 0.0, maxf(0.0, _rows * TILE - VIEW_HEIGHT))
+	var target := _player.position.y + TILE / 2.0 - _view_height * CAMERA_ANCHOR
+	return clampf(target, 0.0, maxf(0.0, _rows * TILE - _view_height))
+
+
+## Di layar sempit papan digeser ke samping supaya Masbro tetap di tengah.
+func _camera_target_x() -> float:
+	var view_width := get_viewport().get_visible_rect().size.x
+	var board_width := COLUMNS * TILE
+	if view_width >= board_width:
+		return 0.0
+	var target := _player.position.x + TILE / 2.0 - view_width / 2.0
+	return clampf(target, 0.0, board_width - view_width)
 
 
 func _apply_board_position() -> void:
-	_board.position = _board_rest + Vector2(0, -roundf(_scroll)) + _shake_offset
+	_board.position = _board_rest + Vector2(-roundf(_scroll_x), -roundf(_scroll)) + _shake_offset
 	if _rain:
 		_rain.position.y = roundf(_scroll)
+	if _board_rest.x > 0.0:
+		_side_mask.queue_redraw()
 
 
 ## Baris map yang sedang terlihat di layar (atas, bawah).
 func _visible_rows() -> Vector2i:
 	var top := floori(_scroll / TILE)
-	return Vector2i(top, mini(_rows - 1, top + VIEW_ROWS))
+	return Vector2i(top, mini(_rows - 1, top + _view_rows))
 
 
 func _spawn_vehicles() -> void:
@@ -681,6 +697,11 @@ func _on_checkpoint_requested() -> void:
 func _layout_board() -> void:
 	var view := get_viewport().get_visible_rect().size
 	_board_rest = Vector2(floorf(maxf(0.0, view.x - COLUMNS * TILE) / 2.0), HUD_HEIGHT)
+	# Jendela map mengisi tinggi layar (layar potret melihat lebih banyak baris).
+	_view_height = minf(view.y - HUD_HEIGHT, _rows * TILE)
+	_view_rows = ceili(_view_height / TILE)
+	if _rain:
+		_rain.resize(Vector2(COLUMNS * TILE, _view_height))
 	_apply_board_position()
 	_side_mask.queue_redraw()
 
@@ -688,12 +709,29 @@ func _layout_board() -> void:
 func _draw_side_mask() -> void:
 	var view := get_viewport().get_visible_rect().size
 	var color := ProjectSettings.get_setting("rendering/environment/defaults/default_clear_color") as Color
+	var left := _board_rest.x
 	var right := _board_rest.x + COLUMNS * TILE
-	var bottom := HUD_HEIGHT + VIEW_HEIGHT
-	if _board_rest.x > 0.0:
-		_side_mask.draw_rect(Rect2(0, HUD_HEIGHT, _board_rest.x, view.y), color)
-	if right < view.x:
+	var bottom := HUD_HEIGHT + _view_height
+	# Sisi kiri/kanan papan (layar lebar): taman rumput yang ikut bergulir dengan kamera.
+	if left > 0.0:
+		_side_mask.draw_rect(Rect2(0, HUD_HEIGHT, left, view.y), color)
 		_side_mask.draw_rect(Rect2(right, HUD_HEIGHT, view.x - right, view.y), color)
+		var grass := SpriteLibrary.texture("tile_median")
+		if grass:
+			var tint := Color(0.72, 0.8, 0.72)
+			var start_x := left - ceilf(left / TILE) * TILE
+			var y := HUD_HEIGHT - fposmod(_scroll, TILE)
+			while y < view.y:
+				var x := start_x
+				while x < view.x:
+					# Lewati petak yang berada di dalam papan permainan.
+					if x + TILE <= left or x >= right:
+						_side_mask.draw_texture_rect(grass, Rect2(x, y, TILE, TILE), false, tint)
+					x += TILE
+				y += TILE
+	if left > 0.0:
+		_side_mask.draw_rect(Rect2(left - 4, HUD_HEIGHT, 4, view.y), Palette.OUTLINE)
+		_side_mask.draw_rect(Rect2(right, HUD_HEIGHT, 4, view.y), Palette.OUTLINE)
 	if bottom < view.y:
 		_side_mask.draw_rect(Rect2(0, bottom, view.x, view.y - bottom), color)
 

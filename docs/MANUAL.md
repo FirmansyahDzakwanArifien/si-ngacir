@@ -30,7 +30,7 @@ Nasib Masbro ada di tanganmu.
 
 1. Buka link game atau file `index.html` dari paket **SiNgacir-web** yang sudah di-upload ke server/itch.io.
 2. Tunggu loading selesai, lalu klik/tap layar sekali (browser baru mengizinkan suara setelah interaksi pertama).
-3. Bisa dimainkan di laptop maupun HP. Di HP, gunakan kontrol sentuh.
+3. Bisa dimainkan di laptop maupun HP. Di HP cukup **swipe**: kiri, kanan, atau atas (tap juga untuk maju). Posisi tegak (potret) paling nyaman: petak lebih besar dan jalan di depan lebih banyak terlihat.
 
 > File `index.html` tidak bisa dibuka langsung dengan klik dua kali; harus lewat web server (itch.io, GitHub Pages, atau `python -m http.server`).
 
@@ -48,9 +48,9 @@ Kebutuhan minimal: Windows 10 64-bit, kartu grafis yang mendukung OpenGL 3.3.
 
 | Aksi | Keyboard | Layar sentuh |
 | --- | --- | --- |
-| Maju | W / ↑ | Tap layar, swipe ke atas, atau D-pad ▲ |
-| Mundur | S / ↓ | Swipe ke bawah atau D-pad ▼ |
-| Kiri / kanan | A / ← , D / → | Swipe ke kiri/kanan atau D-pad ◀ ▶ |
+| Maju | W / ↑ | Tap layar atau swipe ke atas |
+| Mundur | S / ↓ | Swipe ke bawah |
+| Kiri / kanan | A / ← , D / → | Swipe ke kiri/kanan |
 | Pause | Esc / P | Tombol **II** di pojok kanan atas |
 | Pilih tombol menu | Enter / klik | Tap |
 | Lanjut cutscene | Enter / klik | Tap |
@@ -258,7 +258,7 @@ Saat pause: **Lanjut**, **Ulangi Hari**, **Pengaturan**, **Menu Utama**.
 | Web hanya layar hitam / loading terus | Gunakan browser terbaru (Chrome, Edge, Firefox) dengan WebGL 2 aktif |
 | Windows memblokir `SiNgacir.exe` | SmartScreen: **More info → Run anyway** |
 | Ingin mengulang dari awal | Menu utama → **Mulai Baru** (tekan dua kali) |
-| Kontrol sentuh tidak muncul di laptop layar sentuh | Gunakan keyboard; D-pad hanya muncul bila browser melaporkan layar sentuh |
+| Tampilan terlalu kecil/besar | Game menyesuaikan sendiri dengan bentuk layar; di HP, putar ke posisi tegak (potret) untuk melihat lebih banyak jalan |
 
 ---
 
