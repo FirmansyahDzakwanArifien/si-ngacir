@@ -30,6 +30,7 @@ var damage := 0
 var collisions := 0
 var elapsed := 0.0
 var coins := 0
+var checkpoint_uses := 0
 
 var _rows := 0
 ## Posisi papan saat kamera di paling atas (papan di tengah layar secara horizontal).
@@ -55,6 +56,8 @@ var _boost_left := 0.0
 ## Node item di papan, key: Vector2i(kolom, baris).
 var _item_nodes := {}
 var _collected := {}
+## Pos terakhir yang dicapai; Vector2i(-1, -1) = belum ada.
+var _checkpoint_cell := Vector2i(-1, -1)
 var _hud: GameHud
 
 
@@ -100,6 +103,7 @@ func _ready() -> void:
 	_hud.retry_requested.connect(_on_retry_requested)
 	_hud.next_requested.connect(_on_next_requested)
 	_hud.menu_requested.connect(_on_menu_requested)
+	_hud.checkpoint_requested.connect(_on_checkpoint_requested)
 	_hud.show_intro()
 	var touch := TouchControls.new()
 	touch.player = _player
@@ -331,6 +335,8 @@ func _on_player_moved(cell: Vector2i) -> void:
 			_splash()
 		return
 	_last_safe_cell = cell
+	if day.lanes[cell.y].checkpoint and cell.y != _checkpoint_cell.y:
+		_reach_checkpoint(cell)
 	_collect_item(cell)
 	if day.lanes[cell.y].obstacles.get(cell.x, &"") == &"hole" and not _player.invulnerable:
 		_on_hole()
@@ -447,7 +453,7 @@ func _deliver() -> void:
 	state = State.FINISHED
 	_player.input_enabled = false
 	_hud.update_progress(1.0)
-	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins)
+	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins, checkpoint_uses)
 	GameState.record_delivery(day, report.wage)
 	AudioManager.play_sfx(&"delivery")
 	_player.celebrate()
@@ -463,7 +469,31 @@ func _fail() -> void:
 	_player.invulnerable = false
 	GameState.record_delivery(day, 0)
 	AudioManager.play_sfx(&"fail")
-	_hud.show_failed(GameState.is_replay)
+	var can_continue := _checkpoint_cell.y >= 0 and day.map != null
+	_hud.show_failed(GameState.is_replay, day.map.checkpoint_penalty if can_continue else 0)
+
+
+func _reach_checkpoint(cell: Vector2i) -> void:
+	_checkpoint_cell = cell
+	_popup("Pos tercapai!", Palette.TEAL, _player.position)
+	AudioManager.play_sfx(&"star")
+	_board.queue_redraw()
+
+
+## Paket pengganti dari Pos: kondisi paket pulih, denda dicatat, waktu tetap berjalan.
+func _on_checkpoint_requested() -> void:
+	checkpoint_uses += 1
+	damage = 0
+	_hud.update_package(0)
+	_hud.hide_overlay()
+	_player.place(_checkpoint_cell)
+	_last_safe_cell = _checkpoint_cell
+	_invulnerable_left = HIT_INVULNERABLE_TIME
+	_player.invulnerable = true
+	_player.input_enabled = true
+	state = State.PLAYING
+	AudioManager.play_sfx(&"pickup")
+	_popup("Paket baru!", Palette.TEAL, _player.position)
 
 
 func _layout_board() -> void:
@@ -558,6 +588,7 @@ func _draw_board() -> void:
 			_draw_lane_marking(row)
 
 	_draw_river_banks()
+	_draw_checkpoints()
 	_draw_obstacles()
 	_draw_building("house", 0)
 	_draw_building("warehouse", _rows - 1)
@@ -567,6 +598,24 @@ func _draw_board() -> void:
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
 	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), "Gudang Ngacir Express",
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
+
+
+func _draw_checkpoints() -> void:
+	var font := ThemeDB.fallback_font
+	for row in _rows:
+		if not day.lanes[row].checkpoint:
+			continue
+		var reached := row == _checkpoint_cell.y
+		var sprite_name := "checkpoint_flag_on" if reached else "checkpoint_flag"
+		var texture := SpriteLibrary.texture(sprite_name)
+		for col in [0, COLUMNS - 1]:
+			var rect := Rect2(Vector2(col, row) * TILE, Vector2(TILE, TILE))
+			if texture:
+				_board.draw_texture_rect(texture, rect, false)
+			else:
+				_board.draw_rect(rect.grow(-10), Palette.TEAL)
+		_board.draw_string(font, Vector2(TILE + 6, row * TILE + 30), "POS",
+				HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Palette.OUTLINE)
 
 
 ## Garis tepian di atas dan bawah setiap blok sungai.

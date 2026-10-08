@@ -157,6 +157,16 @@ Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit
 * Lane sungai yang bersebelahan mengalir berlawanan arah. Perhatikan rakit di lane berikutnya sebelum melompat.
 * Helm juga melindungi dari air.
 
+### Pos (checkpoint)
+
+Mulai Hari 2, rute panjang punya **Pos** setiap beberapa blok: median bersih bertanda bendera di kedua sisinya. Begitu Masbro menginjak Pos, benderanya berubah kuning.
+
+Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos**: paket pengganti diambil dan perjalanan dilanjutkan dari Pos. Konsekuensinya:
+
+* Denda ganti paket (Rp15.000; Rp20.000 untuk Paket VIP) dipotong dari upah.
+* Rating maksimal 3 bintang.
+* Waktu tetap berjalan.
+
 ### Koin & power-up
 
 | Item | Efek |

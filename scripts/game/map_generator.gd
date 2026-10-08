@@ -23,8 +23,11 @@ static func generate(params: MapParams, rng: RandomNumberGenerator) -> Array[Lan
 		else:
 			_append_roads(rows, params, rng, direction, speed_scale)
 		if block < params.road_blocks - 1:
+			var is_checkpoint := params.checkpoint_every > 0 and (block + 1) % params.checkpoint_every == 0
 			for i in rng.randi_range(params.safe_rows_between.x, params.safe_rows_between.y):
-				rows.append(_safe(LaneData.Kind.MEDIAN))
+				var median := _safe(LaneData.Kind.MEDIAN)
+				median.checkpoint = is_checkpoint and i == 0
+				rows.append(median)
 	rows.append(_safe(LaneData.Kind.SIDEWALK))  # rumah pelanggan
 	rows.reverse()
 	_decorate(rows, params, rng)
@@ -57,7 +60,8 @@ static func _decorate(rows: Array[LaneData], params: MapParams, rng: RandomNumbe
 	var road_rows: Array[int] = []
 	for row in range(1, rows.size() - 1):
 		var lane := rows[row]
-		if lane.kind == LaneData.Kind.RIVER:
+		# Sungai dan pos dibiarkan bersih (pos = tempat istirahat).
+		if lane.kind == LaneData.Kind.RIVER or lane.checkpoint:
 			continue
 		if lane.kind == LaneData.Kind.MEDIAN:
 			var count := rng.randi_range(params.blockers_per_safe_row.x, params.blockers_per_safe_row.y)

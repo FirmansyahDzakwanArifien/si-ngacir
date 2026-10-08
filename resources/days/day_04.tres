@@ -23,6 +23,8 @@ powerup_chance = 0.35
 river_chance = 0.3
 river_lanes = Vector2i(2, 3)
 raft_speed = Vector2(35, 60)
+checkpoint_every = 3
+checkpoint_penalty = 15000
 
 [resource]
 script = ExtResource("1_day")

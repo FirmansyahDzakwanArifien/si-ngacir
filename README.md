@@ -31,6 +31,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Map prosedural yang panjang & scroll vertikal: rute berbeda setiap main, makin jauh makin sulit
 * [x] Rintangan statis (cone, pembatas, lubang), koin, power-up helm & sepatu
 * [x] Sungai & rakit (mulai Hari 2)
+* [x] Pos (checkpoint): lanjut dari Pos dengan denda bila paket hancur
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
@@ -73,6 +74,7 @@ Setiap hari punya **MapParams** (grup *Peta* → `map` di `day_0N.tres`). Map di
 | `eta_per_row` | Target waktu per baris; ETA = jumlah baris × nilai ini |
 | `fixed_seed` | 0 = acak setiap main; angka lain = map selalu sama (berguna untuk playtest) |
 | `blockers_per_safe_row` | Cone/pembatas per baris median (min, max) |
+| `checkpoint_every`, `checkpoint_penalty` | Pos setiap N blok (0 = tanpa pos) dan denda ganti paket |
 | `river_chance`, `river_lanes`, `raft_speed` | Peluang blok menjadi sungai, jumlah lane air, kecepatan arus |
 | `hole_chance`, `coin_chance`, `powerup_chance` | Peluang lubang per lane, deretan koin per baris, dan power-up per blok |
 

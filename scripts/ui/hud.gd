@@ -8,6 +8,8 @@ signal resume_requested
 signal retry_requested
 signal next_requested
 signal menu_requested
+## Lanjut dari Pos setelah paket hancur.
+signal checkpoint_requested
 ## Tombol pause di layar sentuh.
 signal pause_pressed
 
@@ -143,6 +145,8 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 		_money_row("Bonus koin (%d)" % report.coins, report.coin_bonus) if report.coins > 0 else null,
 		_money_row("Denda kerusakan" + (" (2x)" if report.strict else ""), -report.damage_penalty),
 		_money_row("Potongan telat", -report.late_penalty),
+		_money_row("Ganti paket di Pos (%dx)" % report.checkpoint_uses, -report.checkpoint_penalty)
+				if report.checkpoint_uses > 0 else null,
 		HSeparator.new(),
 		_counting_money_row("UPAH HARI INI", report.wage),
 		_label("Tabungan pengobatan: %s / %s" % [
@@ -155,17 +159,21 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 	])
 
 
-func show_failed(is_replay: bool) -> void:
+## checkpoint_penalty > 0: tawarkan lanjut dari Pos dengan denda tersebut.
+func show_failed(is_replay: bool, checkpoint_penalty := 0) -> void:
 	var leave: Array = ["Kembali ke Rekap", next_requested.emit] if is_replay \
 			else ["Menu Utama", menu_requested.emit]
-	_open("PAKET HANCUR!", Palette.CORAL, [
+	var buttons: Array = [["Ulangi Hari", retry_requested.emit], leave]
+	var rows: Array[Control] = [
 		_package_picture(true),
 		_quote(DeliveryReport.FAILED_COMMENT, _day.customer_name),
-		_label("Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.", 16),
-	], [
-		["Ulangi Hari", retry_requested.emit],
-		leave,
-	])
+	]
+	if checkpoint_penalty > 0:
+		rows.append(_label("Kamu sudah sampai di Pos. Ambil paket pengganti dan lanjutkan perjalanan?", 16))
+		buttons.push_front(["Lanjut dari Pos (-%s)" % GameState.rupiah(checkpoint_penalty), checkpoint_requested.emit])
+	else:
+		rows.append(_label("Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.", 16))
+	_open("PAKET HANCUR!", Palette.CORAL, rows, buttons)
 
 
 func hide_overlay() -> void:

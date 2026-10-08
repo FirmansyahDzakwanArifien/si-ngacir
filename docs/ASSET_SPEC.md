@@ -47,6 +47,13 @@ Catatan: paket digambar **terpisah** (lihat di bawah) dan diletakkan di punggung
 | `vehicle_rakit2.png` | 96 × 48 | Rakit 2 petak (tampak atas/samping) |
 | `vehicle_rakit3.png` | 144 × 48 | Rakit 3 petak |
 
+## Pos (checkpoint)
+
+| File | Ukuran | Keterangan |
+| --- | --- | --- |
+| `checkpoint_flag.png` | 48 × 48 | Bendera Pos belum dicapai |
+| `checkpoint_flag_on.png` | 48 × 48 | Bendera Pos sudah dicapai |
+
 ## Rintangan & item
 
 Semua 48 × 48 (1 petak), tampak samping/depan, berdiri di tengah petak.
