@@ -2,6 +2,8 @@
 
 Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima hari sebagai kurir Ngacir Express demi biaya pengobatan adiknya. Seberangi lalu lintas, kejar Timer ETA, dan jaga paket supaya upah tidak terpotong denda.
 
+📖 **Manual pemain** (storyline, cara main, kontrol, tips): [`docs/MANUAL.md`](docs/MANUAL.md)
+
 ## Teknologi
 
 * Godot Engine 4.3 Stable (GDScript)
@@ -17,6 +19,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | W A S D / panah | Gerak |
 | Esc / P | Pause |
 | Enter | Pilih tombol di panel |
+| Layar sentuh | Tap = maju, swipe = arah gerak, D-pad di layar, tombol II = pause |
 
 ## Status (v0.1)
 
@@ -33,6 +36,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Siap sprite: game otomatis memakai gambar di `assets/sprites/` (spesifikasi di `docs/ASSET_SPEC.md`)
 * [x] Cutscene cerita: pembuka, sebelum Hari 2–5, dan ending (naskah draf)
 * [x] Export Web (HTML5) dan Windows
+* [x] Kontrol sentuh (swipe/tap + D-pad) dan layar responsif (potret, lanskap, layar lebar)
 * [ ] Gambar final dari tim Illustrator
 * [ ] Naskah final dari tim Writer Story
 
@@ -140,6 +144,32 @@ godot --headless --export-release "Windows Desktop" builds/windows/SiNgacir.exe
 **Upload ke itch.io:** zip isi folder `builds/web/` (dengan `index.html` di root zip), upload sebagai *HTML*, centang "This file will be played in the browser", ukuran viewport 720 × 672. Build web memakai mode tanpa thread, jadi tidak perlu pengaturan SharedArrayBuffer.
 
 Catatan: di browser, suara baru berbunyi setelah klik/tombol pertama (aturan browser). Mencoba build web secara lokal harus lewat server (misal `python -m http.server` di folder `builds/web`), tidak bisa dibuka langsung dari file.
+
+## Build otomatis (GitHub Actions)
+
+Workflow `.github/workflows/build.yml`:
+
+| Pemicu | Yang terjadi |
+| --- | --- |
+| Pull Request ke `dev` / `main` | Import + export dicek; build bisa diunduh di tab **Actions → Artifacts** |
+| Push ke `main` | Build Web + Windows (artifact) |
+| Push tag `v*` (contoh `v0.2.0`) | **GitHub Release** otomatis berisi `SiNgacir-web.zip`, `SiNgacir-windows.zip`, dan manual |
+| Tombol **Run workflow** di tab Actions | Build manual kapan saja |
+
+Membuat rilis baru (setelah `dev` digabung ke `main`):
+
+```bash
+git checkout main && git pull
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+Deploy opsional (Settings → Secrets and variables → Actions):
+
+| Tujuan | Atur | Catatan |
+| --- | --- | --- |
+| **itch.io** (link main di browser) | Variable `ITCH_GAME` = `namauser/si-ngacir`, Secret `BUTLER_API_KEY` | API key dari itch.io → Settings → API keys. Jalan saat push tag |
+| **GitHub Pages** | Variable `DEPLOY_PAGES` = `true`, Settings → Pages → Source: *GitHub Actions* | Repo private butuh GitHub Pro/Team; repo public gratis |
 
 ## Workflow Git
 

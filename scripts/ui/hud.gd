@@ -8,6 +8,8 @@ signal resume_requested
 signal retry_requested
 signal next_requested
 signal menu_requested
+## Tombol pause di layar sentuh.
+signal pause_pressed
 
 const BAR_HEIGHT := 48.0
 const INK := Color("2b2d42")
@@ -171,6 +173,13 @@ func _build_top_bar() -> void:
 	_time_label = _label("", 18, Color.WHITE, false)
 	row.add_child(_time_label)
 	row.add_child(_label("ANTAR KE: %s" % _day.customer_name.to_upper(), 14, Color(1, 1, 1, 0.7), false))
+	if DisplayServer.is_touchscreen_available():
+		var pause := Button.new()
+		pause.text = "II"
+		pause.focus_mode = Control.FOCUS_NONE
+		pause.custom_minimum_size = Vector2(40, 0)
+		pause.pressed.connect(pause_pressed.emit)
+		row.add_child(pause)
 
 
 func _build_overlay() -> void:

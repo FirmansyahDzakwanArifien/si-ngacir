@@ -34,6 +34,8 @@ var invulnerable := false:
 			_play(&"idle")
 
 var _tween: Tween
+## Arah dari swipe/tap layar sentuh, dijalankan begitu langkah sebelumnya selesai.
+var _queued_direction := Vector2i.ZERO
 var _facing := 1
 var _blink_time := 0.0
 ## Sprite Masbro dari Illustrator; null berarti memakai gambar placeholder di _draw().
@@ -80,6 +82,12 @@ func is_moving() -> bool:
 	return _tween != null and _tween.is_running()
 
 
+## Antre satu langkah (dipakai kontrol sentuh).
+func queue_move(direction: Vector2i) -> void:
+	if input_enabled:
+		_queued_direction = direction
+
+
 func knock_back(target: Vector2i) -> void:
 	last_move_was_slide = false
 	_hop_to(target, 0.08, &"hit")
@@ -100,6 +108,11 @@ func _process(delta: float) -> void:
 		_blink_time += delta
 		modulate.a = 0.35 if fmod(_blink_time, 0.16) < 0.08 else 1.0
 	if not input_enabled or is_moving():
+		return
+	if _queued_direction != Vector2i.ZERO:
+		var direction := _queued_direction
+		_queued_direction = Vector2i.ZERO
+		_try_move(direction)
 		return
 	for action: StringName in DIRECTIONS:
 		if Input.is_action_pressed(action):
