@@ -31,19 +31,23 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Side conflict: kucing jalanan, hujan (jarak pandang & licin), Pak Ojan (pelanggan perfeksionis)
 * [x] Sistem audio (BGM + SFX, suara placeholder) dan menu Pengaturan (volume, layar penuh)
 * [x] Siap sprite: game otomatis memakai gambar di `assets/sprites/` (spesifikasi di `docs/ASSET_SPEC.md`)
+* [x] Cutscene cerita: pembuka, sebelum Hari 2–5, dan ending (naskah draf)
 * [ ] Gambar final dari tim Illustrator
+* [ ] Naskah final dari tim Writer Story
 
 ## Struktur
 
 ```text
 scenes/main.tscn            Layar judul
 scenes/ending.tscn          Rekap masa percobaan dan ending
+scenes/cutscene.tscn        Pemutar cutscene cerita
 scenes/game/level.tscn      Satu hari pengiriman
 scripts/autoload/game_state.gd   Hari aktif, tabungan, input map, format rupiah
 scripts/data/                PackageData, LaneData, DayData (Resource)
 scripts/game/                Level, Player (Masbro), Vehicle, DeliveryReport
 scripts/ui/hud.gd            HUD dan panel intro/pause/hasil/gagal
 resources/packages/*.tres    Data paket (daya tahan, kerapuhan, kecepatan langkah)
+resources/story/*.tres       Naskah cutscene (StoryData)
 resources/days/day_0N.tres   Data hari 1–5: paket, pelanggan, ETA, upah, susunan lane
 ```
 
@@ -89,6 +93,21 @@ Diatur di grup **Side Conflict** pada tiap `day_0N.tres`:
 | 3 | 1 | – | Pak Ojan (tip Rp25.000) |
 | 4 | 1 | Ya | – |
 | 5 | 2 | Ya (lebih ringan) | – |
+
+## Cerita (untuk Writer Story)
+
+Naskah cutscene ada di `resources/story/` dan bisa diedit langsung di Inspector Godot (properti `pages`, satu halaman per elemen). Naskah saat ini adalah **draf** yang disusun dari storyline Pixar Method.
+
+| File | Kapan diputar |
+| --- | --- |
+| `opening.tres` | Setelah "Mulai Baru", sebelum Hari 1 |
+| `day_02.tres` … `day_05.tres` | Sebelum hari tersebut (dihubungkan lewat properti `story` di `day_0N.tres`) |
+| `ending_success.tres` | Setelah Hari 5 bila tabungan cukup |
+| `ending_bad.tres` | Setelah Hari 5 bila tabungan kurang dan `SHORTFALL_RULE = BAD_ENDING` |
+
+Gambar ilustrasi per halaman (opsional): taruh PNG 480 × 270 di `assets/story/`, lalu isi nama filenya (tanpa `.png`) di properti `images` dengan urutan yang sama seperti `pages`.
+
+Kontrol cutscene: Enter / klik untuk lanjut, Esc untuk lewati.
 
 ## Placeholder untuk Writer Story
 
