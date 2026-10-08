@@ -149,6 +149,14 @@ Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan 
 | **Cone & pembatas jalan** (di median) | Menghalangi langkah. Geser ke kiri/kanan lalu lanjut |
 | **Lubang** (di aspal) | Masbro terperosok: paket rusak 1 dan Masbro kembali ke petak sebelumnya |
 
+### Sungai
+
+Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit** yang hanyut; selama berdiri di rakit, Masbro ikut terbawa arus.
+
+* Melompat ke air tanpa rakit, rakit menjauh, atau terbawa sampai keluar layar → **paket basah** (rusak 1) dan Masbro kembali ke tepian terakhir.
+* Lane sungai yang bersebelahan mengalir berlawanan arah. Perhatikan rakit di lane berikutnya sebelum melompat.
+* Helm juga melindungi dari air.
+
 ### Koin & power-up
 
 | Item | Efek |

@@ -22,6 +22,14 @@ extends Resource
 ## 0 = map acak setiap kali dimainkan. Isi angka lain untuk map yang selalu sama.
 @export var fixed_seed: int = 0
 
+@export_group("Sungai")
+## Peluang sebuah blok menjadi sungai (bukan jalan). Blok pertama selalu jalan.
+@export_range(0.0, 1.0, 0.05) var river_chance: float = 0.0
+## Jumlah lane air per blok sungai (min, max).
+@export var river_lanes := Vector2i(2, 3)
+## Kecepatan arus/rakit dalam px/detik (min, max).
+@export var raft_speed := Vector2(35, 60)
+
 @export_group("Rintangan & Item")
 ## Jumlah cone/pembatas di tiap baris median (min, max).
 @export var blockers_per_safe_row := Vector2i(0, 2)

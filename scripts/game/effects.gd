@@ -37,6 +37,22 @@ static func burst(parent: Node, at: Vector2, package_color: Color) -> void:
 
 
 ## Hujan konfeti dari garis selebar width yang berpusat di at.
+## Cipratan air saat tercebur ke sungai.
+static func splash(parent: Node, at: Vector2) -> void:
+	for color in [Color("5bc0eb"), Color("e6f7ff")]:
+		var particles := _make(parent, at, 12, 0.6)
+		particles.direction = Vector2.UP
+		particles.spread = 50.0
+		particles.initial_velocity_min = 90.0
+		particles.initial_velocity_max = 170.0
+		particles.gravity = Vector2(0, 420)
+		particles.scale_amount_min = 0.8
+		particles.scale_amount_max = 1.4
+		particles.color = color
+		particles.color_ramp = _fade()
+		particles.emitting = true
+
+
 static func confetti(parent: Node, at: Vector2, width: float) -> void:
 	for color in [Palette.YELLOW, Palette.TEAL, Palette.CORAL, Palette.LAVENDER, Palette.PINK]:
 		var particles := _make(parent, at, 14, 2.4)

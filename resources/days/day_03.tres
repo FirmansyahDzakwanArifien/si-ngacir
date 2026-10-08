@@ -20,6 +20,9 @@ blockers_per_safe_row = Vector2i(1, 2)
 hole_chance = 0.15
 coin_chance = 0.35
 powerup_chance = 0.35
+river_chance = 0.25
+river_lanes = Vector2i(2, 3)
+raft_speed = Vector2(35, 60)
 
 [resource]
 script = ExtResource("1_day")

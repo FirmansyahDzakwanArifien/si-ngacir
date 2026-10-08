@@ -44,6 +44,10 @@ var _board: Node2D
 var _player: Player
 var _rain: RainOverlay
 var _vehicles: Array[Vehicle] = []
+## Rakit per baris sungai, key: nomor baris.
+var _rafts := {}
+## Petak darat terakhir tempat Masbro berdiri; tujuan kembali bila jatuh ke air.
+var _last_safe_cell := Vector2i.ZERO
 var _cats: Array[StreetCat] = []
 var _cat_timer := 1.5
 var _popup_cooldown := 0.0
@@ -131,6 +135,7 @@ func _process(delta: float) -> void:
 
 	_popup_cooldown = maxf(0.0, _popup_cooldown - delta)
 	_update_cats(delta)
+	_update_river(delta)
 	if _boost_left > 0.0:
 		_boost_left -= delta
 		if _boost_left <= 0.0:
@@ -143,7 +148,7 @@ func _process(delta: float) -> void:
 		return
 	var player_box := _player.hitbox()
 	for vehicle in _vehicles:
-		if vehicle.hitbox().intersects(player_box):
+		if not vehicle.is_platform and vehicle.hitbox().intersects(player_box):
 			_on_hit(vehicle)
 			return
 
@@ -176,7 +181,7 @@ func _spawn_vehicles() -> void:
 	var loop_length := COLUMNS * TILE + margin
 	for row in _rows:
 		var lane := day.lanes[row]
-		if lane.kind != LaneData.Kind.ROAD or lane.vehicle_count <= 0:
+		if (lane.kind != LaneData.Kind.ROAD and lane.kind != LaneData.Kind.RIVER) or lane.vehicle_count <= 0:
 			continue
 		var spacing := loop_length / lane.vehicle_count
 		for i in lane.vehicle_count:
@@ -185,6 +190,10 @@ func _spawn_vehicles() -> void:
 			vehicle.position = Vector2(-margin + fposmod(lane.offset + i * spacing, loop_length), row * TILE)
 			_board.add_child(vehicle)
 			_vehicles.append(vehicle)
+			if vehicle.is_platform:
+				if not _rafts.has(row):
+					_rafts[row] = []
+				_rafts[row].append(vehicle)
 
 
 func _spawn_items() -> void:
@@ -213,6 +222,7 @@ func _spawn_player() -> void:
 	_player.package_id = day.package.id
 	_player.package_color = day.package.color
 	_player.place(Vector2i(floori(COLUMNS / 2.0), _rows - 1))
+	_last_safe_cell = _player.cell
 	_player.can_enter = _is_cell_free
 	_player.moved.connect(_on_player_moved)
 	_player.blocked.connect(_on_player_blocked)
@@ -316,6 +326,11 @@ func _on_player_moved(cell: Vector2i) -> void:
 	if cell.y == 0:
 		_deliver()
 		return
+	if day.lanes[cell.y].kind == LaneData.Kind.RIVER:
+		if _raft_under_player() == null:
+			_splash()
+		return
+	_last_safe_cell = cell
 	_collect_item(cell)
 	if day.lanes[cell.y].obstacles.get(cell.x, &"") == &"hole" and not _player.invulnerable:
 		_on_hole()
@@ -354,6 +369,39 @@ func _collect_item(cell: Vector2i) -> void:
 			_boost_left = SHOES_TIME
 			_player.speed_multiplier = SHOES_SPEED
 			_popup("Sepatu kilat!", Palette.CORAL, _player.position)
+
+
+## Masbro ikut terbawa rakit; keluar layar atau tanpa rakit berarti tercebur.
+func _update_river(delta: float) -> void:
+	if _player.is_moving() or day.lanes[_player.cell.y].kind != LaneData.Kind.RIVER:
+		return
+	var raft := _raft_under_player()
+	if raft == null:
+		_splash()
+		return
+	_player.ride(raft.speed * raft.direction * delta)
+	var center := _player.position.x + TILE / 2.0
+	if center < 0.0 or center > COLUMNS * TILE:
+		_splash()
+
+
+func _raft_under_player() -> Vehicle:
+	var center := _player.position.x + TILE / 2.0
+	for raft: Vehicle in _rafts.get(_player.cell.y, []):
+		if center >= raft.position.x + 4.0 and center <= raft.position.x + raft.length_px - 4.0:
+			return raft
+	return null
+
+
+func _splash() -> void:
+	Effects.splash(_board, _player.position + Vector2(TILE / 2.0, TILE * 0.7))
+	AudioManager.play_sfx(&"splash", 0.1)
+	if _player.invulnerable:
+		# Sedang kebal (baru tertabrak): cukup kembali ke tepian.
+		_player.knock_back(_last_safe_cell)
+		return
+	_popup("Paket basah!", Palette.SKY_DEEP, _player.position)
+	_damage_package(1, _last_safe_cell)
 
 
 func _on_hit(vehicle: Vehicle) -> void:
@@ -485,6 +533,7 @@ func _draw_board() -> void:
 		LaneData.Kind.SIDEWALK: SpriteLibrary.texture("tile_sidewalk"),
 		LaneData.Kind.ROAD: SpriteLibrary.texture("tile_road"),
 		LaneData.Kind.MEDIAN: SpriteLibrary.texture("tile_median"),
+		LaneData.Kind.RIVER: SpriteLibrary.texture("tile_water"),
 	}
 	for row in _rows:
 		var kind := day.lanes[row].kind
@@ -502,10 +551,13 @@ func _draw_board() -> void:
 				_board.draw_rect(Rect2(col * TILE, y, TILE, TILE), Color("b5ad9c"), false, 1.0)
 		elif kind == LaneData.Kind.MEDIAN:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("7fb069"))
+		elif kind == LaneData.Kind.RIVER:
+			_board.draw_rect(Rect2(0, y, width, TILE), Color("5bc0eb"))
 		else:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("4a4a52"))
 			_draw_lane_marking(row)
 
+	_draw_river_banks()
 	_draw_obstacles()
 	_draw_building("house", 0)
 	_draw_building("warehouse", _rows - 1)
@@ -515,6 +567,20 @@ func _draw_board() -> void:
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
 	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), "Gudang Ngacir Express",
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
+
+
+## Garis tepian di atas dan bawah setiap blok sungai.
+func _draw_river_banks() -> void:
+	for row in _rows:
+		if day.lanes[row].kind != LaneData.Kind.RIVER:
+			continue
+		for edge: int in [row, row + 1]:
+			var neighbour := edge - 1 if edge == row else edge
+			if neighbour < 0 or neighbour >= _rows or day.lanes[neighbour].kind == LaneData.Kind.RIVER:
+				continue
+			_board.draw_line(Vector2(0, edge * TILE), Vector2(COLUMNS * TILE, edge * TILE), Palette.OUTLINE, 3.0)
+			_board.draw_line(Vector2(0, edge * TILE + (2 if edge == row else -2)),
+					Vector2(COLUMNS * TILE, edge * TILE + (2 if edge == row else -2)), Color(1, 1, 1, 0.6), 2.0)
 
 
 func _draw_obstacles() -> void:

@@ -30,6 +30,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] 5 hari masa percobaan: Bantal, Galon Air, Telur, Barang Sensitif, Paket VIP
 * [x] Map prosedural yang panjang & scroll vertikal: rute berbeda setiap main, makin jauh makin sulit
 * [x] Rintangan statis (cone, pembatas, lubang), koin, power-up helm & sepatu
+* [x] Sungai & rakit (mulai Hari 2)
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
 * [ ] Keputusan final Writer Story: biaya pengobatan & aturan ending (lihat di bawah)
@@ -72,6 +73,7 @@ Setiap hari punya **MapParams** (grup *Peta* → `map` di `day_0N.tres`). Map di
 | `eta_per_row` | Target waktu per baris; ETA = jumlah baris × nilai ini |
 | `fixed_seed` | 0 = acak setiap main; angka lain = map selalu sama (berguna untuk playtest) |
 | `blockers_per_safe_row` | Cone/pembatas per baris median (min, max) |
+| `river_chance`, `river_lanes`, `raft_speed` | Peluang blok menjadi sungai, jumlah lane air, kecepatan arus |
 | `hole_chance`, `coin_chance`, `powerup_chance` | Peluang lubang per lane, deretan koin per baris, dan power-up per blok |
 
 Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/rumah ke bawah/gudang).
@@ -99,6 +101,7 @@ Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/r
 | `sfx/star` | Tiap bintang rating muncul |
 | `sfx/meow` | Jalan terhalang kucing |
 | `sfx/slip` | Masbro tergelincir saat hujan |
+| `sfx/splash` | Tercebur ke sungai |
 | `sfx/click` | Semua tombol |
 
 ## Side conflict per hari
