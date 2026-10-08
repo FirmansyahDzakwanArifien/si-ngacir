@@ -21,7 +21,7 @@ func _ready() -> void:
 		return
 
 	var background := ColorRect.new()
-	background.color = GameHud.INK.darkened(0.4)
+	background.color = Palette.SKY_DEEP.lerp(Palette.NIGHT, 0.35)
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
@@ -41,24 +41,35 @@ func _ready() -> void:
 	_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	column.add_child(_image)
 
+	var card := PanelContainer.new()
+	var text_box := VBoxContainer.new()
+	text_box.add_theme_constant_override("separation", 10)
+	card.add_child(text_box)
+	column.add_child(card)
+
 	_text = Label.new()
 	_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_text.custom_minimum_size = Vector2(0, 90)
+	_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_text.add_theme_font_size_override("font_size", 22)
-	column.add_child(_text)
+	text_box.add_child(_text)
 
 	_hint = Label.new()
-	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_hint.add_theme_font_size_override("font_size", 14)
-	_hint.add_theme_color_override("font_color", Color(1, 1, 1, 0.5))
-	column.add_child(_hint)
+	_hint.add_theme_color_override("font_color", Palette.TEXT_SOFT)
+	text_box.add_child(_hint)
 
 	var skip := Button.new()
 	skip.text = "Lewati (Esc)"
 	skip.focus_mode = Control.FOCUS_NONE
+	skip.add_theme_font_size_override("font_size", 16)
 	skip.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	skip.position = Vector2(-140, 12)
-	skip.size = Vector2(128, 32)
+	skip.offset_left = -150
+	skip.offset_top = 12
+	skip.offset_right = -12
+	skip.offset_bottom = 52
 	skip.pressed.connect(_finish)
 	add_child(skip)
 

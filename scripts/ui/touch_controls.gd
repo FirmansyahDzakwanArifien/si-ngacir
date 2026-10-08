@@ -107,8 +107,11 @@ static func _arrow_texture(angle: float, alpha: float) -> Texture2D:
 	for y in BUTTON_SIZE:
 		for x in BUTTON_SIZE:
 			var point := Vector2(x + 0.5, y + 0.5)
+			var distance := point.distance_to(center)
 			if Geometry2D.is_point_in_polygon(point, arrow):
-				image.set_pixel(x, y, Color(GameHud.INK, minf(1.0, alpha + 0.4)))
-			elif point.distance_to(center) <= radius:
-				image.set_pixel(x, y, Color(1, 1, 1, alpha))
+				image.set_pixel(x, y, Color(Palette.OUTLINE, minf(1.0, alpha + 0.45)))
+			elif distance <= radius - 3.0:
+				image.set_pixel(x, y, Color(Palette.CREAM, minf(1.0, alpha + 0.3)))
+			elif distance <= radius:
+				image.set_pixel(x, y, Color(Palette.OUTLINE, minf(1.0, alpha + 0.3)))
 	return ImageTexture.create_from_image(image)
