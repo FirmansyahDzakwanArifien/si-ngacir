@@ -12,6 +12,8 @@ const SFX_VOICES := 8
 var music_volume := 0.7
 var sfx_volume := 0.8
 var fullscreen := false
+## Kode bahasa: "id" (Indonesia) atau "en" (Inggris).
+var language := ""
 
 var _music_player: AudioStreamPlayer
 var _sfx_players: Array[AudioStreamPlayer] = []
@@ -95,11 +97,17 @@ func set_fullscreen(value: bool) -> void:
 			DisplayServer.WINDOW_MODE_FULLSCREEN if value else DisplayServer.WINDOW_MODE_WINDOWED)
 
 
+func set_language(code: String) -> void:
+	language = code
+	TranslationServer.set_locale(code)
+
+
 func save_settings() -> void:
 	var config := ConfigFile.new()
 	config.set_value("audio", "music_volume", music_volume)
 	config.set_value("audio", "sfx_volume", sfx_volume)
 	config.set_value("display", "fullscreen", fullscreen)
+	config.set_value("display", "language", language)
 	config.save(SETTINGS_PATH)
 
 
@@ -108,6 +116,9 @@ func load_settings() -> void:
 	config.load(SETTINGS_PATH)
 	set_music_volume(config.get_value("audio", "music_volume", music_volume))
 	set_sfx_volume(config.get_value("audio", "sfx_volume", sfx_volume))
+	# Bawaan: Indonesia bila perangkat berbahasa Indonesia, selain itu Inggris.
+	var default_language := "id" if OS.get_locale_language() == "id" else "en"
+	set_language(config.get_value("display", "language", default_language))
 	if not OS.has_feature("web") and DisplayServer.get_name() != "headless":
 		set_fullscreen(config.get_value("display", "fullscreen", fullscreen))
 

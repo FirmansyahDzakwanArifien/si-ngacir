@@ -142,11 +142,11 @@ Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan 
 
 | Hari | Paket | Pelanggan | Tantangan |
 | --- | --- | --- | --- |
-| 1 | Bantal | Bu Sri | Pengenalan. Paket tahan beberapa benturan, lalu lintas ringan |
-| 2 | Galon Air | Pak Budi | Paket berat: langkah Masbro lebih lambat. Kucing jalanan mulai muncul |
-| 3 | Telur | Pak Ojan | Paket rapuh (kerusakan 2x lipat) dan pelanggan perfeksionis |
-| 4 | Barang Sensitif | Pak Joko | Hujan deras di jam sibuk: pandangan terbatas, jalan licin |
-| 5 | Paket VIP | Bu Direktur | Semua tantangan sekaligus. Paket hancur hanya dengan 2 kerusakan |
+| 1 (Kompleks Perumahan) | Bantal | Bu Sri | Pengenalan. Paket tahan beberapa benturan, lalu lintas ringan |
+| 2 (Pasar Ngacir) | Galon Air | Pak Budi | Paket berat: langkah Masbro lebih lambat. Kucing jalanan mulai muncul |
+| 3 (Sekitar Sekolah) | Telur | Pak Ojan | Paket rapuh (kerusakan 2x lipat) dan pelanggan perfeksionis |
+| 4 (Pusat Kota) | Barang Sensitif | Pak Joko | Hujan deras di jam sibuk: pandangan terbatas, jalan licin |
+| 5 (Kawasan Bisnis) | Paket VIP | Bu Direktur | Semua tantangan sekaligus. Paket hancur hanya dengan 2 kerusakan |
 
 ### Rintangan di jalan
 
@@ -228,7 +228,7 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 | **Lanjutkan** | Melanjutkan dari hari terakhir yang belum selesai |
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
 | **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
-| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial |
+| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama) |
 | **Keluar** | Menutup game (desktop) |
 
 Progres tersimpan **otomatis** setiap kali satu hari selesai. Keluar di tengah hari berarti mengulang hari itu dari awal.

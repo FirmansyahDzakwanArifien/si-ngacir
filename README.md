@@ -21,7 +21,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | Enter | Pilih tombol di panel |
 | Layar sentuh | Swipe kiri / kanan / atas (maju), tap = maju, swipe bawah = mundur, tombol II = pause |
 
-## Status (v0.6)
+## Status (v0.7)
 
 * [x] Gerak grid, lane jalan/trotoar/median, kendaraan (motor, mobil, truk)
 * [x] Kondisi paket menggantikan nyawa (tabrakan → damage → paket hancur)
@@ -35,6 +35,8 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] NPC pelanggan dengan balon ucapan dan reaksi (sapaan diatur di `customer_greeting`)
 * [x] NPC jalanan: pengemudi berklakson, pejalan kaki, pedagang bakso, Bang Kilat (kurir rival)
 * [x] Toko Masbro: dompet koin permanen, aksesori topi/kacamata/tas (`scripts/data/cosmetics.gd`)
+* [x] Bahasa Indonesia & Inggris (`translations/strings.csv`, pilih di Pengaturan menu utama)
+* [x] Lokasi berbeda tiap hari: perumahan, pasar, sekolah, pusat kota, kawasan bisnis (`resources/cities/`)
 * [x] Tips tutorial kontekstual (teks di `scripts/game/tutorial_tips.gd`), Hari 2 selalu ada sungai
 * [x] Tabungan antar hari (upah terbaik per hari) dan layar rekap/ending
 * [x] Save system: progres hari & tabungan tersimpan otomatis, menu Lanjutkan / Mulai Baru
@@ -144,6 +146,16 @@ Naskah cutscene ada di `resources/story/` dan bisa diedit langsung di Inspector 
 Ilustrasi per halaman ada di `assets/story/` (SVG bawaan: `home`, `sick`, `office`, `road`, `galon`, `eggs`, `rain`, `vip`, `celebrate`, `sunset`) dan dipilih lewat properti `images` dengan urutan yang sama seperti `pages`. Untuk mengganti, edit SVG-nya atau taruh PNG 480 × 270 dengan nama sama (PNG diutamakan).
 
 Kontrol cutscene: Enter / klik untuk lanjut, Esc untuk lewati.
+
+## Bahasa (terjemahan)
+
+Teks game ditulis dalam bahasa Indonesia; terjemahan Inggris ada di **`translations/strings.csv`** (kolom `keys` = teks Indonesia persis, kolom `en` = Inggris). Bisa diedit dengan Excel / Google Sheets / teks biasa.
+
+* Mengubah teks Indonesia (di kode atau `.tres`) → ubah juga kunci yang sama di CSV, kalau tidak teks itu tampil dalam bahasa Indonesia saat mode Inggris.
+* Teks dengan `%s` / `%d` harus mempertahankan penanda yang sama di terjemahannya.
+* Menambah bahasa lain: tambahkan kolom baru (misalnya `ja`), lalu daftarkan file `.translation`-nya di Project Settings → Localization.
+
+Bahasa bawaan mengikuti bahasa perangkat (Indonesia bila perangkat berbahasa Indonesia, selain itu Inggris) dan bisa diganti di **Pengaturan** dari menu utama.
 
 ## Placeholder untuk Writer Story
 

@@ -716,9 +716,10 @@ func _draw_side_mask() -> void:
 	if left > 0.0:
 		_side_mask.draw_rect(Rect2(0, HUD_HEIGHT, left, view.y), color)
 		_side_mask.draw_rect(Rect2(right, HUD_HEIGHT, view.x - right, view.y), color)
-		var grass := SpriteLibrary.texture("tile_median")
+		var city := _city()
+		var grass := SpriteLibrary.texture(city.side_tile)
 		if grass:
-			var tint := Color(0.72, 0.8, 0.72)
+			var tint := city.side_tint
 			var start_x := left - ceilf(left / TILE) * TILE
 			var y := HUD_HEIGHT - fposmod(_scroll, TILE)
 			while y < view.y:
@@ -777,12 +778,18 @@ func _on_menu_requested() -> void:
 	Transition.change_scene(GameState.MENU_SCENE)
 
 
+## Tema lokasi hari ini (tema bawaan bila DayData.city kosong).
+func _city() -> CityTheme:
+	return day.city if day.city else CityTheme.new()
+
+
 func _draw_board() -> void:
 	var width := COLUMNS * TILE
+	var city := _city()
 	var tiles := {
-		LaneData.Kind.SIDEWALK: SpriteLibrary.texture("tile_sidewalk"),
+		LaneData.Kind.SIDEWALK: SpriteLibrary.texture(city.sidewalk_tile),
 		LaneData.Kind.ROAD: SpriteLibrary.texture("tile_road"),
-		LaneData.Kind.MEDIAN: SpriteLibrary.texture("tile_median"),
+		LaneData.Kind.MEDIAN: SpriteLibrary.texture(city.median_tile),
 		LaneData.Kind.RIVER: SpriteLibrary.texture("tile_water"),
 	}
 	for row in _rows:
@@ -790,8 +797,9 @@ func _draw_board() -> void:
 		var y := row * TILE
 		var tile_texture: Texture2D = tiles[kind]
 		if tile_texture:
+			var tint := city.road_tint if kind == LaneData.Kind.ROAD else Color.WHITE
 			for col in COLUMNS:
-				_board.draw_texture_rect(tile_texture, Rect2(col * TILE, y, TILE, TILE), false)
+				_board.draw_texture_rect(tile_texture, Rect2(col * TILE, y, TILE, TILE), false, tint)
 			if kind == LaneData.Kind.ROAD:
 				_draw_lane_marking(row)
 		# Placeholder latar sampai tileset dari Illustrator siap.
@@ -814,9 +822,9 @@ func _draw_board() -> void:
 	_draw_building("warehouse", _rows - 1)
 	var font := ThemeDB.fallback_font
 	var ink := Color("3b2f2f")
-	_board.draw_string(font, Vector2(10, 30), "Rumah %s" % day.customer_name,
+	_board.draw_string(font, Vector2(10, 30), tr("Rumah %s") % day.customer_name,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
-	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), "Gudang Ngacir Express",
+	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), tr("Gudang Ngacir Express"),
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
 
 
@@ -834,7 +842,7 @@ func _draw_checkpoints() -> void:
 				_board.draw_texture_rect(texture, rect, false)
 			else:
 				_board.draw_rect(rect.grow(-10), Palette.TEAL)
-		_board.draw_string(font, Vector2(TILE + 6, row * TILE + 30), "POS",
+		_board.draw_string(font, Vector2(TILE + 6, row * TILE + 30), tr("POS"),
 				HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Palette.OUTLINE)
 
 
