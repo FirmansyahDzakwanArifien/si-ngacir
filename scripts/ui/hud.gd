@@ -51,25 +51,48 @@ func update_package(damage: int) -> void:
 
 func show_intro() -> void:
 	var pkg := _day.package
-	_open("Hari %d: %s" % [_day.day, _day.title], GOLD, [
+	var rows: Array[Control] = [
 		_label("Paket: %s" % pkg.display_name, 18),
 		_label(pkg.description, 16, Color(1, 1, 1, 0.8)),
 		_label("Antar ke: %s" % _day.customer_name, 16),
 		_label("Target ETA: %s   Upah dasar: %s" % [
 				format_time(_day.eta_seconds), GameState.rupiah(_day.base_wage)], 16),
-		_label("Gerak: WASD / panah   Pause: Esc / P", 14, Color(1, 1, 1, 0.6)),
-	], [["Trobos Ajalah!", start_requested.emit]])
+	]
+	for warning in _day_warnings():
+		rows.append(_label("! " + warning, 15, Color("8ecae6")))
+	rows.append(_label("Gerak: WASD / panah   Pause: Esc / P", 14, Color(1, 1, 1, 0.6)))
+	_open("Hari %d: %s" % [_day.day, _day.title], GOLD, rows, [["Trobos Ajalah!", start_requested.emit]])
+
+
+func _day_warnings() -> PackedStringArray:
+	var warnings := PackedStringArray()
+	if _day.strict_customer:
+		warnings.append("%s perfeksionis: denda kerusakan 2x. Paket sempurna dan tepat waktu dapat tip %s." % [
+				_day.customer_name, GameState.rupiah(_day.perfect_tip)])
+	if _day.rainy:
+		warnings.append("Hujan deras: jarak pandang terbatas dan aspal licin.")
+	if _day.cat_count > 0:
+		warnings.append("Kucing jalanan suka menghalangi jalan. Cari jalur lain!")
+	return warnings
 
 
 func show_pause() -> void:
 	_open("PAUSE", GOLD, [], [
 		["Lanjut", resume_requested.emit],
 		["Ulangi Hari", retry_requested.emit],
+		["Pengaturan", _open_settings],
 		["Menu Utama", menu_requested.emit],
 	])
 
 
-func show_result(report: DeliveryReport, has_next_day: bool) -> void:
+func _open_settings() -> void:
+	_overlay.hide()
+	var settings := SettingsPanel.new()
+	settings.closed.connect(show_pause)
+	add_child(settings)
+
+
+func show_result(report: DeliveryReport, next_text: String) -> void:
 	var rows: Array[Control] = [
 		StarRow.new(report.stars),
 		_label("\"%s\"\n- %s" % [report.comment, report.customer], 16, GOLD),
@@ -78,7 +101,8 @@ func show_result(report: DeliveryReport, has_next_day: bool) -> void:
 		HSeparator.new(),
 		_money_row("Upah dasar", report.base_wage),
 		_money_row("Bonus tepat waktu", report.eta_bonus),
-		_money_row("Denda kerusakan", -report.damage_penalty),
+		_money_row("Tip pelanggan", report.tip) if report.strict else null,
+		_money_row("Denda kerusakan" + (" (2x)" if report.strict else ""), -report.damage_penalty),
 		_money_row("Potongan telat", -report.late_penalty),
 		HSeparator.new(),
 		_money_row("UPAH HARI INI", report.wage, GREEN),
@@ -86,20 +110,21 @@ func show_result(report: DeliveryReport, has_next_day: bool) -> void:
 				GameState.rupiah(GameState.total_savings()), GameState.rupiah(GameState.MEDICAL_COST)],
 				14, Color(1, 1, 1, 0.7)),
 	]
-	var next_text := "Hari Berikutnya" if has_next_day else "Kembali ke Menu"
 	_open("PAKET SAMPAI!", GREEN, rows, [
 		[next_text, next_requested.emit],
 		["Ulangi Hari", retry_requested.emit],
 	])
 
 
-func show_failed() -> void:
+func show_failed(is_replay: bool) -> void:
+	var leave: Array = ["Kembali ke Rekap", next_requested.emit] if is_replay \
+			else ["Menu Utama", menu_requested.emit]
 	_open("PAKET HANCUR!", RED, [
 		_label("\"%s\"\n- %s" % [DeliveryReport.FAILED_COMMENT, _day.customer_name], 16, GOLD),
 		_label("Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.", 16),
 	], [
 		["Ulangi Hari", retry_requested.emit],
-		["Menu Utama", menu_requested.emit],
+		leave,
 	])
 
 
@@ -183,7 +208,8 @@ func _open(title: String, title_color: Color, rows: Array, buttons: Array) -> vo
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_panel_box.add_child(heading)
 	for row: Control in rows:
-		_panel_box.add_child(row)
+		if row:
+			_panel_box.add_child(row)
 
 	var first_button: Button = null
 	for entry: Array in buttons:
@@ -223,15 +249,29 @@ func _money_row(caption: String, amount: int, color := Color.WHITE) -> Control:
 class StarRow extends Control:
 	var stars := 0
 
+	var _shown := 0
+
 	func _init(p_stars: int) -> void:
 		stars = p_stars
 		custom_minimum_size = Vector2(0, 40)
+
+	func _ready() -> void:
+		# Bintang muncul satu per satu.
+		var tween := create_tween()
+		for i in stars:
+			tween.tween_interval(0.18)
+			tween.tween_callback(_show_next_star)
+
+	func _show_next_star() -> void:
+		_shown += 1
+		AudioManager.play_sfx(&"star")
+		queue_redraw()
 
 	func _draw() -> void:
 		var spacing := 40.0
 		var start_x := size.x / 2.0 - spacing * 2.0
 		for i in 5:
-			var color := GOLD if i < stars else Color(1, 1, 1, 0.2)
+			var color := GOLD if i < _shown else Color(1, 1, 1, 0.2)
 			draw_colored_polygon(_star_points(Vector2(start_x + i * spacing, 20), 16.0, 7.0), color)
 
 	func _star_points(center: Vector2, outer: float, inner: float) -> PackedVector2Array:

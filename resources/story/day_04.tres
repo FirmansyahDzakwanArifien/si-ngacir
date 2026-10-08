@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="StoryData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/story_data.gd" id="1_story"]
+
+[resource]
+script = ExtResource("1_story")
+pages = PackedStringArray("Hari keempat. Langit Kota Ngacir mendung sejak pagi, lalu hujan turun deras tepat di jam sibuk.", "Barang sensitif untuk Pak Joko tetap harus sampai. Jalanan licin, pandangan terbatas.")
+images = PackedStringArray()

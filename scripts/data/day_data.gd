@@ -19,3 +19,21 @@ extends Resource
 @export_group("Peta")
 ## Lane dari ATAS (rumah pelanggan) ke BAWAH (gudang). Baris pertama dan terakhir harus SIDEWALK.
 @export var lanes: Array[LaneData] = []
+
+@export_group("Side Conflict")
+## Jumlah maksimal kucing jalanan yang muncul bersamaan (0 = tidak ada).
+@export_range(0, 5) var cat_count: int = 0
+## Hujan: jarak pandang terbatas dan jalan aspal licin.
+@export var rainy: bool = false
+## Peluang Masbro tergelincir satu petak tambahan saat melangkah di aspal basah.
+@export_range(0.0, 1.0, 0.05) var slip_chance: float = 0.25
+## Jari-jari jarak pandang saat hujan, dalam petak.
+@export_range(2.0, 10.0, 0.5) var visibility_tiles: float = 4.5
+## Pelanggan perfeksionis (Pak Ojan): denda kerusakan 2x, rating maksimal 3 bintang bila paket rusak.
+@export var strict_customer: bool = false
+## Tip dari pelanggan perfeksionis bila paket utuh dan tepat waktu.
+@export var perfect_tip: int = 0
+
+@export_group("Cerita")
+## Cutscene sebelum hari ini dimulai (dari hari sebelumnya). Kosongkan bila tidak ada.
+@export var story: StoryData

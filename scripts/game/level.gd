@@ -7,6 +7,8 @@ const HUD_HEIGHT := 48.0
 ## Area di luar layar tempat kendaraan "berputar" sebelum muncul lagi.
 const LOOP_MARGIN_TILES := 4
 const HIT_INVULNERABLE_TIME := 1.2
+const CAT_SPAWN_DELAY := Vector2(2.5, 5.0)
+const POPUP_COOLDOWN := 0.6
 
 enum State { INTRO, PLAYING, FINISHED }
 
@@ -23,6 +25,9 @@ var _invulnerable_left := 0.0
 var _board: Node2D
 var _player: Player
 var _vehicles: Array[Vehicle] = []
+var _cats: Array[StreetCat] = []
+var _cat_timer := 1.5
+var _popup_cooldown := 0.0
 var _hud: GameHud
 
 
@@ -42,6 +47,13 @@ func _ready() -> void:
 	add_child(_board)
 	_spawn_vehicles()
 	_spawn_player()
+	if day.rainy:
+		var rain := RainOverlay.new()
+		rain.area = Vector2(COLUMNS * TILE, _rows * TILE)
+		rain.visibility_radius = day.visibility_tiles * TILE
+		rain.target = _player
+		rain.z_index = 10
+		_board.add_child(rain)
 
 	_hud = GameHud.new()
 	add_child(_hud)
@@ -52,6 +64,7 @@ func _ready() -> void:
 	_hud.next_requested.connect(_on_next_requested)
 	_hud.menu_requested.connect(_on_menu_requested)
 	_hud.show_intro()
+	AudioManager.play_music(&"gameplay")
 
 
 func _process(delta: float) -> void:
@@ -59,6 +72,9 @@ func _process(delta: float) -> void:
 		return
 	elapsed += delta
 	_hud.update_timer(day.eta_seconds - elapsed)
+
+	_popup_cooldown = maxf(0.0, _popup_cooldown - delta)
+	_update_cats(delta)
 
 	if _invulnerable_left > 0.0:
 		_invulnerable_left -= delta
@@ -99,16 +115,88 @@ func _spawn_player() -> void:
 	_player.tile = TILE
 	_player.grid_size = Vector2i(COLUMNS, _rows)
 	_player.step_time = day.package.step_time
+	_player.package_id = day.package.id
 	_player.package_color = day.package.color
 	_player.place(Vector2i(floori(COLUMNS / 2.0), _rows - 1))
+	_player.can_enter = _is_cell_free
 	_player.moved.connect(_on_player_moved)
+	_player.blocked.connect(_on_player_blocked)
 	_board.add_child(_player)
+
+
+func _update_cats(delta: float) -> void:
+	for i in range(_cats.size() - 1, -1, -1):
+		if not is_instance_valid(_cats[i]):
+			_cats.remove_at(i)
+	if day.cat_count > 0:
+		_cat_timer -= delta
+		if _cat_timer <= 0.0:
+			_cat_timer = randf_range(CAT_SPAWN_DELAY.x, CAT_SPAWN_DELAY.y)
+			if _cats.size() < day.cat_count:
+				_spawn_cat()
+	var player_box := _player.hitbox()
+	for cat in _cats:
+		if cat.hitbox().intersects(player_box) and cat.notice_player():
+			_popup("Meong?", Color("f4a259"), cat.position)
+
+
+func _spawn_cat() -> void:
+	# Kucing hanya menyeberang di jalan dan median, tidak di trotoar gudang/rumah.
+	var rows: Array[int] = []
+	for row in range(1, _rows - 1):
+		if row != _player.cell.y:
+			rows.append(row)
+	if rows.is_empty():
+		return
+	var cat := StreetCat.new()
+	cat.tile = TILE
+	cat.board_width = COLUMNS * TILE
+	cat.direction = 1 if randf() < 0.5 else -1
+	cat.speed = randf_range(30.0, 55.0)
+	cat.position = Vector2(-TILE if cat.direction > 0 else COLUMNS * TILE, rows.pick_random() * TILE)
+	_board.add_child(cat)
+	# Kucing di bawah Masbro supaya Masbro tetap terlihat.
+	_board.move_child(cat, _player.get_index())
+	_cats.append(cat)
+
+
+func _is_cell_free(cell: Vector2i) -> bool:
+	var area := Rect2(Vector2(cell) * TILE + Vector2(6, 6), Vector2(TILE - 12, TILE - 12))
+	for cat in _cats:
+		if is_instance_valid(cat) and cat.hitbox().intersects(area):
+			return false
+	return true
+
+
+func _on_player_blocked(_cell: Vector2i) -> void:
+	if _popup_cooldown <= 0.0:
+		_popup("Meong!", Color("f4a259"), _player.position)
+		AudioManager.play_sfx(&"meow", 0.1)
+
+
+func _popup(text: String, color: Color, at: Vector2) -> void:
+	_popup_cooldown = POPUP_COOLDOWN
+	var label := Label.new()
+	label.text = text
+	label.position = at + Vector2(0, -20)
+	label.z_index = 20
+	label.add_theme_font_size_override("font_size", 18)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 4)
+	_board.add_child(label)
+	var tween := label.create_tween()
+	tween.set_parallel()
+	tween.tween_property(label, "position:y", label.position.y - 24.0, 0.8)
+	tween.tween_property(label, "modulate:a", 0.0, 0.8).set_delay(0.3)
+	tween.chain().tween_callback(label.queue_free)
 
 
 func _on_start_requested() -> void:
 	_hud.hide_overlay()
 	state = State.PLAYING
 	_player.input_enabled = true
+	AudioManager.play_sfx(&"pickup")
 
 
 func _set_paused(value: bool) -> void:
@@ -120,8 +208,15 @@ func _set_paused(value: bool) -> void:
 
 
 func _on_player_moved(cell: Vector2i) -> void:
-	if state == State.PLAYING and cell.y == 0:
+	if state != State.PLAYING:
+		return
+	if cell.y == 0:
 		_deliver()
+		return
+	var on_wet_road := day.rainy and day.lanes[cell.y].kind == LaneData.Kind.ROAD
+	if on_wet_road and not _player.last_move_was_slide and not _player.invulnerable 			and randf() < day.slip_chance and _player.slide():
+		_popup("Licin!", Color("8ecae6"), _player.position)
+		AudioManager.play_sfx(&"slip")
 
 
 func _on_hit(vehicle: Vehicle) -> void:
@@ -129,9 +224,11 @@ func _on_hit(vehicle: Vehicle) -> void:
 	damage = mini(damage + vehicle.damage * day.package.fragility, day.package.max_damage)
 	_hud.update_package(damage)
 	_shake()
+	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:
 		_fail()
 		return
+	AudioManager.play_sfx(&"package_damage", 0.05)
 	_invulnerable_left = HIT_INVULNERABLE_TIME
 	_player.invulnerable = true
 	_player.knock_back(Vector2i(_player.cell.x, mini(_player.cell.y + 1, _rows - 1)))
@@ -142,7 +239,8 @@ func _deliver() -> void:
 	_player.input_enabled = false
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed)
 	GameState.record_delivery(day, report.wage)
-	_hud.show_result(report, GameState.has_next_day())
+	AudioManager.play_sfx(&"delivery")
+	_hud.show_result(report, _next_button_text())
 
 
 func _fail() -> void:
@@ -150,7 +248,8 @@ func _fail() -> void:
 	_player.input_enabled = false
 	_player.invulnerable = false
 	GameState.record_delivery(day, 0)
-	_hud.show_failed()
+	AudioManager.play_sfx(&"fail")
+	_hud.show_failed(GameState.is_replay)
 
 
 func _shake() -> void:
@@ -166,25 +265,45 @@ func _on_retry_requested() -> void:
 	get_tree().reload_current_scene()
 
 
+func _next_button_text() -> String:
+	if GameState.is_replay:
+		return "Kembali ke Rekap"
+	if GameState.has_next_day():
+		return "Hari Berikutnya"
+	return "Lihat Hasil Masa Percobaan"
+
+
 func _on_next_requested() -> void:
+	get_tree().paused = false
 	if GameState.advance_day():
-		get_tree().reload_current_scene()
+		GameState.play_story(GameState.current_day().story, GameState.LEVEL_SCENE)
+	elif GameState.is_replay:
+		get_tree().change_scene_to_file(GameState.ENDING_SCENE)
 	else:
-		_on_menu_requested()
+		GameState.finish_probation()
+		GameState.play_story(GameState.ending_story(), GameState.ENDING_SCENE)
 
 
 func _on_menu_requested() -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
+	get_tree().change_scene_to_file(GameState.MENU_SCENE)
 
 
 func _draw_board() -> void:
-	# Placeholder latar sampai tileset dari Illustrator siap.
 	var width := COLUMNS * TILE
+	var tiles := {
+		LaneData.Kind.SIDEWALK: SpriteLibrary.texture("tile_sidewalk"),
+		LaneData.Kind.ROAD: SpriteLibrary.texture("tile_road"),
+		LaneData.Kind.MEDIAN: SpriteLibrary.texture("tile_median"),
+	}
 	for row in _rows:
 		var kind := day.lanes[row].kind
 		var y := row * TILE
-		if kind == LaneData.Kind.SIDEWALK:
+		var tile_texture: Texture2D = tiles[kind]
+		if tile_texture:
+			_board.draw_texture_rect(tile_texture, Rect2(0, y, width, TILE), true)
+		# Placeholder latar sampai tileset dari Illustrator siap.
+		elif kind == LaneData.Kind.SIDEWALK:
 			_board.draw_rect(Rect2(0, y, width, TILE), Color("c9c2b3"))
 			for col in COLUMNS:
 				_board.draw_rect(Rect2(col * TILE, y, TILE, TILE), Color("b5ad9c"), false, 1.0)
@@ -198,9 +317,18 @@ func _draw_board() -> void:
 					_board.draw_line(Vector2(x, y + TILE), Vector2(x + 20, y + TILE), Color("d8d8d8"), 2.0)
 					x += 40.0
 
+	_draw_building("house", 0)
+	_draw_building("warehouse", _rows - 1)
 	var font := ThemeDB.fallback_font
 	var ink := Color("3b2f2f")
 	_board.draw_string(font, Vector2(10, 30), "Rumah %s" % day.customer_name,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
 	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), "Gudang Ngacir Express",
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
+
+
+func _draw_building(sprite_name: String, row: int) -> void:
+	var texture := SpriteLibrary.texture(sprite_name)
+	if texture:
+		var size := texture.get_size()
+		_board.draw_texture(texture, Vector2(COLUMNS * TILE - size.x - 8, row * TILE + TILE - size.y))
