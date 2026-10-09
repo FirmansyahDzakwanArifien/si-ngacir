@@ -1,14 +1,16 @@
 # Opsi SCons untuk template export Web Si Ngacir yang lebih ramping.
 # Dipakai CI: scons platform=web target=template_release profile=.github/godot/web_template.py
 #
-# Game ini 2D murni, memakai font Latin, audio WAV, tekstur WebP/PNG, dan SVG
-# (dimuat saat runtime untuk sprite resolusi tinggi). Modul lain dimatikan.
+# Game ini 2D dengan Tampilan 3D (beta) opsional, memakai font Latin, audio WAV,
+# tekstur WebP/PNG, dan SVG (dimuat saat runtime untuk sprite resolusi tinggi).
+# Inti 3D tetap ada (mesh dasar, Label3D, partikel, cahaya, langit prosedural);
+# modul lain yang tidak dipakai dimatikan.
 # Mengubah file ini membuat CI membangun ulang template (cache berdasarkan isi file).
 
 optimize = "size"
-lto = "full"
+# LTO "thin": LTO penuh dengan inti 3D kehabisan memori runner CI saat linking.
+lto = "thin"
 threads = "no"
-disable_3d = "yes"
 
 # Font: server teks lengkap tetap dipakai (server sederhana salah mengukur Fredoka
 # variabel sehingga teks tombol terpotong), tanpa dukungan font Graphite.

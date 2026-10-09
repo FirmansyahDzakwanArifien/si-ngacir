@@ -18,7 +18,7 @@ const BASE_STEP_TIME := 0.12
 ## Tambahan ETA untuk mampir ke titik jemput: tetap + per kolom menyimpang dari jalur lurus.
 const PICKUP_ETA_BONUS := 4.0
 const PICKUP_ETA_PER_COLUMN := 0.6
-## Tampilan 3D (beta): dimuat lewat path supaya build tanpa modul 3D (web ramping) tidak memuatnya.
+## Tampilan 3D (beta): dimuat lewat path supaya build tanpa modul 3D tidak memuatnya.
 const VIEW_3D_SCRIPT := "res://scripts/game3d/level_3d_view.gd"
 ## Posisi Masbro di layar (0 = atas, 1 = bawah); lebih ke bawah supaya jalan di depan terlihat.
 const CAMERA_ANCHOR := 0.65
