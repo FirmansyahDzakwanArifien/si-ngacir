@@ -5,7 +5,7 @@ extends Node3D
 ## keadaan Level setiap frame lalu menggambarnya dalam 3D: papan 2D disembunyikan, HUD tetap sama.
 ## Pemetaan: 1 petak (48 px) = 1 meter; kolom → x, baris → z (baris 0 = rumah pelanggan, paling jauh).
 ##
-## Hanya dimuat bila build punya modul 3D (Windows, Android). Build web ramping tidak memuat skrip ini.
+## Hanya dimuat bila build punya modul 3D (lihat GameState.supports_3d).
 
 const Props := preload("res://scripts/game3d/props_3d.gd")
 
@@ -70,6 +70,10 @@ func _exit_tree() -> void:
 
 # ------------------------------------------------------------------ Dunia
 
+static func _is_handheld() -> bool:
+	return OS.has_feature("mobile") or OS.has_feature("web_android") or OS.has_feature("web_ios")
+
+
 func _build_environment() -> void:
 	var rainy: bool = level.day.rainy
 	var sky := ProceduralSkyMaterial.new()
@@ -99,7 +103,8 @@ func _build_environment() -> void:
 	_sun.rotation_degrees = Vector3(-52, -38, 0)
 	_sun.light_color = Color("ffe2b0") if not rainy else Color("b8c6d6")
 	_sun.light_energy = 1.0 if not rainy else 0.35
-	_sun.shadow_enabled = true
+	# Bayangan real-time hanya di desktop; HP (APK atau browser HP) lebih ringan tanpa bayangan.
+	_sun.shadow_enabled = not _is_handheld()
 	_sun.directional_shadow_max_distance = 40.0
 	add_child(_sun)
 

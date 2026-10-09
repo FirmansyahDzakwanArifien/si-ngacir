@@ -2,7 +2,7 @@
 
 Dokumen ini menimbang langkah setelah gaya **2D painted-lite** (v0.9): apakah, kapan, dan bagaimana Si Ngacir naik ke tampilan 3D yang mendekati poster key art. Isinya pertimbangan, skema teknis, konsep visual, anggaran aset, dan tahapan kerja. Semua angka adalah **perkiraan awal** yang harus diukur ulang lewat prototipe.
 
-> **Status (v0.11):** varian **Tampilan 3D (beta)** sudah bisa dimainkan di Windows dan Android lewat **Pengaturan → Tampilan 3D**. Skema, skenario, dan rencana pengembangannya ada di [bagian 11](#11-varian-3d-beta-skema-skenario-dan-pengembangan).
+> **Status (v0.11):** varian **Tampilan 3D (beta)** sudah bisa dimainkan di browser (itch), Windows, dan Android lewat **Pengaturan → Tampilan 3D**. Skema, skenario, dan rencana pengembangannya ada di [bagian 11](#11-varian-3d-beta-skema-skenario-dan-pengembangan).
 
 ## 1. Kondisi sekarang
 
@@ -146,7 +146,7 @@ Untuk jalur B, render sprite memakai kamera orthographic samping yang sama untuk
 | 0 (v0.9) | 2D painted-lite: shading, cahaya, dekorasi poster | Sudah dirilis; tes layout dan keterbacaan lolos |
 | 1 | Model 3D Masbro + render sprite (jalur B) | Sprite PNG baru lolos tes layout; ukuran pck tetap wajar |
 | 2 | Kendaraan dan NPC 3D → sprite | Semua sprite karakter dan kendaraan seragam gayanya |
-| 3 | Prototipe 3D satu hari (desktop dulu) | **Berjalan (v0.11): Tampilan 3D beta untuk semua hari di Windows/Android.** Sisa uji: FPS di HP acuan, keterbacaan oleh 5 pemain baru |
+| 3 | Prototipe 3D satu hari (desktop dulu) | **Berjalan (v0.11–v0.12): Tampilan 3D beta untuk semua hari di web, Windows, dan Android.** Sisa uji: FPS di HP acuan, keterbacaan oleh 5 pemain baru |
 | 4 | Keputusan lanjut / berhenti di jalur B | Lihat ambang di bawah |
 | 5 | Produksi 3D penuh (bila lanjut) | Semua hari, cutscene, toko, dan aksesibilitas berfungsi di 3D |
 
@@ -199,14 +199,14 @@ flowchart LR
 
 | Bagian | Isi |
 | --- | --- |
-| Aktivasi | `AudioManager.view_3d` (Pengaturan) dan `GameState.supports_3d()` (build punya modul 3D). Level memuat `level_3d_view.gd` lewat path, jadi build web ramping tanpa modul 3D tidak pernah memuat skrip 3D |
+| Aktivasi | `AudioManager.view_3d` (Pengaturan) dan `GameState.supports_3d()` (build punya modul 3D). Level memuat `level_3d_view.gd` lewat path, jadi build tanpa modul 3D tidak pernah memuat skrip 3D |
 | Papan 2D | Tetap jalan untuk logika dan tes, hanya disembunyikan (`_board.visible = false`) |
 | Pemetaan | 1 petak (48 px) = 1 m; kolom → x, baris → z; tinggi lompatan dari `Player._visual` |
 | Cermin efek | Popup dan tulisan efek (`Label`) → `Label3D` yang naik dan memudar; balon ucapan → `Label3D` berbingkai putih; partikel 2D → semburan `CPUParticles3D` dengan arah, warna, dan gravitasi yang sama |
 | Model | `props_3d.gd`: Masbro (topi, ransel, kacamata piksel, paket, helm), kendaraan per varian warna, rakit, rintangan, item, kios, rumah, gudang, papan LEVEL NEXT, billboard, tiang, pohon. Bahan toon + rim light + garis luar (shader `cull_front`) |
 | Dunia | Langit prosedural, matahari dari kanan atas dengan bayangan, ambient warna tetap; hujan: kabut, partikel hujan, lampu kendaraan menyala |
 | Kamera | Perspektif 50°, tinggi 8 m, 8,5 m di belakang, menyerong 2,6 m ke kanan (sudut 3/4), mengikuti Masbro dan goyangan layar |
-| Platform | Windows dan Android (template resmi). Web: opsi disembunyikan, karena template ramping tidak punya modul 3D |
+| Platform | Web (template ramping dengan inti 3D, sejak v0.12), Windows, dan Android (template resmi). Bayangan real-time hanya di desktop; HP dan browser HP tanpa bayangan |
 
 ### 11.2 Skenario
 
@@ -239,7 +239,7 @@ flowchart LR
 
 | Platform | Tampilan 2D | Tampilan 3D |
 | --- | --- | --- |
-| Web (itch, template ramping) | Ya | Tidak (opsi disembunyikan) |
+| Web (itch, template ramping dengan inti 3D) | Ya | Ya (beta, tanpa bayangan di browser HP) |
 | Windows | Ya | Ya (beta) |
 | Android (APK) | Ya | Ya (beta; belum diuji di HP acuan) |
 
@@ -253,7 +253,7 @@ flowchart LR
 | 3D-4 | Refaktor ke `BoardModel` / `PlayerModel` (bagian 4.1) supaya tampilan 2D dan 3D benar-benar terpisah | Kode lebih bersih; tes logika tanpa render |
 | 3D-5 | Opsi kamera (miring / orthographic) dan uji keterbacaan dengan 5 pemain baru | Kamera bawaan dipilih berdasarkan data |
 | 3D-6 | Cutscene dan toko 3D (Masbro berputar di toko, adegan depot) | Pengalaman 3D utuh |
-| 3D-7 | Build web 3D terpisah (template resmi, channel itch sendiri) bila ukuran unduhan masih wajar | Pemain browser bisa mencoba 3D |
+| 3D-7 | ~~Build web 3D~~ **Selesai (v0.12):** inti 3D masuk template web ramping, satu halaman itch untuk 2D dan 3D | Pemain browser bisa mencoba 3D |
 
 Ambang lanjut/berhenti di bagian 8 tetap berlaku: bila 3D tidak lolos di HP acuan, versi 2D painted tetap jadi tampilan utama dan 3D tetap opsi beta di desktop.
 

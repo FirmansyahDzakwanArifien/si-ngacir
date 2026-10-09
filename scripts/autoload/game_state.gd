@@ -140,7 +140,7 @@ func savings_enough() -> bool:
 	return total_savings() >= MEDICAL_COST
 
 
-## Build ini punya modul 3D (Windows, Android). Build web ramping tidak, jadi Tampilan 3D disembunyikan.
+## Build ini punya modul 3D (web, Windows, Android). Build tanpa 3D menyembunyikan opsi Tampilan 3D.
 func supports_3d() -> bool:
 	return ClassDB.class_exists(&"MeshInstance3D")
 
