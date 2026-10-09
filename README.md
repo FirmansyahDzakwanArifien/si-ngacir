@@ -98,11 +98,15 @@ Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/r
 
 ## Audio
 
-`AudioManager` mencari file berdasarkan nama di `assets/audio/music/` dan `assets/audio/sfx/` (`.ogg`, `.wav`, atau `.mp3`). Semua file saat ini adalah suara placeholder sintetis — tim Audio cukup mengganti file dengan **nama yang sama**, tanpa mengubah kode. Musik otomatis di-loop.
+`AudioManager` mencari file berdasarkan nama di `assets/audio/music/` dan `assets/audio/sfx/`. Semua file saat ini adalah suara placeholder sintetis — tim Audio cukup mengganti file dengan **nama yang sama**, tanpa mengubah kode. Musik otomatis di-loop dan berganti lagu dengan fade singkat.
+
+Pakai format **`.wav`**. Musik dikompres QOA saat import (`compress/mode=2` di file `.import`), jadi tetap kecil. Build web ramping tidak menyertakan dekoder `.ogg` dan `.mp3`, jadi kedua format itu tidak berbunyi di browser.
 
 | Nama | Kapan diputar |
 | --- | --- |
-| `music/menu` | Menu utama dan rekap |
+| `music/menu` | Menu utama, rekap, dan cutscene yang santai |
+| `music/nana` | Cutscene sedih: Nana sakit, rumah sakit, Masbro sedih |
+| `music/kilat` | Cutscene tegang: Bang Kilat menyombong atau kaget |
 | `music/gameplay` | Selama hari pengiriman |
 | `sfx/step` | Masbro melangkah |
 | `sfx/pickup` | Mulai hari (ambil paket) |
@@ -116,6 +120,8 @@ Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/r
 | `sfx/splash` | Tercebur ke sungai |
 | `sfx/horn` | Klakson pengemudi & Bang Kilat |
 | `sfx/click` | Semua tombol |
+| `sfx/chime_sad` | Saat cutscene masuk ke tema Nana |
+| `sfx/sting_kilat` | Saat cutscene masuk ke tema Bang Kilat |
 
 ## Side conflict per hari
 
@@ -156,6 +162,8 @@ Setiap cutscene punya tiga daftar dengan urutan sama (satu elemen per halaman):
 | `ending_bad.tres` | Setelah Hari 5 bila tabungan kurang dan `SHORTFALL_RULE = BAD_ENDING` |
 
 Ilustrasi dan potret bisa diganti tim Illustrator, lihat `docs/ASSET_SPEC.md`. Setiap mengubah teks naskah, perbarui juga kuncinya di `translations/strings.csv`.
+
+Musik cutscene dipilih otomatis per halaman dari `speakers` dan `images` (aturannya di `MOOD_MUSIC` dan `SAD_IMAGES`, `scripts/data/speakers.gd`): Nana sakit atau latar rumah sakit memutar tema sedih, Bang Kilat yang sombong memutar tema tegang, tokoh lain kembali ke musik santai. Narasi dan dialog Masbro meneruskan musik sebelumnya.
 
 Kontrol cutscene: Enter / klik untuk lanjut, Esc untuk lewati.
 
@@ -212,6 +220,8 @@ Workflow `.github/workflows/build.yml`:
 | Tombol **Run workflow** di tab Actions | Build manual kapan saja |
 
 Build Web memakai **template Godot ramping** (tanpa 3D dan modul yang tidak dipakai, lihat `.github/godot/web_template.py`). Template dibangun sekali (sekitar 30 menit) lalu disimpan di cache Actions; mengubah file profil itu akan membangunnya ulang. Ukuran file web tercatat di ringkasan setiap run.
+
+Setelah export, CI membuka build hasilnya (`.github/godot/check_pack.gd`) dan gagal bila ada cutscene kosong, potret hilang, atau musik tidak ikut. Resource teks (`.tres`) diekspor apa adanya (`editor/export/convert_text_resources_to_binary=false`): konversi ke biner di Godot 4.3 mengosongkan teks cutscene (`PackedStringArray` di `StoryData`).
 
 Membuat rilis baru (setelah `dev` digabung ke `main`):
 
