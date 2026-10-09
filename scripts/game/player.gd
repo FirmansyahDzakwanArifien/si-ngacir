@@ -13,6 +13,9 @@ const DIRECTIONS := {
 	&"move_right": Vector2i.RIGHT,
 }
 
+## Kemiringan badan saat melompat (derajat), ala pose lari di poster.
+const LEAN_DEGREES := 8.0
+
 var tile := 48.0
 var grid_size := Vector2i(15, 13)
 var cell := Vector2i.ZERO
@@ -201,9 +204,12 @@ func _bounce(duration: float, height := 7.0) -> void:
 	_hop_tween.tween_property(_visual, "position:y", tile - height, duration * 0.5) \
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_hop_tween.parallel().tween_property(_visual, "scale", Vector2(0.9, 1.12), duration * 0.5)
+	# Condong ke depan (arah hadap) saat melompat, tegak lagi saat mendarat.
+	_hop_tween.parallel().tween_property(_visual, "rotation_degrees", LEAN_DEGREES * _facing, duration * 0.5)
 	_hop_tween.tween_property(_visual, "position:y", tile, duration * 0.5) \
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	_hop_tween.parallel().tween_property(_visual, "scale", Vector2(1.15, 0.86), duration * 0.5)
+	_hop_tween.parallel().tween_property(_visual, "rotation_degrees", 0.0, duration * 0.5)
 	_hop_tween.tween_property(_visual, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_BACK)
 
 
@@ -211,6 +217,7 @@ func _bounce(duration: float, height := 7.0) -> void:
 func celebrate() -> void:
 	if _hop_tween:
 		_hop_tween.kill()
+	_visual.rotation_degrees = 0.0
 	_hop_tween = create_tween().set_loops(2)
 	_hop_tween.tween_property(_visual, "position:y", tile - 16.0, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_hop_tween.parallel().tween_property(_visual, "scale", Vector2(0.9, 1.15), 0.16)
@@ -224,6 +231,7 @@ func _on_hop_finished(walked: bool) -> void:
 		_play(&"idle")
 	if walked and get_parent():
 		Effects.dust(get_parent(), position + Vector2(tile / 2.0, tile - 4.0))
+		Effects.gravel(get_parent(), position + Vector2(tile / 2.0 - 6.0 * _facing, tile - 4.0), -_facing)
 	moved.emit(cell)
 
 

@@ -1,6 +1,8 @@
 extends CanvasLayer
-## Opsi aksesibilitas: ukuran teks, filter buta warna, dan kurangi efek gerak.
+## Opsi aksesibilitas: ukuran teks, filter buta warna, kurangi efek gerak, dan efek cahaya.
 ## Disimpan di user://settings.cfg bagian [accessibility].
+
+signal lighting_changed(enabled: bool)
 
 enum ColorMode { OFF, PROTANOPIA, DEUTERANOPIA, TRITANOPIA }
 
@@ -48,6 +50,8 @@ var text_size := 0
 var color_mode := ColorMode.OFF
 ## Matikan goyangan layar, konfeti, animasi pop, dan transisi lingkaran.
 var reduce_motion := false
+## Filter cahaya dan warna ala poster di papan permainan (lihat Sunlight). Matikan bila HP lambat.
+var lighting := true
 
 var _filter: ColorRect
 
@@ -91,12 +95,19 @@ func set_reduce_motion(value: bool) -> void:
 	save()
 
 
+func set_lighting(value: bool) -> void:
+	lighting = value
+	lighting_changed.emit(value)
+	save()
+
+
 func save() -> void:
 	var config := ConfigFile.new()
 	config.load(AudioManager.SETTINGS_PATH)
 	config.set_value("accessibility", "text_size", text_size)
 	config.set_value("accessibility", "color_mode", color_mode)
 	config.set_value("accessibility", "reduce_motion", reduce_motion)
+	config.set_value("accessibility", "lighting", lighting)
 	config.save(AudioManager.SETTINGS_PATH)
 
 
@@ -106,6 +117,7 @@ func _load() -> void:
 	text_size = clampi(config.get_value("accessibility", "text_size", 0), 0, TEXT_SCALES.size() - 1)
 	color_mode = clampi(config.get_value("accessibility", "color_mode", 0), 0, ColorMode.size() - 1) as ColorMode
 	reduce_motion = config.get_value("accessibility", "reduce_motion", false)
+	lighting = config.get_value("accessibility", "lighting", true)
 
 
 func _apply_color_mode() -> void:

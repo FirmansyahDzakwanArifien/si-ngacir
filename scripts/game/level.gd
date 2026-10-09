@@ -5,6 +5,9 @@ extends Node2D
 const TILE := 48.0
 const COLUMNS := 15
 const HUD_HEIGHT := 48.0
+## Papan hijau "LEVEL NEXT" di baris tujuan (piksel game dari kiri papan).
+const GOAL_SIGN_X := 312.0
+const LED_COLOR := Color("ffb347")
 ## Posisi Masbro di layar (0 = atas, 1 = bawah); lebih ke bawah supaya jalan di depan terlihat.
 const CAMERA_ANCHOR := 0.65
 const CAMERA_SMOOTHING := 8.0
@@ -79,6 +82,8 @@ var _tips: TutorialTips
 var _tip_scan := 0.0
 ## Kalimat pelanggan yang sudah diucapkan (supaya tidak diulang).
 var _customer_said := {}
+var _decor: StreetDecor
+var _sunlight: Sunlight
 
 
 func _ready() -> void:
@@ -111,6 +116,20 @@ func _ready() -> void:
 		_rain.target = _player
 		_rain.z_index = 10
 		_board.add_child(_rain)
+	else:
+		var clouds := CloudShadows.new()
+		clouds.area = Vector2(COLUMNS * TILE, _rows * TILE)
+		clouds.z_index = 9
+		_board.add_child(clouds)
+	_decor = StreetDecor.new()
+	_decor.tile = TILE
+	_decor.columns = COLUMNS
+	_decor.lanes = day.lanes
+	_decor.z_index = 9
+	_board.add_child(_decor)
+	_sunlight = Sunlight.new()
+	_sunlight.rainy = day.rainy
+	add_child(_sunlight)
 	_layout_board()
 	get_viewport().size_changed.connect(_layout_board)
 	_scroll = _camera_target()
@@ -231,6 +250,7 @@ func _spawn_vehicles() -> void:
 			var vehicle := Vehicle.new()
 			vehicle.setup(lane.vehicle, TILE, lane.speed, lane.direction, -margin, loop_length)
 			vehicle.position = Vector2(-margin + fposmod(lane.offset + i * spacing, loop_length), row * TILE)
+			vehicle.headlights = day.rainy
 			_board.add_child(vehicle)
 			_vehicles.append(vehicle)
 			if vehicle.is_platform:
@@ -472,6 +492,7 @@ func _spawn_rival() -> void:
 	var direction := 1 if randf() < 0.5 else -1
 	rival.setup(&"kilat", TILE, RIVAL_SPEED, direction, -TILE * 2.0, COLUMNS * TILE + TILE * 4.0)
 	rival.one_shot = true
+	rival.headlights = day.rainy
 	rival.position = Vector2(-TILE * 2.0 if direction > 0 else COLUMNS * TILE + TILE, rows.pick_random() * TILE)
 	_board.add_child(rival)
 	_vehicles.append(rival)
@@ -841,8 +862,44 @@ func _draw_board() -> void:
 	var ink := Color("3b2f2f")
 	_board.draw_string(font, Vector2(10, 30), tr("Rumah %s") % day.customer_name,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
-	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), tr("Gudang Ngacir Express"),
-			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
+	_draw_goal_sign()
+	_draw_depot_billboard()
+
+
+## Papan hijau "LEVEL NEXT" ala poster di baris tujuan.
+func _draw_goal_sign() -> void:
+	var texture := SpriteLibrary.texture("deco_sign_next")
+	if texture == null:
+		return
+	var size := texture.get_size() / SpriteLibrary.density("deco_sign_next")
+	var rect := Rect2(Vector2(GOAL_SIGN_X, TILE - size.y), size)
+	_board.draw_texture_rect(texture, rect, false)
+	# Teks di kiri panah papan (lebar 70 px); font dikecilkan bila tidak muat.
+	var font := UiTheme.font(600)
+	var font_size := 11
+	while font_size > 8 and font.get_string_size("LEVEL NEXT", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > 66.0:
+		font_size -= 1
+	var text_width := font.get_string_size("LEVEL NEXT", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+	_board.draw_string(font, rect.position + Vector2(5.0 + (70.0 - text_width) / 2.0, 21), "LEVEL NEXT",
+			HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
+
+
+## Billboard LED depot: "NGACIR EXPRESS / Dari Jalan Untuk Hidup :)".
+func _draw_depot_billboard() -> void:
+	var y := (_rows - 1) * TILE
+	var texture := SpriteLibrary.texture("deco_billboard")
+	if texture == null:
+		_board.draw_string(ThemeDB.fallback_font, Vector2(10, y + 30), tr("Gudang Ngacir Express"),
+				HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("3b2f2f"))
+		return
+	var size := texture.get_size() / SpriteLibrary.density("deco_billboard")
+	var rect := Rect2(Vector2(6, y + (TILE - size.y) / 2.0), size)
+	_board.draw_texture_rect(texture, rect, false)
+	var width := size.x - 16.0
+	_board.draw_string(UiTheme.font(700), rect.position + Vector2(8, 20), "NGACIR EXPRESS",
+			HORIZONTAL_ALIGNMENT_CENTER, width, 12, LED_COLOR)
+	_board.draw_string(UiTheme.font(500), rect.position + Vector2(8, 33), tr("Dari Jalan Untuk Hidup") + " :)",
+			HORIZONTAL_ALIGNMENT_CENTER, width, 10, LED_COLOR)
 
 
 func _draw_checkpoints() -> void:

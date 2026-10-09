@@ -260,7 +260,10 @@ Di **Pengaturan → Aksesibilitas**:
 | --- | --- |
 | **Ukuran teks** | Normal, Besar, atau Sangat Besar. Berlaku langsung di semua layar |
 | **Buta warna** | Filter koreksi warna untuk Protanopia (merah), Deuteranopia (hijau), atau Tritanopia (biru) |
-| **Kurangi efek gerak** | Mematikan goyangan layar, konfeti, animasi pop, dan denyut timer; transisi layar menjadi pudar biasa |
+| **Kurangi efek gerak** | Mematikan goyangan layar, konfeti, animasi pop, denyut timer, gerak bayangan awan, dan gerak sinar matahari; transisi layar menjadi pudar biasa |
+| **Efek cahaya** | Filter warna hangat, sinar matahari, dan sudut layar gelap di jalanan. Matikan bila HP terasa lambat atau gambar kurang jelas |
+
+Masbro memakai **Kacamata Piksel** sejak awal. Lepas atau ganti di **Toko Masbro → Kacamata**.
 
 ---
 

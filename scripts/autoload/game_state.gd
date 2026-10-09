@@ -31,6 +31,8 @@ const SAVE_PATH := "user://save.cfg"
 ## Dompet koin dan koleksi aksesori; tidak terhapus oleh "Mulai Baru".
 const PROFILE_PATH := "user://profile.cfg"
 const SHOP_SCENE := "res://scenes/shop.tscn"
+## Aksesori bawaan ala poster: dimiliki dan dipakai sejak awal (bisa dilepas di toko).
+const STARTER_ITEM := &"kacamata_piksel"
 const ALBUM_SCENE := "res://scenes/album.tscn"
 ## Ringkasan "Sebelumnya…" saat melanjutkan, per hari: [teks, gambar].
 const RECAPS := [
@@ -69,6 +71,8 @@ var tips_enabled := true
 var seen_stories: Array[String] = []
 ## Cutscene maju sendiri setelah teks selesai.
 var story_auto := false
+## Aksesori bawaan sudah pernah diberikan (supaya pemain tetap bisa melepasnya).
+var starter_given := false
 ## Cutscene yang akan diputar dan scene tujuan setelahnya (lihat play_story).
 var pending_story: StoryData
 var pending_scene := ""
@@ -81,6 +85,7 @@ func _ready() -> void:
 	UiTheme.apply(get_tree().root)
 	load_game()
 	load_profile()
+	_give_starter()
 
 
 func reset_run() -> void:
@@ -254,6 +259,19 @@ func set_tips_enabled(value: bool) -> void:
 	save_profile()
 
 
+## Beri aksesori bawaan sekali per profil (juga untuk profil lama), dan pakai bila slotnya kosong.
+func _give_starter() -> void:
+	if starter_given:
+		return
+	starter_given = true
+	if not STARTER_ITEM in owned:
+		owned.append(STARTER_ITEM)
+	var slot: int = Cosmetics.item(STARTER_ITEM)["slot"]
+	if not equipped.has(slot):
+		equipped[slot] = STARTER_ITEM
+	save_profile()
+
+
 func save_profile() -> void:
 	var config := ConfigFile.new()
 	config.set_value("profile", "wallet", wallet)
@@ -263,6 +281,7 @@ func save_profile() -> void:
 	config.set_value("profile", "tips_enabled", tips_enabled)
 	config.set_value("profile", "seen_stories", seen_stories)
 	config.set_value("profile", "story_auto", story_auto)
+	config.set_value("profile", "starter_given", starter_given)
 	config.save(PROFILE_PATH)
 
 
@@ -277,6 +296,7 @@ func load_profile() -> void:
 	tips_enabled = config.get_value("profile", "tips_enabled", true)
 	seen_stories.assign(config.get_value("profile", "seen_stories", []))
 	story_auto = config.get_value("profile", "story_auto", false)
+	starter_given = config.get_value("profile", "starter_given", false)
 
 
 func reset_profile() -> void:
@@ -287,6 +307,7 @@ func reset_profile() -> void:
 	tips_enabled = true
 	seen_stories.clear()
 	story_auto = false
+	starter_given = false
 	if FileAccess.file_exists(PROFILE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 

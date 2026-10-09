@@ -1,6 +1,6 @@
 class_name Effects
 extends RefCounted
-## Efek partikel kecil: debu langkah, letupan tabrakan, dan konfeti.
+## Efek partikel kecil: debu dan kerikil langkah, letupan tabrakan, dan konfeti.
 
 static var _dot: Texture2D
 
@@ -16,6 +16,21 @@ static func dust(parent: Node, at: Vector2) -> void:
 	particles.scale_amount_max = 0.9
 	particles.color = Color(1, 0.97, 0.9, 0.85)
 	particles.color_ramp = _fade()
+	particles.emitting = true
+
+
+## Kerikil kecil terpercik ke belakang (direction: -1 kiri, 1 kanan) saat Masbro mendarat.
+static func gravel(parent: Node, at: Vector2, direction: int) -> void:
+	var particles := _make(parent, at, 4, 0.4)
+	particles.direction = Vector2(direction, -1.2).normalized()
+	particles.spread = 30.0
+	particles.initial_velocity_min = 50.0
+	particles.initial_velocity_max = 90.0
+	particles.gravity = Vector2(0, 380)
+	particles.scale_amount_min = 0.35
+	particles.scale_amount_max = 0.55
+	particles.color = Color("6b5a4e")
+	particles.color_ramp = _fade(0.7)
 	particles.emitting = true
 
 
