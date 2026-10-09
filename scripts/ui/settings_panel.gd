@@ -106,6 +106,14 @@ func _ready() -> void:
 	column.add_child(lighting)
 
 	column.add_child(_section("Lainnya"))
+	if GameState.supports_3d():
+		var view_3d := CheckButton.new()
+		view_3d.text = "Tampilan 3D (beta, lebih berat)"
+		view_3d.button_pressed = AudioManager.view_3d
+		view_3d.toggled.connect(func(on: bool) -> void:
+			AudioManager.view_3d = on
+			AudioManager.save_settings())
+		column.add_child(view_3d)
 	var tips := CheckButton.new()
 	tips.text = "Tips tutorial (nyalakan untuk mengulang)"
 	tips.button_pressed = GameState.tips_enabled
