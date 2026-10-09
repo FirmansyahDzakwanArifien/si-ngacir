@@ -52,7 +52,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Kontrol sentuh swipe (kiri/kanan/maju, tap = maju) dan layar responsif: HP potret (UI diperbesar, kamera geser samping), lanskap, layar lebar (`scripts/autoload/screen.gd`)
 * [x] Tampilan flat kawaii: sprite, ilustrasi cutscene, UI, animasi & efek (bawaan, bisa diganti tim Illustrator)
 * [x] Gaya ala poster (v0.9): shading gradasi di semua sprite, filter cahaya `Sunlight`, bayangan awan, tiang listrik dan kabel, papan "LEVEL NEXT", billboard depot, lampu kendaraan saat hujan, Masbro dengan ransel dan kacamata piksel. Rencana 3D: `docs/KONSEP_3D.md`
-* [x] Tampilan 3D (beta) di Windows/Android (Pengaturan → Tampilan 3D): lapisan tampilan `scripts/game3d/` di atas logika 2D yang sama. Skema, skenario, dan pengembangan: `docs/KONSEP_3D.md` bagian 11
+* [x] Tampilan 3D (beta) di web, Windows, dan Android (Pengaturan → Tampilan 3D): lapisan tampilan `scripts/game3d/` di atas logika 2D yang sama. Skema, skenario, dan pengembangan: `docs/KONSEP_3D.md` bagian 11
 * [x] Ambil paket dulu: Masbro berangkat tanpa paket, mengambil paket di kios pengirim (titik jemput acak di tengah map, `MapGenerator.pick_pickup`), lalu mengantarnya. Map panjang: 12–16 blok jalan (±45–90 baris), dengan Pos setiap 3–4 blok
 * [x] Efek benturan ala komik (`scripts/game/effects.gd`): BRAK! + Masbro berputar + hit-stop + kilat putih saat tertabrak, BYUR! + riak + gelembung saat tercebur, GEDEBUK! di lubang, TENG! saat helm pecah, KRAK! + asap saat paket hancur, cipratan saat tergelincir
 * [x] Album Cerita (tonton ulang cutscene), ringkasan "Sebelumnya…" saat Lanjutkan, mode Auto di cutscene
@@ -229,7 +229,7 @@ Workflow `.github/workflows/build.yml`:
 | Push tag `v*` (contoh `v0.2.0`) | **GitHub Release** otomatis berisi `SiNgacir-web.zip`, `SiNgacir-windows.zip`, `SiNgacir-android.apk`, dan manual |
 | Tombol **Run workflow** di tab Actions | Build manual kapan saja |
 
-Build Web memakai **template Godot ramping** (tanpa 3D dan modul yang tidak dipakai, lihat `.github/godot/web_template.py`). Template dibangun sekali (sekitar 30 menit) lalu disimpan di cache Actions; mengubah file profil itu akan membangunnya ulang. Ukuran file web tercatat di ringkasan setiap run.
+Build Web memakai **template Godot ramping** (modul yang tidak dipakai dibuang, inti 3D tetap ada untuk Tampilan 3D, lihat `.github/godot/web_template.py`). Template dibangun sekali (sekitar 30 menit) lalu disimpan di cache Actions; mengubah file profil itu akan membangunnya ulang. Ukuran file web tercatat di ringkasan setiap run.
 
 Setelah export, CI membuka build hasilnya (`.github/godot/check_pack.gd`) dan gagal bila ada cutscene kosong, potret hilang, atau musik tidak ikut. Resource teks (`.tres`) diekspor apa adanya (`editor/export/convert_text_resources_to_binary=false`): konversi ke biner di Godot 4.3 mengosongkan teks cutscene (`PackedStringArray` di `StoryData`).
 

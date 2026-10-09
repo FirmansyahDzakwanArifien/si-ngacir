@@ -2,7 +2,7 @@ extends RefCounted
 ## Model 3D sederhana dari bentuk dasar (kapsul, bola, kotak, silinder) untuk Tampilan 3D (beta).
 ## Gaya: toon + garis luar gelap supaya tetap kawaii. Satuan: 1 petak = 1 meter.
 ## Tim 3D bisa mengganti fungsi di sini dengan model .glb tanpa mengubah logika game.
-## Skrip ini hanya dimuat bila build punya modul 3D (bukan build web ramping), jadi tanpa class_name.
+## Skrip ini hanya dimuat bila build punya modul 3D, jadi tanpa class_name.
 
 const OUTLINE_SHADER := """
 shader_type spatial;
