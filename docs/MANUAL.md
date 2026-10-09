@@ -78,7 +78,14 @@ Tahan tombol arah untuk melangkah terus-menerus.
 
 ## 4. Tujuan Permainan
 
-Bawa paket dari **Gudang Ngacir Express** (bawah) ke **rumah pelanggan** (atas), menyeberangi blok demi blok jalan yang penuh kendaraan. Rute bisa jauh lebih panjang dari satu layar; layar ikut bergerak naik mengikuti Masbro.
+Masbro berangkat dari **Gudang Ngacir Express** (bawah) **tanpa paket**:
+
+1. **Ambil paket** di **kios penjemputan** milik pengirim, kira-kira di tengah rute (cari ikon paket melayang bertuliskan **AMBIL**). Injak petak kiosnya.
+2. **Antar paket** ke **rumah pelanggan** (atas).
+
+Sebelum paket diambil, tabrakan dan tercebur hanya membuat Masbro terpental, paket belum bisa rusak. Setelah diambil, paket bisa rusak dan paket berat (galon) membuat langkah lebih lambat. Sampai di rumah pelanggan tanpa paket belum dihitung selesai.
+
+Rute bisa jauh lebih panjang dari satu layar; layar ikut bergerak naik mengikuti Masbro. ETA sudah menghitung waktu mampir ke kios.
 
 Setiap kali hari dimulai, **susunan jalan dibuat ulang secara acak**, jadi tidak ada dua pengiriman yang persis sama. Makin dekat ke rumah pelanggan, kendaraan makin cepat.
 
@@ -94,7 +101,7 @@ Kumpulkan upah dari 5 hari masa percobaan. Jika total tabungan mencukupi biaya p
 ├──────────────────────────────────────────────────────────┤
 │ Rumah pelanggan (tujuan)                                 │
 │ ════ jalan ════  🚗      🛵                               │
-│ ──── median (aman) ────                                  │
+│ ──── median (aman) ────            [Kios: AMBIL paket]   │
 │ ════ jalan ════      🚚                                  │
 │ Gudang Ngacir Express (mulai)          Masbro            │
 └──────────────────────────────────────────────────────────┘
@@ -104,9 +111,9 @@ Kumpulkan upah dari 5 hari masa percobaan. Jika total tabungan mencukupi biaya p
 | --- | --- |
 | **HARI** | Hari ke berapa dari masa percobaan |
 | **Kotak paket ■■■** | Kondisi paket. Satu kotak hilang setiap kali paket rusak. Semua hilang = paket hancur |
-| **Garis rute** | Titik kuning = Masbro, rumah merah = tujuan. Menunjukkan seberapa jauh lagi |
+| **Garis rute** | Titik kuning = Masbro, kotak cokelat = kios penjemputan (hilang setelah paket diambil), rumah merah = tujuan |
 | **ETA** | Sisa waktu target pengantaran (makin panjang rute, makin lama). Kuning saat ≤10 detik, merah "TELAT" bila lewat |
-| **ANTAR KE** | Nama pelanggan tujuan |
+| **AMBIL DI / KE** | Tujuan sekarang: kios pengirim sebelum paket diambil, lalu nama pelanggan |
 
 ---
 

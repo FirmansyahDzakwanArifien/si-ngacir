@@ -5,6 +5,7 @@ extends RefCounted
 
 const TIPS := {
 	&"move": "Tekan W / panah atas (atau tap layar) untuk maju. Hindari kendaraan!",
+	&"pickup": "Ambil paket dulu di kios penjemputan (ikon paket melayang), baru antar ke rumah pelanggan di ujung atas.",
 	&"hit": "Aduh! Tiap tabrakan merusak paket. Kalau ikon paket di kiri atas habis, pengiriman gagal.",
 	&"coin": "Ambil koin! +Rp1.000 untuk upah, dan masuk dompet untuk belanja di Toko Masbro.",
 	&"powerup": "Power-up! Helm menahan 1 benturan, sepatu bikin langkah lebih cepat.",
