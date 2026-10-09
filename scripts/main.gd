@@ -9,6 +9,7 @@ var _new_game_button: Button
 var _confirming_new_game := false
 var _first_button: Button
 var _logo: Label
+var _secondary_grid: GridContainer
 
 
 func _ready() -> void:
@@ -77,10 +78,11 @@ func _ready() -> void:
 	inside.add_child(first)
 	secondary.append(_button("Toko Masbro", Transition.change_scene.bind(GameState.SHOP_SCENE)))
 	secondary.append(_button("Pengaturan", _on_settings_pressed))
+	secondary.append(_button("Album Cerita", Transition.change_scene.bind(GameState.ALBUM_SCENE)))
 	if not OS.has_feature("web"):
 		secondary.append(_button("Keluar", AudioManager.quit_game))
 	var grid := GridContainer.new()
-	grid.columns = 2
+	_secondary_grid = grid
 	grid.add_theme_constant_override("h_separation", 10)
 	grid.add_theme_constant_override("v_separation", 10)
 	for button in secondary:
@@ -116,6 +118,9 @@ func _fit() -> void:
 		logo_size = 40
 	_logo.add_theme_font_size_override("font_size", logo_size)
 	_logo.add_theme_constant_override("outline_size", 12 if short else 16)
+	# Lima tombol (ada Keluar) dibuat tiga kolom di layar lebar supaya kartu tidak bertambah tinggi.
+	var many := _secondary_grid.get_child_count() > 4
+	_secondary_grid.columns = 3 if many and not Screen.is_compact() else 2
 
 
 func _wallet_row() -> Control:
@@ -140,8 +145,10 @@ func _wallet_row() -> Control:
 
 
 func _on_continue_pressed() -> void:
-	var scene := GameState.ENDING_SCENE if GameState.probation_done else GameState.LEVEL_SCENE
-	Transition.change_scene(scene)
+	if GameState.probation_done:
+		Transition.change_scene(GameState.ENDING_SCENE)
+	else:
+		GameState.play_story(GameState.recap_story(), GameState.LEVEL_SCENE)
 
 
 func _on_settings_pressed() -> void:

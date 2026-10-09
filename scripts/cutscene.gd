@@ -2,9 +2,13 @@ extends Control
 ## Memutar GameState.pending_story halaman demi halaman, lalu pindah ke GameState.pending_scene.
 ## Halaman bisa berupa narasi atau dialog (potret + papan nama tokoh).
 ## Enter / Spasi / klik: tampilkan teks penuh atau lanjut halaman. Esc: lewati semua.
+## Mode Auto: halaman maju sendiri setelah teks selesai dibaca.
 
 const IMAGE_DIR := "res://assets/story/"
 const CHARS_PER_SECOND := 45.0
+## Jeda mode Auto setelah teks selesai: dasar + per huruf (waktu baca).
+const AUTO_DELAY := 1.2
+const AUTO_DELAY_PER_CHAR := 0.03
 
 var _story: StoryData
 var _page := -1
@@ -18,6 +22,8 @@ var _name_plate: PanelContainer
 var _name_label: Label
 var _speaker := ""
 var _typing: Tween
+var _auto_button: Button
+var _auto_timer: Timer
 
 
 func _ready() -> void:
@@ -117,6 +123,24 @@ func _ready() -> void:
 	skip.pressed.connect(_finish)
 	add_child(skip)
 
+	_auto_timer = Timer.new()
+	_auto_timer.one_shot = true
+	_auto_timer.timeout.connect(_on_auto_timeout)
+	add_child(_auto_timer)
+	_auto_button = Button.new()
+	_auto_button.toggle_mode = true
+	_auto_button.button_pressed = GameState.story_auto
+	_auto_button.focus_mode = Control.FOCUS_NONE
+	_auto_button.add_theme_font_size_override("font_size", 16)
+	_auto_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	_auto_button.offset_left = -282
+	_auto_button.offset_top = 12
+	_auto_button.offset_right = -158
+	_auto_button.offset_bottom = 52
+	_auto_button.toggled.connect(_on_auto_toggled)
+	add_child(_auto_button)
+	_update_auto_text()
+
 	_next_page()
 
 
@@ -148,6 +172,7 @@ func current_speaker() -> String:
 
 
 func _next_page() -> void:
+	_auto_timer.stop()
 	_page += 1
 	if _page >= _story.pages.size():
 		_finish()
@@ -224,6 +249,27 @@ func _play_page_music() -> void:
 func _update_hint() -> void:
 	var last := _page == _story.pages.size() - 1
 	_hint.text = tr("Enter / klik untuk mulai") if last else tr("Enter / klik untuk lanjut")
+	if GameState.story_auto:
+		_auto_timer.start(AUTO_DELAY + _text.text.length() * AUTO_DELAY_PER_CHAR)
+
+
+func _on_auto_toggled(on: bool) -> void:
+	GameState.set_story_auto(on)
+	_update_auto_text()
+	if not on:
+		_auto_timer.stop()
+	elif _story and not (_typing and _typing.is_running()):
+		# Teks halaman ini sudah selesai: langsung mulai hitung jeda.
+		_update_hint()
+
+
+func _update_auto_text() -> void:
+	_auto_button.text = "Auto: Nyala" if GameState.story_auto else "Auto: Mati"
+
+
+func _on_auto_timeout() -> void:
+	if _story and GameState.story_auto:
+		_next_page()
 
 
 func _finish() -> void:
