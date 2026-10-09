@@ -26,6 +26,8 @@ const ITEMS := [
 	{"id": &"beanie", "slot": Slot.HAT, "name": "Beanie", "price": 20},
 	{"id": &"koki", "slot": Slot.HAT, "name": "Topi Koki", "price": 25},
 	{"id": &"mahkota", "slot": Slot.HAT, "name": "Mahkota", "price": 60},
+	# Bawaan ala poster: dimiliki dan dipakai sejak awal (lihat GameState.STARTER_ITEM).
+	{"id": &"kacamata_piksel", "slot": Slot.GLASSES, "name": "Kacamata Piksel", "price": 0},
 	{"id": &"kacamata_bulat", "slot": Slot.GLASSES, "name": "Kacamata Bulat", "price": 10},
 	{"id": &"kacamata_hitam", "slot": Slot.GLASSES, "name": "Kacamata Hitam", "price": 15},
 	{"id": &"kacamata_bintang", "slot": Slot.GLASSES, "name": "Kacamata Bintang", "price": 30},
