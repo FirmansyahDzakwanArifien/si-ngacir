@@ -18,6 +18,8 @@ const BASE_STEP_TIME := 0.12
 ## Tambahan ETA untuk mampir ke titik jemput: tetap + per kolom menyimpang dari jalur lurus.
 const PICKUP_ETA_BONUS := 4.0
 const PICKUP_ETA_PER_COLUMN := 0.6
+## Tampilan 3D (beta): dimuat lewat path supaya build tanpa modul 3D (web ramping) tidak memuatnya.
+const VIEW_3D_SCRIPT := "res://scripts/game3d/level_3d_view.gd"
 ## Posisi Masbro di layar (0 = atas, 1 = bawah); lebih ke bawah supaya jalan di depan terlihat.
 const CAMERA_ANCHOR := 0.65
 const CAMERA_SMOOTHING := 8.0
@@ -100,6 +102,8 @@ var pickup_cell := Vector2i(-1, -1)
 var _pickup_stall: Node2D
 var _pickup_marker: Node2D
 var _sunlight: Sunlight
+## Lapisan Tampilan 3D (null = tampilan 2D biasa).
+var _view_3d: Node
 
 
 func _ready() -> void:
@@ -153,6 +157,8 @@ func _ready() -> void:
 	_scroll = _camera_target()
 	_scroll_x = _camera_target_x()
 	_apply_board_position()
+	if AudioManager.view_3d and GameState.supports_3d():
+		_enable_3d_view()
 
 	_hud = GameHud.new()
 	add_child(_hud)
@@ -497,9 +503,12 @@ func _npc_say(owner: Node2D, text: String, offset: Vector2, side := SpeechBubble
 	bubble.position = offset
 	owner.add_child(bubble)
 	bubble.say(text, 1.6)
+	# Simpan id, bukan objeknya: pemilik balon (misalnya motor Bang Kilat) bisa hilang lebih dulu.
+	var bubble_id := bubble.get_instance_id()
 	get_tree().create_timer(1.8, false).timeout.connect(func() -> void:
-		if is_instance_valid(bubble):
-			bubble.queue_free())
+		var node := instance_from_id(bubble_id) as Node
+		if node:
+			node.queue_free())
 	return bubble
 
 
@@ -661,6 +670,15 @@ func _splash() -> void:
 		return
 	_popup("Paket basah!" if has_package else "Basah kuyup!", Palette.SKY_DEEP, _player.position)
 	_damage_package(1, _last_safe_cell)
+
+
+## Ganti papan 2D dengan Tampilan 3D. Logika tetap di Level; tampilan 3D hanya membaca keadaannya.
+func _enable_3d_view() -> void:
+	_view_3d = (load(VIEW_3D_SCRIPT) as GDScript).new()
+	_view_3d.level = self
+	add_child(_view_3d)
+	_board.visible = false
+	_side_mask.visible = false
 
 
 ## Kios pengirim di titik jemput, dengan paket melayang di atasnya sampai diambil.

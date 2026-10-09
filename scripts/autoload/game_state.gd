@@ -140,6 +140,11 @@ func savings_enough() -> bool:
 	return total_savings() >= MEDICAL_COST
 
 
+## Build ini punya modul 3D (Windows, Android). Build web ramping tidak, jadi Tampilan 3D disembunyikan.
+func supports_3d() -> bool:
+	return ClassDB.class_exists(&"MeshInstance3D")
+
+
 ## Putar cutscene lalu pindah ke next_scene. Tanpa cerita, langsung pindah.
 func play_story(story: StoryData, next_scene: String) -> void:
 	mark_story_seen(story)

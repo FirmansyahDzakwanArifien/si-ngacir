@@ -18,6 +18,8 @@ var fullscreen := false
 var language := ""
 ## Getar HP saat menabrak / paket rusak.
 var vibration := true
+## Tampilan 3D (beta) saat mengantar; hanya di build yang punya modul 3D.
+var view_3d := false
 
 var _music_player: AudioStreamPlayer
 var _sfx_players: Array[AudioStreamPlayer] = []
@@ -146,6 +148,7 @@ func save_settings() -> void:
 	config.set_value("display", "fullscreen", fullscreen)
 	config.set_value("display", "language", language)
 	config.set_value("display", "vibration", vibration)
+	config.set_value("display", "view_3d", view_3d)
 	config.save(SETTINGS_PATH)
 
 
@@ -158,6 +161,7 @@ func load_settings() -> void:
 	var default_language := "id" if OS.get_locale_language() == "id" else "en"
 	set_language(config.get_value("display", "language", default_language))
 	vibration = config.get_value("display", "vibration", true)
+	view_3d = config.get_value("display", "view_3d", false)
 	if not OS.has_feature("web") and DisplayServer.get_name() != "headless":
 		set_fullscreen(config.get_value("display", "fullscreen", fullscreen))
 
