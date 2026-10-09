@@ -21,7 +21,6 @@ var _typing: Tween
 
 
 func _ready() -> void:
-	AudioManager.play_music(&"menu")
 	_story = GameState.pending_story
 	if _story == null or _story.pages.is_empty():
 		_finish.call_deferred()
@@ -155,6 +154,7 @@ func _next_page() -> void:
 		return
 	_show_image(_story.image_at(_page))
 	_show_speaker(_story.speaker_at(_page))
+	_play_page_music()
 
 	_text.text = GameState.story_text(_story.pages[_page])
 	_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if _speaker == "" else HORIZONTAL_ALIGNMENT_LEFT
@@ -203,6 +203,22 @@ func _show_speaker(entry: String) -> void:
 		_portrait_frame.scale = Vector2(0.7, 0.7)
 		create_tween().tween_property(_portrait_frame, "scale", Vector2.ONE, 0.25) \
 				.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## Ganti musik sesuai suasana halaman; masuknya tema Nana atau Bang Kilat diberi efek suara.
+func _play_page_music() -> void:
+	var music := Speakers.music_for(_story.speaker_at(_page), _story.image_at(_page))
+	if music == &"":
+		if _page > 0:
+			return
+		music = Speakers.CALM_MUSIC
+	if music == AudioManager.current_music():
+		return
+	AudioManager.play_music(music)
+	if music == Speakers.SAD_MUSIC:
+		AudioManager.play_sfx(&"chime_sad")
+	elif music == Speakers.TENSE_MUSIC:
+		AudioManager.play_sfx(&"sting_kilat")
 
 
 func _update_hint() -> void:

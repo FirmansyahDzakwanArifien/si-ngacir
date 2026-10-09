@@ -14,6 +14,23 @@ const CAST := {
 	"ojan": {"name": "Pak Ojan", "color": Color("5e9b82")},
 }
 
+## Musik cutscene: tema sedih Nana, tema tegang Bang Kilat, dan musik santai bawaan.
+const SAD_MUSIC := &"nana"
+const TENSE_MUSIC := &"kilat"
+const CALM_MUSIC := &"menu"
+## Suasana per "tokoh:ekspresi". Tokoh yang tidak ada di sini memakai CALM_MUSIC,
+## kecuali Masbro dan narasi yang meneruskan musik sebelumnya.
+const MOOD_MUSIC := {
+	"nana:sakit": SAD_MUSIC,
+	"nana:sedih": SAD_MUSIC,
+	"masbro:sedih": SAD_MUSIC,
+	"kilat:sombong": TENSE_MUSIC,
+	"kilat:kaget": TENSE_MUSIC,
+	"kilat:sedih": &"",
+}
+## Latar yang otomatis bernuansa sedih (Nana sakit), kecuali suasananya ditentukan MOOD_MUSIC.
+const SAD_IMAGES: Array[String] = ["sick", "hospital"]
+
 
 ## Pecah "tokoh:ekspresi" menjadi [tokoh, ekspresi]. Ekspresi bawaan "normal".
 static func parse(entry: String) -> PackedStringArray:
@@ -39,3 +56,16 @@ static func portrait(id: String, mood: String) -> Texture2D:
 			if ResourceLoader.exists(path):
 				return load(path)
 	return null
+
+
+## Musik untuk satu halaman cutscene. &"" berarti meneruskan musik yang sedang diputar.
+static func music_for(entry: String, image: String) -> StringName:
+	var parsed := parse(entry)
+	var key := parsed[0] + ":" + parsed[1]
+	if MOOD_MUSIC.has(key):
+		return MOOD_MUSIC[key]
+	if image in SAD_IMAGES and not key.ends_with(":senang"):
+		return SAD_MUSIC
+	if parsed[0] == "" or parsed[0] == "masbro":
+		return &""
+	return CALM_MUSIC

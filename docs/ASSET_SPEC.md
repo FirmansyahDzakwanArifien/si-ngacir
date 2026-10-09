@@ -184,7 +184,7 @@ Ekspresi yang belum ada otomatis memakai `normal`. Nama tampilan dan warna papan
 
 ## Audio
 
-Lokasi: `assets/audio/music/` dan `assets/audio/sfx/`. Format `.ogg` (disarankan), `.wav`, atau `.mp3`. Daftar nama file ada di README bagian **Audio**. Musik otomatis di-loop, jadi buat ujung dan awal lagu menyambung.
+Lokasi: `assets/audio/music/` dan `assets/audio/sfx/`. Format **`.wav`** (16-bit, mono atau stereo); musik dikompres otomatis saat import. Jangan pakai `.ogg` / `.mp3`: build web tidak bisa memutarnya. Daftar nama file ada di README bagian **Audio**. Musik otomatis di-loop, jadi buat ujung dan awal lagu menyambung.
 
 ## Checklist sebelum push aset
 
