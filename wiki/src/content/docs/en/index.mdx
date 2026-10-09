@@ -1,0 +1,58 @@
+---
+title: Si Ngacir
+description: The official wiki for Si Ngacir, a 2D arcade game about Masbro the capybara courier. Story, how to play, features, and development notes.
+template: splash
+hero:
+  tagline: '"Trobos Ajalah!" (Just go for it!) Help Masbro the capybara survive a five-day courier probation to pay for his little sister''s treatment.'
+  image:
+    file: ../../../assets/press/cover.png
+    alt: Si Ngacir cover
+  actions:
+    - text: Play now
+      link: https://cyphera-game.itch.io/si-ngacir
+      icon: external
+      variant: primary
+    - text: How to play
+      link: /en/bermain/mulai/
+      icon: right-arrow
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { Image } from 'astro:assets';
+import shotPasar from '../../../assets/press/en/04_gameplay_pasar.png';
+import shotKilat from '../../../assets/press/en/02_story_kilat.png';
+
+## What is Si Ngacir?
+
+**Si Ngacir** is a 2D road-crossing arcade game. You play as **Masbro**, a capybara working as a courier for **Ngacir Express**. Pick up the package at the sender's stall, cross busy roads and fast-flowing rivers, and deliver it to the customer before time runs out.
+
+The twist on the usual road-crossing game: **Masbro has no lives. What you protect is the package.** Every hit damages the package and cuts your pay.
+
+<CardGrid>
+	<Card title="5 story days" icon="open-book">
+		A pillow, a water jug, eggs, sensitive goods in the rain, and a VIP Package. Each package changes how you play.
+	</Card>
+	<Card title="Always a new map" icon="random">
+		Roads, rivers, rafts, coins, and power-ups are reshuffled every time a day starts.
+	</Card>
+	<Card title="Play anywhere" icon="laptop">
+		Browser, phone (swipe), Windows, and Android. Indonesian and English.
+	</Card>
+	<Card title="Friendly to all players" icon="heart">
+		Text size, color-blindness filters, and a reduce-motion mode.
+	</Card>
+</CardGrid>
+
+<Image src={shotPasar} alt="Masbro crossing at Ngacir Market" />
+
+<Image src={shotKilat} alt="Bang Kilat cutscene" />
+
+## Explore the wiki
+
+<CardGrid>
+	<LinkCard title="Story & characters" href="/en/tentang/cerita/" description="Masbro, Nana, Bang Kilat, and the people of Ngacir City." />
+	<LinkCard title="How to play" href="/en/bermain/mulai/" description="Controls, rules, pay, and the five-day probation." />
+	<LinkCard title="Development" href="/en/pengembangan/desain/" description="Game design, technology, changelog, and roadmap." />
+	<LinkCard title="Team" href="/en/tim/" description="Varmintz KW Studio and each member's role." />
+</CardGrid>

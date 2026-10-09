@@ -5,12 +5,15 @@ name: Build & Release
 # - push ke main        : build Web + Windows (artifact), opsional deploy GitHub Pages
 # - push tag v*         : build + GitHub Release berisi zip Web, zip Windows, dan manual
 # - manual (Actions tab): tombol "Run workflow"
+# Perubahan yang hanya menyentuh wiki/ tidak memicu build game (wiki dibangun Cloudflare Pages).
 on:
   push:
     branches: [main]
     tags: ["v*"]
+    paths-ignore: ["wiki/**"]
   pull_request:
     branches: [main, dev]
+    paths-ignore: ["wiki/**"]
   workflow_dispatch:
 
 env:
