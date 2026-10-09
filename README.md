@@ -51,6 +51,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Press kit itch.io: cover, screenshot ID/EN, GIF (`docs/press/`)
 * [x] Kontrol sentuh swipe (kiri/kanan/maju, tap = maju) dan layar responsif: HP potret (UI diperbesar, kamera geser samping), lanskap, layar lebar (`scripts/autoload/screen.gd`)
 * [x] Tampilan flat kawaii: sprite, ilustrasi cutscene, UI, animasi & efek (bawaan, bisa diganti tim Illustrator)
+* [x] Album Cerita (tonton ulang cutscene), ringkasan "Sebelumnya…" saat Lanjutkan, mode Auto di cutscene
 * [ ] Naskah final dari tim Writer Story
 
 ## Struktur
@@ -59,6 +60,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 scenes/main.tscn            Layar judul
 scenes/ending.tscn          Rekap masa percobaan dan ending
 scenes/cutscene.tscn        Pemutar cutscene cerita
+scenes/album.tscn           Album Cerita (tonton ulang cutscene)
 scenes/game/level.tscn      Satu hari pengiriman
 scripts/autoload/game_state.gd   Hari aktif, tabungan, input map, format rupiah
 scripts/data/                PackageData, LaneData, DayData (Resource)
@@ -165,7 +167,11 @@ Ilustrasi dan potret bisa diganti tim Illustrator, lihat `docs/ASSET_SPEC.md`. S
 
 Musik cutscene dipilih otomatis per halaman dari `speakers` dan `images` (aturannya di `MOOD_MUSIC` dan `SAD_IMAGES`, `scripts/data/speakers.gd`): Nana sakit atau latar rumah sakit memutar tema sedih, Bang Kilat yang sombong memutar tema tegang, tokoh lain kembali ke musik santai. Narasi dan dialog Masbro meneruskan musik sebelumnya.
 
-Kontrol cutscene: Enter / klik untuk lanjut, Esc untuk lewati.
+Kontrol cutscene: Enter / klik untuk lanjut, Esc atau tombol **Lewati** untuk melewati, tombol **Auto** untuk maju sendiri setelah teks selesai (pilihan tersimpan di profil).
+
+**Album Cerita** (`scripts/data/story_album.gd`) mendaftar cutscene sesuai urutan cerita; tiap cutscene terbuka setelah pernah diputar (`GameState.seen_stories`, disimpan di profil sehingga tidak hilang saat Mulai Baru). Menambah cutscene baru: daftarkan juga di `StoryAlbum.entries()`.
+
+Ringkasan **Sebelumnya…** diputar saat menekan Lanjutkan: satu kalimat per hari (`GameState.RECAPS`), tabungan saat ini, lalu ajakan Masbro.
 
 ## Bahasa (terjemahan)
 

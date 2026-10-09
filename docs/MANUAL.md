@@ -68,6 +68,7 @@ Kebutuhan minimal: Windows 10 64-bit, kartu grafis yang mendukung OpenGL 3.3.
 | Pilih tombol menu | Enter / klik | Tap |
 | Lanjut cutscene | Enter / klik | Tap |
 | Lewati cutscene | Esc | Tombol **Lewati** |
+| Mode Auto (halaman maju sendiri) | Tombol **Auto** | Tombol **Auto** |
 
 Tahan tombol arah untuk melangkah terus-menerus.
 
@@ -238,9 +239,10 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 
 | Menu | Fungsi |
 | --- | --- |
-| **Lanjutkan** | Melanjutkan dari hari terakhir yang belum selesai |
+| **Lanjutkan** | Melanjutkan dari hari terakhir yang belum selesai, diawali ringkasan singkat **Sebelumnya…** (bisa dilewati) |
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
 | **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
+| **Album Cerita** | Menonton ulang cutscene yang sudah pernah diputar. Cerita yang belum terbuka tampil **???**; tetap terbuka walau memilih Mulai Baru |
 | **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama), aksesibilitas |
 | **Keluar** | Menutup game (desktop) |
 

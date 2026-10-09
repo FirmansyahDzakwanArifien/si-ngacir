@@ -782,7 +782,7 @@ func _on_next_requested() -> void:
 	get_tree().paused = false
 	var evening := day.evening_good if GameState.last_day_good else day.evening_rough
 	if GameState.advance_day():
-		GameState.play_story(StoryData.combine([evening, GameState.current_day().story]), GameState.LEVEL_SCENE)
+		GameState.play_stories([evening, GameState.current_day().story], GameState.LEVEL_SCENE)
 	elif GameState.is_replay:
 		Transition.change_scene(GameState.ENDING_SCENE)
 	else:
