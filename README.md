@@ -52,6 +52,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Kontrol sentuh swipe (kiri/kanan/maju, tap = maju) dan layar responsif: HP potret (UI diperbesar, kamera geser samping), lanskap, layar lebar (`scripts/autoload/screen.gd`)
 * [x] Tampilan flat kawaii: sprite, ilustrasi cutscene, UI, animasi & efek (bawaan, bisa diganti tim Illustrator)
 * [x] Gaya ala poster (v0.9): shading gradasi di semua sprite, filter cahaya `Sunlight`, bayangan awan, tiang listrik dan kabel, papan "LEVEL NEXT", billboard depot, lampu kendaraan saat hujan, Masbro dengan ransel dan kacamata piksel. Rencana 3D: `docs/KONSEP_3D.md`
+* [x] Ambil paket dulu: Masbro berangkat tanpa paket, mengambil paket di kios pengirim (titik jemput acak di tengah map, `MapGenerator.pick_pickup`), lalu mengantarnya. Map lebih panjang (8–11 blok jalan)
 * [x] Efek benturan ala komik (`scripts/game/effects.gd`): BRAK! + Masbro berputar + hit-stop + kilat putih saat tertabrak, BYUR! + riak + gelembung saat tercebur, GEDEBUK! di lubang, TENG! saat helm pecah, KRAK! + asap saat paket hancur, cipratan saat tergelincir
 * [x] Album Cerita (tonton ulang cutscene), ringkasan "Sebelumnya…" saat Lanjutkan, mode Auto di cutscene
 * [ ] Naskah final dari tim Writer Story
@@ -96,7 +97,7 @@ Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/r
 
 ## Menambah hari baru
 
-1. Duplikat salah satu `resources/days/day_0N.tres`, lalu edit di Inspector: `day`, `package`, `customer_name`, upah, dan `map`.
+1. Duplikat salah satu `resources/days/day_0N.tres`, lalu edit di Inspector: `day`, `package`, `customer_name`, pengirim (`sender_name`, `sender_line` di grup **Penjemputan**), upah, dan `map`. Hari dengan `map` otomatis punya titik jemput; ETA ditambah waktu mampir ke kios.
 2. Tambahkan path-nya ke `DAYS` di `scripts/autoload/game_state.gd`.
 3. Untuk mengetes satu hari langsung, buka `level.tscn`, isi properti `day`, lalu **F6**.
 

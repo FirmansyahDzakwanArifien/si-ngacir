@@ -11,6 +11,13 @@ const LED_COLOR := Color("ffb347")
 ## Hit-stop saat tertabrak: game melambat sebentar supaya benturan terasa.
 const HIT_STOP_SCALE := 0.15
 const HIT_STOP_TIME := 0.07
+## Kolom awal Masbro di gudang.
+const START_COLUMN := 7
+## Langkah Masbro tanpa paket (paket berat memperlambat setelah diambil).
+const BASE_STEP_TIME := 0.12
+## Tambahan ETA untuk mampir ke titik jemput: tetap + per kolom menyimpang dari jalur lurus.
+const PICKUP_ETA_BONUS := 4.0
+const PICKUP_ETA_PER_COLUMN := 0.6
 ## Posisi Masbro di layar (0 = atas, 1 = bawah); lebih ke bawah supaya jalan di depan terlihat.
 const CAMERA_ANCHOR := 0.65
 const CAMERA_SMOOTHING := 8.0
@@ -86,6 +93,12 @@ var _tip_scan := 0.0
 ## Kalimat pelanggan yang sudah diucapkan (supaya tidak diulang).
 var _customer_said := {}
 var _decor: StreetDecor
+## Masbro sudah mengambil paket di titik jemput (hari tanpa titik jemput: langsung membawa paket).
+var has_package := true
+## Petak titik jemput paket; Vector2i(-1, -1) bila paket dibawa sejak gudang.
+var pickup_cell := Vector2i(-1, -1)
+var _pickup_stall: Node2D
+var _pickup_marker: Node2D
 var _sunlight: Sunlight
 
 
@@ -98,6 +111,7 @@ func _ready() -> void:
 	if day.map:
 		_generate_map()
 	_rows = day.lanes.size()
+	has_package = pickup_cell.x < 0
 
 	_board = Node2D.new()
 	_board.name = "Board"
@@ -111,6 +125,7 @@ func _ready() -> void:
 	_spawn_items()
 	_spawn_vehicles()
 	_spawn_customer()
+	_spawn_pickup()
 	_spawn_player()
 	if day.rainy:
 		_rain = RainOverlay.new()
@@ -142,6 +157,8 @@ func _ready() -> void:
 	_hud = GameHud.new()
 	add_child(_hud)
 	_hud.setup(day)
+	if not has_package:
+		_hud.set_pickup(1.0 - float(pickup_cell.y) / (_rows - 1))
 	_hud.start_requested.connect(_on_start_requested)
 	_hud.resume_requested.connect(_set_paused.bind(false))
 	_hud.retry_requested.connect(_on_retry_requested)
@@ -167,7 +184,10 @@ func _generate_map() -> void:
 	else:
 		rng.randomize()
 	day.lanes = MapGenerator.generate(params, rng)
+	pickup_cell = MapGenerator.pick_pickup(day.lanes, rng, START_COLUMN)
 	day.eta_seconds = roundf(day.lanes.size() * params.eta_per_row)
+	if pickup_cell.x >= 0:
+		day.eta_seconds += roundf(PICKUP_ETA_BONUS + absi(pickup_cell.x - START_COLUMN) * PICKUP_ETA_PER_COLUMN)
 
 
 func _process(delta: float) -> void:
@@ -298,7 +318,7 @@ func _update_customer() -> void:
 		_customer_line(&"late", "Kok lama, ya...", CustomerNpc.Mood.IMPATIENT)
 	elif left <= 10.0:
 		_customer_line(&"hurry", "Cepetan, Masbro...", CustomerNpc.Mood.IMPATIENT)
-	elif _player.cell.y <= CUSTOMER_CHEER_ROWS:
+	elif _player.cell.y <= CUSTOMER_CHEER_ROWS and has_package:
 		_customer_line(&"close", "Sedikit lagi, Masbro!", CustomerNpc.Mood.WAITING)
 
 
@@ -334,10 +354,11 @@ func _spawn_player() -> void:
 	_player = Player.new()
 	_player.tile = TILE
 	_player.grid_size = Vector2i(COLUMNS, _rows)
-	_player.step_time = day.package.step_time
+	_player.step_time = day.package.step_time if has_package else BASE_STEP_TIME
+	_player.carrying = has_package
 	_player.package_id = day.package.id
 	_player.package_color = day.package.color
-	_player.place(Vector2i(floori(COLUMNS / 2.0), _rows - 1))
+	_player.place(Vector2i(START_COLUMN, _rows - 1))
 	_last_safe_cell = _player.cell
 	_player.can_enter = _is_cell_free
 	_player.moved.connect(_on_player_moved)
@@ -470,9 +491,9 @@ func _update_street_npcs(delta: float) -> void:
 
 
 ## Balon ucapan sementara yang menempel pada node (ikut bergerak bersamanya).
-func _npc_say(owner: Node2D, text: String, offset: Vector2) -> SpeechBubble:
+func _npc_say(owner: Node2D, text: String, offset: Vector2, side := SpeechBubble.Side.ABOVE) -> SpeechBubble:
 	var bubble := SpeechBubble.new()
-	bubble.side = SpeechBubble.Side.ABOVE
+	bubble.side = side
 	bubble.position = offset
 	owner.add_child(bubble)
 	bubble.say(text, 1.6)
@@ -514,6 +535,9 @@ func _popup(text: String, color: Color, at: Vector2) -> void:
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
 	label.add_theme_constant_override("outline_size", 4)
+	# Di tengah atas Masbro, tapi tidak keluar dari tepi papan.
+	var width := label.get_minimum_size().x
+	label.position.x = clampf(at.x + TILE / 2.0 - width / 2.0, 4.0, COLUMNS * TILE - width - 4.0)
 	_board.add_child(label)
 	var tween := label.create_tween()
 	tween.set_parallel()
@@ -529,6 +553,8 @@ func _on_start_requested() -> void:
 	AudioManager.play_sfx(&"pickup")
 	_customer.say(day.customer_greeting, 3.5)
 	_tips.trigger(&"move")
+	if not has_package:
+		_tips.trigger(&"pickup")
 
 
 func _set_paused(value: bool) -> void:
@@ -543,13 +569,19 @@ func _on_player_moved(cell: Vector2i) -> void:
 	if state != State.PLAYING:
 		return
 	if cell.y == 0:
-		_deliver()
+		if has_package:
+			_deliver()
+		else:
+			_popup("Paketnya belum diambil!", Palette.CORAL, _player.position)
+			_customer_line(&"no_package", "Lho, paketnya mana, Masbro?", CustomerNpc.Mood.IMPATIENT)
 		return
 	if day.lanes[cell.y].kind == LaneData.Kind.RIVER:
 		if _raft_under_player() == null:
 			_splash()
 		return
 	_last_safe_cell = cell
+	if not has_package and cell == pickup_cell:
+		_pick_up()
 	if day.lanes[cell.y].checkpoint and cell.y != _checkpoint_cell.y:
 		_reach_checkpoint(cell)
 	_collect_item(cell)
@@ -627,8 +659,70 @@ func _splash() -> void:
 		# Sedang kebal (baru tertabrak): cukup kembali ke tepian.
 		_player.knock_back(_last_safe_cell)
 		return
-	_popup("Paket basah!", Palette.SKY_DEEP, _player.position)
+	_popup("Paket basah!" if has_package else "Basah kuyup!", Palette.SKY_DEEP, _player.position)
 	_damage_package(1, _last_safe_cell)
+
+
+## Kios pengirim di titik jemput, dengan paket melayang di atasnya sampai diambil.
+func _spawn_pickup() -> void:
+	if pickup_cell.x < 0:
+		return
+	_pickup_stall = Node2D.new()
+	_pickup_stall.name = "PickupStall"
+	_pickup_stall.position = Vector2(pickup_cell) * TILE
+	var stall := SpriteLibrary.sprite("pickup_stall")
+	if stall:
+		_pickup_stall.add_child(stall)
+	_board.add_child(_pickup_stall)
+
+	_pickup_marker = Node2D.new()
+	_pickup_marker.z_index = 12
+	_pickup_marker.position = Vector2(pickup_cell) * TILE + Vector2(TILE / 2.0, -14.0)
+	var icon := SpriteLibrary.sprite("package_%s" % day.package.id)
+	if icon:
+		icon.scale *= 1.6
+		icon.position = -icon.texture.get_size() * icon.scale / 2.0
+		_pickup_marker.add_child(icon)
+	var arrow := Polygon2D.new()
+	arrow.polygon = PackedVector2Array([Vector2(-8, 15), Vector2(8, 15), Vector2(0, 24)])
+	arrow.color = Palette.CORAL
+	_pickup_marker.add_child(arrow)
+	var label := Label.new()
+	label.text = "AMBIL"
+	label.add_theme_font_override("font", UiTheme.font(700))
+	label.add_theme_font_size_override("font_size", 11)
+	label.add_theme_color_override("font_color", Palette.WHITE)
+	label.add_theme_color_override("font_outline_color", Palette.CORAL)
+	label.add_theme_constant_override("outline_size", 5)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.size = Vector2(60, 16)
+	label.position = Vector2(-30, -30)
+	_pickup_marker.add_child(label)
+	_board.add_child(_pickup_marker)
+	if not Accessibility.reduce_motion:
+		var tween := _pickup_marker.create_tween().set_loops()
+		tween.tween_property(_pickup_marker, "position:y", _pickup_marker.position.y - 6.0, 0.45).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(_pickup_marker, "position:y", _pickup_marker.position.y, 0.45).set_trans(Tween.TRANS_SINE)
+
+
+## Ambil paket di titik jemput: mulai sekarang paket bisa rusak dan langkah mengikuti berat paket.
+func _pick_up() -> void:
+	has_package = true
+	_player.step_time = day.package.step_time
+	_player.receive_package()
+	if _pickup_marker:
+		_pickup_marker.queue_free()
+		_pickup_marker = null
+	AudioManager.play_sfx(&"delivery", 0.05)
+	_popup("Paket diambil!", Palette.TEAL, _player.position)
+	if _pickup_stall:
+		# Balon di sisi kios yang lebih lapang supaya tidak terpotong tepi layar.
+		if pickup_cell.x >= COLUMNS / 2:
+			_npc_say(_pickup_stall, day.sender_line, Vector2(4.0, 14.0), SpeechBubble.Side.LEFT)
+		else:
+			_npc_say(_pickup_stall, day.sender_line, Vector2(TILE - 4.0, 14.0), SpeechBubble.Side.RIGHT)
+	_hud.set_objective_delivery()
+	_customer.set_mood(CustomerNpc.Mood.WAITING)
 
 
 func _on_hit(vehicle: Vehicle) -> void:
@@ -688,6 +782,14 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 	_shake()
 	_invulnerable_left = HIT_INVULNERABLE_TIME
 	_player.invulnerable = true
+	if not has_package:
+		# Belum membawa paket: Masbro cuma terpental, tidak ada yang rusak.
+		collisions += 1
+		AudioManager.play_sfx(&"hit", 0.1)
+		AudioManager.vibrate(60)
+		_popup("Untung paketnya belum diambil!", Palette.YELLOW, _player.position)
+		_player.knock_back(knock_to)
+		return
 	if _player.shielded:
 		# Helm menahan benturan; paket aman.
 		_player.shielded = false

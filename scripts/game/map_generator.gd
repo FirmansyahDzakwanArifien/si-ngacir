@@ -8,6 +8,8 @@ const COLUMNS := 15
 const LOOP_TILES := 19
 ## Celah minimal antar kendaraan dalam satu lane, dalam petak.
 const MIN_GAP_TILES := 3
+## Rentang baris titik jemput (bagian dari tinggi map, 0 = rumah pelanggan, 1 = gudang).
+const PICKUP_RANGE := Vector2(0.35, 0.65)
 
 
 static func generate(params: MapParams, rng: RandomNumberGenerator) -> Array[LaneData]:
@@ -93,6 +95,33 @@ static func _decorate(rows: Array[LaneData], params: MapParams, rng: RandomNumbe
 		var col := rng.randi_range(0, COLUMNS - 1)
 		if not lane.obstacles.has(col):
 			lane.items[col] = [&"helmet", &"shoes"][rng.randi() % 2]
+
+
+## Titik jemput paket: petak aman (trotoar/median, bukan pos) di sekitar tengah map, di kolom
+## yang tidak terhalang. Item di petak itu dibuang. Vector2i(-1, -1) bila tidak ada tempat.
+static func pick_pickup(rows: Array[LaneData], rng: RandomNumberGenerator, start_column: int) -> Vector2i:
+	var last := rows.size() - 1
+	var candidates: Array[int] = []
+	# Baris 0 = rumah pelanggan (atas), baris terakhir = gudang (bawah).
+	for row in range(roundi(last * PICKUP_RANGE.x), roundi(last * PICKUP_RANGE.y) + 1):
+		var lane := rows[row]
+		if row > 0 and row < last and not lane.checkpoint \
+				and (lane.kind == LaneData.Kind.MEDIAN or lane.kind == LaneData.Kind.SIDEWALK):
+			candidates.append(row)
+	if candidates.is_empty():
+		return Vector2i(-1, -1)
+	var row := candidates[rng.randi() % candidates.size()]
+	var lane := rows[row]
+	var columns: Array[int] = []
+	for col in range(1, COLUMNS - 1):
+		# Kios jangan tepat di jalur lurus dari gudang, dan petak kiri-kanannya tetap bisa dilewati.
+		if absi(col - start_column) >= 2 and not lane.obstacles.has(col):
+			columns.append(col)
+	if columns.is_empty():
+		return Vector2i(-1, -1)
+	var col := columns[rng.randi() % columns.size()]
+	lane.items.erase(col)
+	return Vector2i(col, row)
 
 
 static func _distinct_columns(rng: RandomNumberGenerator, count: int) -> Array[int]:

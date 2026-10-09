@@ -30,6 +30,10 @@ var _time_pill: PanelContainer
 var _time_pulse: Tween
 var _package_icons: Array[Control] = []
 var _route: RouteMeter
+## Teks tujuan di bar atas: "ambil di <pengirim>" lalu "ke <pelanggan>".
+var _objective: Label
+## Hari ini paket diambil dulu di titik jemput.
+var _has_pickup := false
 var _tip: PanelContainer
 var _tip_label: Label
 var _tip_tween: Tween
@@ -120,6 +124,29 @@ func _build_tip() -> void:
 		_tip.position.x = (view.x - _tip.size.x) / 2.0)
 
 
+## Hari dengan titik jemput: bar atas menunjuk ke pengirim, garis rute diberi tanda paket.
+func set_pickup(fraction: float) -> void:
+	_has_pickup = true
+	_route.pickup = fraction
+	_objective.text = tr("ambil di %s") % tr(_day.sender_name)
+	_fit_objective()
+
+
+## Paket sudah diambil: tujuan berikutnya rumah pelanggan.
+func set_objective_delivery() -> void:
+	_route.pickup = -1.0
+	_objective.text = tr("ke %s") % _day.customer_name
+	_fit_objective()
+	# Teks tujuan berkedip toska sebentar supaya pemain sadar tujuannya berganti.
+	_objective.modulate = Palette.TEAL
+	_objective.create_tween().tween_property(_objective, "modulate", Color.WHITE, 0.6)
+
+
+func _fit_objective() -> void:
+	var natural := UiTheme.font(600).get_string_size(_objective.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+	_objective.custom_minimum_size.x = minf(150.0, natural + 2.0)
+
+
 ## Kemajuan perjalanan dari gudang (0) ke rumah pelanggan (1).
 func update_progress(fraction: float) -> void:
 	_route.value = clampf(fraction, 0.0, 1.0)
@@ -146,6 +173,7 @@ func show_intro() -> void:
 		_label(tr("Paket: %s") % tr(pkg.display_name), 20, Palette.TEXT, true, 600),
 		_label(pkg.description, 16, Palette.TEXT_SOFT),
 		_label(tr("Lokasi: %s") % tr(_day.city.display_name if _day.city else "Kota Ngacir"), 15, Palette.TEXT_SOFT, true, 600),
+		_pickup_row(),
 		_customer_row(),
 		_label(tr("Target ETA: %s   Upah dasar: %s") % [
 				format_time(_day.eta_seconds), GameState.rupiah(_day.base_wage)], 17),
@@ -277,13 +305,14 @@ func _build_top_bar() -> void:
 	row.add_child(_time_pill)
 	# Nama pelanggan panjang dipotong dengan "..." supaya bar tidak meluber.
 	var customer := _label(tr("ke %s") % _day.customer_name, 16, Palette.TEXT, false, 600)
-	var natural := UiTheme.font(600).get_string_size(customer.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+	customer.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	customer.clip_text = true
 	customer.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	customer.custom_minimum_size.x = minf(150.0, natural + 2.0)
 	# Layar sempit: nama pelanggan sudah ada di kartu intro, bar atas cukup ringkas.
 	customer.visible = not Screen.is_compact()
 	row.add_child(customer)
+	_objective = customer
+	_fit_objective()
 	if DisplayServer.is_touchscreen_available():
 		var pause := Button.new()
 		pause.text = "II"
@@ -422,6 +451,25 @@ func _package_icon(size: Vector2) -> Control:
 	return icon
 
 
+## "Ambil di: <pengirim>" (hari dengan titik jemput), dengan gambar kios kecil.
+func _pickup_row() -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	row.visible = _has_pickup
+	var stall := SpriteLibrary.hires("pickup_stall", 1.0)
+	if stall:
+		var picture := TextureRect.new()
+		picture.texture = stall
+		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		picture.custom_minimum_size = Vector2(44, 44)
+		row.add_child(picture)
+	var label := _label(tr("Ambil di: %s") % tr(_day.sender_name), 17)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label)
+	return row
+
+
 ## "Antar ke: <nama>" dengan potret kecil pelanggan.
 func _customer_row() -> Control:
 	var row := HBoxContainer.new()
@@ -480,6 +528,11 @@ class RouteMeter extends Control:
 			if not is_equal_approx(v, value):
 				value = v
 				queue_redraw()
+	## Posisi titik jemput di rute (0–1); negatif = tidak ada / sudah diambil.
+	var pickup := -1.0:
+		set(v):
+			pickup = v
+			queue_redraw()
 
 	func _init() -> void:
 		custom_minimum_size = Vector2(70, 26)
@@ -496,6 +549,12 @@ class RouteMeter extends Control:
 				Vector2(right + 7, y - 1)]), Palette.CORAL)
 		draw_rect(Rect2(right - 5, y - 1, 10, 8), Palette.CREAM)
 		draw_rect(Rect2(right - 5, y - 1, 10, 8), Palette.OUTLINE, false, 2.0)
+		# Titik jemput paket: kotak cokelat kecil.
+		if pickup >= 0.0:
+			var px := lerpf(left, right, pickup)
+			draw_rect(Rect2(px - 6, y - 6, 12, 12), Color("c98b52"))
+			draw_rect(Rect2(px - 6, y - 6, 12, 12), Palette.OUTLINE, false, 2.0)
+			draw_line(Vector2(px, y - 6), Vector2(px, y + 6), Palette.OUTLINE, 1.5)
 		# Masbro.
 		draw_circle(Vector2(x, y), 7.0, Palette.OUTLINE)
 		draw_circle(Vector2(x, y), 5.0, Palette.YELLOW)

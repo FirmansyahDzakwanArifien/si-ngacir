@@ -22,6 +22,12 @@ var cell := Vector2i.ZERO
 var step_time := 0.12
 var package_id: StringName = &""
 var package_color := Color("efe6cf")
+## Masbro sedang membawa paket (ikon paket di punggung terlihat).
+var carrying := true:
+	set(value):
+		carrying = value
+		if _package_icon:
+			_package_icon.visible = value
 var input_enabled := false
 ## Opsional: func(cell: Vector2i) -> bool. Kalau false, Masbro tidak bisa masuk ke petak itu.
 var can_enter: Callable
@@ -86,6 +92,7 @@ func _ready() -> void:
 		_package_icon = Sprite2D.new()
 		_package_icon.centered = false
 		_package_icon.texture = SpriteLibrary.placeholder_box(Vector2i(20, 15), package_color, Color("6e4a2b"))
+	_package_icon.visible = carrying
 	rig.add_child(_package_icon)
 	_shield = Node2D.new()
 	_shield.position = Vector2(0, -tile / 2.0)
@@ -239,6 +246,20 @@ func plop() -> void:
 	_hop_tween.parallel().tween_property(_visual, "modulate", Color(0.7, 0.85, 1.0, 0.6), 0.12)
 	_hop_tween.tween_property(_visual, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	_hop_tween.parallel().tween_property(_visual, "modulate", Color.WHITE, 0.25)
+
+
+## Paket baru diambil: ikon paket melompat ke punggung Masbro.
+func receive_package() -> void:
+	carrying = true
+	if _package_icon == null:
+		return
+	var rest := _package_icon.position
+	_package_icon.position = rest + Vector2(0, -22)
+	_package_icon.scale = Vector2(1.6, 1.6) * _package_icon.scale
+	var target_scale := _package_icon.scale / 1.6
+	var tween := _package_icon.create_tween()
+	tween.tween_property(_package_icon, "position", rest, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(_package_icon, "scale", target_scale, 0.25)
 
 
 ## Lompat girang saat paket sampai.
