@@ -5,6 +5,12 @@ extends Node2D
 const TILE := 48.0
 const COLUMNS := 15
 const HUD_HEIGHT := 48.0
+## Papan hijau "LEVEL NEXT" di baris tujuan (piksel game dari kiri papan).
+const GOAL_SIGN_X := 312.0
+const LED_COLOR := Color("ffb347")
+## Hit-stop saat tertabrak: game melambat sebentar supaya benturan terasa.
+const HIT_STOP_SCALE := 0.15
+const HIT_STOP_TIME := 0.07
 ## Posisi Masbro di layar (0 = atas, 1 = bawah); lebih ke bawah supaya jalan di depan terlihat.
 const CAMERA_ANCHOR := 0.65
 const CAMERA_SMOOTHING := 8.0
@@ -79,6 +85,8 @@ var _tips: TutorialTips
 var _tip_scan := 0.0
 ## Kalimat pelanggan yang sudah diucapkan (supaya tidak diulang).
 var _customer_said := {}
+var _decor: StreetDecor
+var _sunlight: Sunlight
 
 
 func _ready() -> void:
@@ -111,6 +119,20 @@ func _ready() -> void:
 		_rain.target = _player
 		_rain.z_index = 10
 		_board.add_child(_rain)
+	else:
+		var clouds := CloudShadows.new()
+		clouds.area = Vector2(COLUMNS * TILE, _rows * TILE)
+		clouds.z_index = 9
+		_board.add_child(clouds)
+	_decor = StreetDecor.new()
+	_decor.tile = TILE
+	_decor.columns = COLUMNS
+	_decor.lanes = day.lanes
+	_decor.z_index = 9
+	_board.add_child(_decor)
+	_sunlight = Sunlight.new()
+	_sunlight.rainy = day.rainy
+	add_child(_sunlight)
 	_layout_board()
 	get_viewport().size_changed.connect(_layout_board)
 	_scroll = _camera_target()
@@ -231,6 +253,7 @@ func _spawn_vehicles() -> void:
 			var vehicle := Vehicle.new()
 			vehicle.setup(lane.vehicle, TILE, lane.speed, lane.direction, -margin, loop_length)
 			vehicle.position = Vector2(-margin + fposmod(lane.offset + i * spacing, loop_length), row * TILE)
+			vehicle.headlights = day.rainy
 			_board.add_child(vehicle)
 			_vehicles.append(vehicle)
 			if vehicle.is_platform:
@@ -472,6 +495,7 @@ func _spawn_rival() -> void:
 	var direction := 1 if randf() < 0.5 else -1
 	rival.setup(&"kilat", TILE, RIVAL_SPEED, direction, -TILE * 2.0, COLUMNS * TILE + TILE * 4.0)
 	rival.one_shot = true
+	rival.headlights = day.rainy
 	rival.position = Vector2(-TILE * 2.0 if direction > 0 else COLUMNS * TILE + TILE, rows.pick_random() * TILE)
 	_board.add_child(rival)
 	_vehicles.append(rival)
@@ -536,6 +560,7 @@ func _on_player_moved(cell: Vector2i) -> void:
 	if on_wet_road and not _player.last_move_was_slide and not _player.invulnerable \
 			and randf() < day.slip_chance and _player.slide():
 		_popup("Licin!", Color("8ecae6"), _player.position)
+		Effects.spray(_board, _player.position + Vector2(TILE / 2.0, TILE - 4.0), Vector2(_player.last_direction))
 		AudioManager.play_sfx(&"slip")
 
 
@@ -591,7 +616,12 @@ func _raft_under_player() -> Vehicle:
 
 
 func _splash() -> void:
-	Effects.splash(_board, _player.position + Vector2(TILE / 2.0, TILE * 0.7))
+	var at := _player.position + Vector2(TILE / 2.0, TILE * 0.7)
+	Effects.splash(_board, at)
+	Effects.ripples(_board, at)
+	Effects.bubbles(_board, at)
+	Effects.impact(_board, at + Vector2(TILE * 0.8, -TILE * 0.2), "BYUR!", Palette.SKY_DEEP)
+	_player.plop()
 	AudioManager.play_sfx(&"splash", 0.1)
 	if _player.invulnerable:
 		# Sedang kebal (baru tertabrak): cukup kembali ke tepian.
@@ -603,13 +633,52 @@ func _splash() -> void:
 
 func _on_hit(vehicle: Vehicle) -> void:
 	var back := Vector2i(_player.cell.x, mini(_player.cell.y + 1, _rows - 1))
+	# Ledakan komik di sisi Masbro yang ditabrak kendaraan.
+	var center := _player.position + Vector2(TILE / 2.0, TILE / 2.0)
+	var side := -1.0 if vehicle.position.x + vehicle.length_px / 2.0 < center.x else 1.0
+	Effects.impact(_board, center + Vector2(side * TILE * 0.35, -6), "BRAK!", Palette.YELLOW)
+	_hit_stop()
+	_flash()
 	_damage_package(vehicle.damage, back)
+	_player.tumble()
 
 
 func _on_hole() -> void:
 	# Terperosok: paket terguncang, Masbro kembali ke petak sebelumnya.
 	_popup("Lubang!", Palette.ORANGE, _player.position)
+	var at := _player.position + Vector2(TILE / 2.0, TILE - 6.0)
+	Effects.dust(_board, at)
+	Effects.dust(_board, at + Vector2(0, -8))
+	Effects.gravel(_board, at, -1)
+	Effects.gravel(_board, at, 1)
+	Effects.impact(_board, at + Vector2(TILE * 0.9, -TILE * 0.3), "GEDEBUK!", Palette.ORANGE)
 	_damage_package(1, _player.cell - _player.last_direction)
+
+
+## Hit-stop: perlambat game sebentar (waktu nyata), lalu kembali normal.
+func _hit_stop() -> void:
+	Engine.time_scale = HIT_STOP_SCALE
+	get_tree().create_timer(HIT_STOP_TIME, true, false, true).timeout.connect(
+			Engine.set.bind(&"time_scale", 1.0))
+
+
+## Kilat putih singkat di layar saat benturan keras (tidak dipakai bila "Kurangi efek gerak").
+func _flash() -> void:
+	if Accessibility.reduce_motion:
+		return
+	var flash := ColorRect.new()
+	flash.color = Color(1, 1, 1, 0.35)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_hud.add_child(flash)
+	var tween := flash.create_tween()
+	tween.tween_property(flash, "color:a", 0.0, 0.18)
+	tween.tween_callback(flash.queue_free)
+
+
+func _exit_tree() -> void:
+	# Jangan sampai hit-stop tertinggal saat pindah layar.
+	Engine.time_scale = 1.0
 
 
 func _damage_package(amount: int, knock_to: Vector2i) -> void:
@@ -624,6 +693,9 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 		_player.shielded = false
 		AudioManager.vibrate(30)
 		_popup("Helm melindungi!", Palette.TEAL, _player.position)
+		var head := _player.position + Vector2(TILE / 2.0, TILE * 0.3)
+		Effects.shards(_board, head, Palette.TEAL)
+		Effects.impact(_board, head + Vector2(-TILE * 0.8, 0), "TENG!", Palette.TEAL)
 		AudioManager.play_sfx(&"hit", 0.1)
 		_player.knock_back(knock_to)
 		return
@@ -635,6 +707,10 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:
 		AudioManager.vibrate(300)
+		var center := _player.position + Vector2(TILE / 2.0, TILE / 2.0)
+		Effects.smoke(_board, center)
+		Effects.burst(_board, center, day.package.color)
+		Effects.impact(_board, center + Vector2(-TILE * 0.8, 0), "KRAK!", Palette.CORAL)
 		_invulnerable_left = 0.0
 		_player.invulnerable = false
 		_fail()
@@ -841,8 +917,44 @@ func _draw_board() -> void:
 	var ink := Color("3b2f2f")
 	_board.draw_string(font, Vector2(10, 30), tr("Rumah %s") % day.customer_name,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
-	_board.draw_string(font, Vector2(10, (_rows - 1) * TILE + 30), tr("Gudang Ngacir Express"),
-			HORIZONTAL_ALIGNMENT_LEFT, -1, 16, ink)
+	_draw_goal_sign()
+	_draw_depot_billboard()
+
+
+## Papan hijau "LEVEL NEXT" ala poster di baris tujuan.
+func _draw_goal_sign() -> void:
+	var texture := SpriteLibrary.texture("deco_sign_next")
+	if texture == null:
+		return
+	var size := texture.get_size() / SpriteLibrary.density("deco_sign_next")
+	var rect := Rect2(Vector2(GOAL_SIGN_X, TILE - size.y), size)
+	_board.draw_texture_rect(texture, rect, false)
+	# Teks di kiri panah papan (lebar 70 px); font dikecilkan bila tidak muat.
+	var font := UiTheme.font(600)
+	var font_size := 11
+	while font_size > 8 and font.get_string_size("LEVEL NEXT", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > 66.0:
+		font_size -= 1
+	var text_width := font.get_string_size("LEVEL NEXT", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+	_board.draw_string(font, rect.position + Vector2(5.0 + (70.0 - text_width) / 2.0, 21), "LEVEL NEXT",
+			HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
+
+
+## Billboard LED depot: "NGACIR EXPRESS / Dari Jalan Untuk Hidup :)".
+func _draw_depot_billboard() -> void:
+	var y := (_rows - 1) * TILE
+	var texture := SpriteLibrary.texture("deco_billboard")
+	if texture == null:
+		_board.draw_string(ThemeDB.fallback_font, Vector2(10, y + 30), tr("Gudang Ngacir Express"),
+				HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("3b2f2f"))
+		return
+	var size := texture.get_size() / SpriteLibrary.density("deco_billboard")
+	var rect := Rect2(Vector2(6, y + (TILE - size.y) / 2.0), size)
+	_board.draw_texture_rect(texture, rect, false)
+	var width := size.x - 16.0
+	_board.draw_string(UiTheme.font(700), rect.position + Vector2(8, 20), "NGACIR EXPRESS",
+			HORIZONTAL_ALIGNMENT_CENTER, width, 12, LED_COLOR)
+	_board.draw_string(UiTheme.font(500), rect.position + Vector2(8, 33), tr("Dari Jalan Untuk Hidup") + " :)",
+			HORIZONTAL_ALIGNMENT_CENTER, width, 10, LED_COLOR)
 
 
 func _draw_checkpoints() -> void:

@@ -99,6 +99,11 @@ func _ready() -> void:
 	motion.button_pressed = Accessibility.reduce_motion
 	motion.toggled.connect(Accessibility.set_reduce_motion)
 	column.add_child(motion)
+	var lighting := CheckButton.new()
+	lighting.text = "Efek cahaya (matikan bila HP lambat)"
+	lighting.button_pressed = Accessibility.lighting
+	lighting.toggled.connect(Accessibility.set_lighting)
+	column.add_child(lighting)
 
 	column.add_child(_section("Lainnya"))
 	var tips := CheckButton.new()

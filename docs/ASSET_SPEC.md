@@ -4,12 +4,14 @@ Panduan untuk tim Illustrator & Audio. Simpan file di folder yang disebut dengan
 
 ## Sprite bawaan (SVG)
 
-Game sudah punya sprite bawaan bergaya **flat kawaii** dalam format SVG di `assets/sprites/` (dibuat 2x lebih besar: 1 petak = 96 px, supaya tajam di HP). Ada dua cara mengganti:
+Game sudah punya sprite bawaan bergaya **kawaii painted-lite** dalam format SVG di `assets/sprites/` (dibuat 2x lebih besar: 1 petak = 96 px, supaya tajam di HP). Arah gayanya mengikuti poster key art: outline tebal kawaii, bentuk diberi gradasi cahaya dari kiri atas (terang → warna dasar → gelap), kilau lembut di bagian bulat, dan bayangan tanah yang tegas. Di dalam game, filter cahaya `Sunlight` menambah warna hangat dan sinar matahari dari kanan atas, jadi sprite **jangan** diberi cahaya matahari sendiri. Ada dua cara mengganti:
 
 1. **Edit SVG-nya** di Inkscape / Figma / Illustrator (ukuran kanvas jangan diubah), atau
 2. **Taruh PNG** dengan nama yang sama sesuai tabel di bawah. PNG selalu diutamakan daripada SVG.
 
-Palet: outline `#3D2C2E` (tebal 3–4 px pada skala 2x), bulu Masbro `#D19A66`, kuning `#FFD166`, toska `#2EC4B6`, coral `#FF6B6B`, oranye `#FF9F1C`, krem `#FFF4DC`, pipi `#FF8FA3`.
+Palet: outline `#3D2C2E` (tebal 3–4 px pada skala 2x), bulu Masbro `#D19A66`, kuning `#FFD166`, toska `#2EC4B6`, coral `#FF6B6B`, oranye `#FF9F1C`, krem `#FFF4DC`, pipi `#FF8FA3`, ransel kurir `#34364A`.
+
+Rencana gaya berikutnya (model 3D yang dirender jadi sprite, atau 3D penuh) ada di `docs/KONSEP_3D.md`.
 
 ## Aturan umum sprite
 
@@ -107,7 +109,7 @@ Frame **48 × 48 sejajar sprite Masbro** (menghadap kanan): gambar hanya aksesor
 | File | Slot |
 | --- | --- |
 | `acc_caping.png`, `acc_beanie.png`, `acc_koki.png`, `acc_mahkota.png` | Topi |
-| `acc_kacamata_bulat.png`, `acc_kacamata_hitam.png`, `acc_kacamata_bintang.png` | Kacamata |
+| `acc_kacamata_piksel.png`, `acc_kacamata_bulat.png`, `acc_kacamata_hitam.png`, `acc_kacamata_bintang.png` | Kacamata (`kacamata_piksel` bawaan ala poster, gratis dan langsung dipakai) |
 | `acc_tas_pink.png`, `acc_tas_oranye.png`, `acc_tas_kucing.png` | Tas |
 | `icon_coin.png` (20 × 20) | Ikon koin di toko |
 
@@ -146,6 +148,16 @@ Diulang (tile) memanjang sepanjang baris, jadi sisi kiri dan kanan harus menyamb
 | `tile_median.png` | 48 × 48 | Taman pembatas di tengah (zona aman) |
 | `house.png` | bebas, tinggi ≤ 48 | Rumah pelanggan, digambar di pojok kanan baris atas |
 | `warehouse.png` | bebas, tinggi ≤ 48 | Gudang Ngacir Express, pojok kanan baris bawah |
+
+## Dekorasi jalan (ala poster)
+
+Hanya hiasan, tidak menghalangi langkah. Teks di papan digambar oleh game (bisa diterjemahkan), jadi gambar papannya **tanpa tulisan**.
+
+| File | Ukuran | Dipakai untuk |
+| --- | --- | --- |
+| `deco_pole.png` | 14 × 88 | Tiang listrik di tepi kiri/kanan trotoar dan median; kabel digambar game di antara palang |
+| `deco_sign_next.png` | 96 × 48 | Papan hijau "LEVEL NEXT" di baris rumah pelanggan; panah di kanan, area teks 70 px di kiri |
+| `deco_billboard.png` | 150 × 42 | Billboard LED depot (baris gudang) berisi "NGACIR EXPRESS / Dari Jalan Untuk Hidup" |
 
 ## Ilustrasi cutscene
 
