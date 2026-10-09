@@ -10,7 +10,7 @@
 
 [sub_resource type="Resource" id="Resource_map"]
 script = ExtResource("2_map")
-road_blocks = 9
+road_blocks = 14
 lanes_per_block = Vector2i(2, 4)
 safe_rows_between = Vector2i(1, 2)
 speed_range = Vector2(60, 100)

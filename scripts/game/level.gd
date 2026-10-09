@@ -782,16 +782,8 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 	_shake()
 	_invulnerable_left = HIT_INVULNERABLE_TIME
 	_player.invulnerable = true
-	if not has_package:
-		# Belum membawa paket: Masbro cuma terpental, tidak ada yang rusak.
-		collisions += 1
-		AudioManager.play_sfx(&"hit", 0.1)
-		AudioManager.vibrate(60)
-		_popup("Untung paketnya belum diambil!", Palette.YELLOW, _player.position)
-		_player.knock_back(knock_to)
-		return
 	if _player.shielded:
-		# Helm menahan benturan; paket aman.
+		# Helm menahan benturan pertama lalu pecah, sudah atau belum membawa paket.
 		_player.shielded = false
 		AudioManager.vibrate(30)
 		_popup("Helm melindungi!", Palette.TEAL, _player.position)
@@ -799,6 +791,14 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 		Effects.shards(_board, head, Palette.TEAL)
 		Effects.impact(_board, head + Vector2(-TILE * 0.8, 0), "TENG!", Palette.TEAL)
 		AudioManager.play_sfx(&"hit", 0.1)
+		_player.knock_back(knock_to)
+		return
+	if not has_package:
+		# Belum membawa paket: Masbro cuma terpental, tidak ada yang rusak.
+		collisions += 1
+		AudioManager.play_sfx(&"hit", 0.1)
+		AudioManager.vibrate(60)
+		_popup("Untung paketnya belum diambil!", Palette.YELLOW, _player.position)
 		_player.knock_back(knock_to)
 		return
 	collisions += 1
