@@ -157,6 +157,7 @@ Hanya hiasan, tidak menghalangi langkah. Teks di papan digambar oleh game (bisa 
 | --- | --- | --- |
 | `deco_pole.png` | 14 × 88 | Tiang listrik di tepi kiri/kanan trotoar dan median; kabel digambar game di antara palang |
 | `deco_sign_next.png` | 96 × 48 | Papan hijau "LEVEL NEXT" di baris rumah pelanggan; panah di kanan, area teks 70 px di kiri |
+| `pickup_stall.png` | 48 × 48 | Kios pengirim di titik jemput (penjual di balik meja, tenda bergaris). Paket melayang di atasnya digambar game |
 | `deco_billboard.png` | 150 × 42 | Billboard LED depot (baris gudang) berisi "NGACIR EXPRESS / Dari Jalan Untuk Hidup" |
 
 ## Ilustrasi cutscene

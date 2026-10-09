@@ -190,6 +190,27 @@ Auto: Nyala,Auto: On
 Kacamata Piksel,Pixel Shades
 Efek cahaya (matikan bila HP lambat),Lighting effects (turn off if your phone is slow)
 Dari Jalan Untuk Hidup,"From the Road, For Life"
+Paketnya belum diambil!,You haven't picked up the package!
+"Lho, paketnya mana, Masbro?","Huh, where's my package, Masbro?"
+Basah kuyup!,Soaked!
+Untung paketnya belum diambil!,Lucky you weren't carrying the package!
+Paket diambil!,Package picked up!
+AMBIL,PICK UP
+ambil di %s,pick up at %s
+Ambil di: %s,Pick up at: %s
+"Ambil paket dulu di kios penjemputan (ikon paket melayang), baru antar ke rumah pelanggan di ujung atas.","Pick up the package at the sender's stall first (look for the floating package), then deliver it to the customer's house at the top."
+Toko Serba Ada,General Store
+Toko Kasur Empuk,Comfy Mattress Shop
+Depot Air Segar,Fresh Water Depot
+Peternakan Bu Tini,Mrs. Tini's Farm
+Toko Elektronik Jaya,Jaya Electronics
+Kantor Pusat Ngacir,Ngacir Head Office
+"Titip ya, Masbro!","Take care of it, Masbro!"
+"Bantalnya titip, ya. Jangan sampai kotor!",Take good care of the pillow. Keep it clean!
+"Galonnya berat, jalan pelan-pelan saja.","The jug is heavy, take it slow."
+"Telurnya baru dipanen. Hati-hati, Masbro!","Fresh eggs! Careful, Masbro!"
+Barangnya sensitif. Jangan sampai kena air!,It's fragile. Keep it out of the water!
+Paket VIP. Jangan kecewakan Ngacir Express!,VIP package. Don't let Ngacir Express down!
 Auto: Mati,Auto: Off
 Sebelumnya… Nana dirawat dengan biaya {target}. Masbro mendaftar jadi kurir masa percobaan di Ngacir Express.,Previously… Nana is in treatment that costs {target}. Masbro signed up as a probation courier at Ngacir Express.
 "Sebelumnya… Hari pertama selesai. Bang Kilat masih meremehkan si kurir baru, dan Nana menunggu kabar baik.","Previously… Day one is done. Bang Kilat still looks down on the new courier, and Nana is waiting for good news."

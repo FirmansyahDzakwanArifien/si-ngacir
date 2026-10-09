@@ -13,6 +13,13 @@ extends Resource
 ## Target waktu antar (Timer ETA) dalam detik.
 @export var eta_seconds: float = 30.0
 
+@export_group("Penjemputan")
+## Pengirim paket: kios di titik jemput tengah map. Masbro berangkat dari gudang tanpa paket,
+## mengambil paket di sini, lalu mengantarnya ke pelanggan.
+@export var sender_name: String = "Toko Serba Ada"
+## Pesan pengirim saat paket diambil.
+@export var sender_line: String = "Titip ya, Masbro!"
+
 @export_group("Upah")
 @export var base_wage: int = 50000
 @export var eta_bonus: int = 20000
