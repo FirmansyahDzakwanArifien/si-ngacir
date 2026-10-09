@@ -31,6 +31,15 @@ const SAVE_PATH := "user://save.cfg"
 ## Dompet koin dan koleksi aksesori; tidak terhapus oleh "Mulai Baru".
 const PROFILE_PATH := "user://profile.cfg"
 const SHOP_SCENE := "res://scenes/shop.tscn"
+const ALBUM_SCENE := "res://scenes/album.tscn"
+## Ringkasan "Sebelumnya…" saat melanjutkan, per hari: [teks, gambar].
+const RECAPS := [
+	["Sebelumnya… Nana dirawat dengan biaya {target}. Masbro mendaftar jadi kurir masa percobaan di Ngacir Express.", "hospital"],
+	["Sebelumnya… Hari pertama selesai. Bang Kilat masih meremehkan si kurir baru, dan Nana menunggu kabar baik.", "depot"],
+	["Sebelumnya… Masbro mulai hafal jalanan kota. Hari ini giliran pesanan Pak Ojan, pelanggan paling teliti sekota.", "eggs"],
+	["Sebelumnya… Telur Pak Ojan sudah lewat. Hari ini hujan deras turun tepat di jam sibuk.", "rain"],
+	["Sebelumnya… Tinggal satu hari. Paket VIP hari ini menentukan lolos atau tidaknya masa percobaan.", "vip"],
+]
 
 const INPUT_KEYS := {
 	&"move_up": [KEY_W, KEY_UP],
@@ -56,6 +65,10 @@ var equipped := {}
 ## Tips tutorial yang sudah pernah tampil, dan apakah tips ditampilkan.
 var seen_tips: Array[StringName] = []
 var tips_enabled := true
+## Cutscene yang pernah diputar (path resource), untuk Album Cerita.
+var seen_stories: Array[String] = []
+## Cutscene maju sendiri setelah teks selesai.
+var story_auto := false
 ## Cutscene yang akan diputar dan scene tujuan setelahnya (lihat play_story).
 var pending_story: StoryData
 var pending_scene := ""
@@ -124,12 +137,54 @@ func savings_enough() -> bool:
 
 ## Putar cutscene lalu pindah ke next_scene. Tanpa cerita, langsung pindah.
 func play_story(story: StoryData, next_scene: String) -> void:
+	mark_story_seen(story)
 	if story == null or story.pages.is_empty():
 		Transition.change_scene(next_scene)
 		return
 	pending_story = story
 	pending_scene = next_scene
 	Transition.change_scene(CUTSCENE_SCENE)
+
+
+## Putar beberapa cutscene berurutan (misalnya malam lalu pagi hari berikutnya).
+func play_stories(stories: Array, next_scene: String) -> void:
+	for story: StoryData in stories:
+		mark_story_seen(story)
+	play_story(StoryData.combine(stories), next_scene)
+
+
+func mark_story_seen(story: StoryData) -> void:
+	if story == null or story.resource_path == "" or story.resource_path in seen_stories:
+		return
+	seen_stories.append(story.resource_path)
+	save_profile()
+
+
+func is_story_seen(path: String) -> bool:
+	return path in seen_stories
+
+
+func set_story_auto(value: bool) -> void:
+	story_auto = value
+	save_profile()
+
+
+## Ringkasan singkat untuk pemain yang melanjutkan progres: kejadian sebelumnya dan tabungan.
+func recap_story() -> StoryData:
+	var recap := StoryData.new()
+	var entry: Array = RECAPS[clampi(current_day_index, 0, RECAPS.size() - 1)]
+	recap.pages.append(tr(entry[0]))
+	recap.images.append(entry[1])
+	recap.speakers.append("")
+	if total_savings() > 0:
+		recap.pages.append(tr("Tabungan pengobatan Nana: {saved} dari {target}. Sudah cukup, tinggal lolos masa percobaan!")
+				if savings_enough() else tr("Tabungan pengobatan Nana: {saved} dari {target}. Kurang {left} lagi."))
+		recap.images.append("home_night")
+		recap.speakers.append("")
+	recap.pages.append(tr("Hari %d. Trobos Ajalah!") % (current_day_index + 1))
+	recap.images.append("road")
+	recap.speakers.append("masbro:mantap")
+	return recap
 
 
 ## Teks cutscene yang sudah diterjemahkan, dengan token tabungan diganti angka.
@@ -206,6 +261,8 @@ func save_profile() -> void:
 	config.set_value("profile", "equipped", equipped)
 	config.set_value("profile", "seen_tips", seen_tips)
 	config.set_value("profile", "tips_enabled", tips_enabled)
+	config.set_value("profile", "seen_stories", seen_stories)
+	config.set_value("profile", "story_auto", story_auto)
 	config.save(PROFILE_PATH)
 
 
@@ -218,6 +275,8 @@ func load_profile() -> void:
 	equipped = config.get_value("profile", "equipped", {})
 	seen_tips.assign(config.get_value("profile", "seen_tips", []))
 	tips_enabled = config.get_value("profile", "tips_enabled", true)
+	seen_stories.assign(config.get_value("profile", "seen_stories", []))
+	story_auto = config.get_value("profile", "story_auto", false)
 
 
 func reset_profile() -> void:
@@ -226,6 +285,8 @@ func reset_profile() -> void:
 	equipped.clear()
 	seen_tips.clear()
 	tips_enabled = true
+	seen_stories.clear()
+	story_auto = false
 	if FileAccess.file_exists(PROFILE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 
