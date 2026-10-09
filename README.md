@@ -52,6 +52,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Kontrol sentuh swipe (kiri/kanan/maju, tap = maju) dan layar responsif: HP potret (UI diperbesar, kamera geser samping), lanskap, layar lebar (`scripts/autoload/screen.gd`)
 * [x] Tampilan flat kawaii: sprite, ilustrasi cutscene, UI, animasi & efek (bawaan, bisa diganti tim Illustrator)
 * [x] Gaya ala poster (v0.9): shading gradasi di semua sprite, filter cahaya `Sunlight`, bayangan awan, tiang listrik dan kabel, papan "LEVEL NEXT", billboard depot, lampu kendaraan saat hujan, Masbro dengan ransel dan kacamata piksel. Rencana 3D: `docs/KONSEP_3D.md`
+* [x] Efek benturan ala komik (`scripts/game/effects.gd`): BRAK! + Masbro berputar + hit-stop + kilat putih saat tertabrak, BYUR! + riak + gelembung saat tercebur, GEDEBUK! di lubang, TENG! saat helm pecah, KRAK! + asap saat paket hancur, cipratan saat tergelincir
 * [x] Album Cerita (tonton ulang cutscene), ringkasan "Sebelumnya…" saat Lanjutkan, mode Auto di cutscene
 * [ ] Naskah final dari tim Writer Story
 

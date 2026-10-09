@@ -8,6 +8,9 @@ const HUD_HEIGHT := 48.0
 ## Papan hijau "LEVEL NEXT" di baris tujuan (piksel game dari kiri papan).
 const GOAL_SIGN_X := 312.0
 const LED_COLOR := Color("ffb347")
+## Hit-stop saat tertabrak: game melambat sebentar supaya benturan terasa.
+const HIT_STOP_SCALE := 0.15
+const HIT_STOP_TIME := 0.07
 ## Posisi Masbro di layar (0 = atas, 1 = bawah); lebih ke bawah supaya jalan di depan terlihat.
 const CAMERA_ANCHOR := 0.65
 const CAMERA_SMOOTHING := 8.0
@@ -557,6 +560,7 @@ func _on_player_moved(cell: Vector2i) -> void:
 	if on_wet_road and not _player.last_move_was_slide and not _player.invulnerable \
 			and randf() < day.slip_chance and _player.slide():
 		_popup("Licin!", Color("8ecae6"), _player.position)
+		Effects.spray(_board, _player.position + Vector2(TILE / 2.0, TILE - 4.0), Vector2(_player.last_direction))
 		AudioManager.play_sfx(&"slip")
 
 
@@ -612,7 +616,12 @@ func _raft_under_player() -> Vehicle:
 
 
 func _splash() -> void:
-	Effects.splash(_board, _player.position + Vector2(TILE / 2.0, TILE * 0.7))
+	var at := _player.position + Vector2(TILE / 2.0, TILE * 0.7)
+	Effects.splash(_board, at)
+	Effects.ripples(_board, at)
+	Effects.bubbles(_board, at)
+	Effects.impact(_board, at + Vector2(TILE * 0.8, -TILE * 0.2), "BYUR!", Palette.SKY_DEEP)
+	_player.plop()
 	AudioManager.play_sfx(&"splash", 0.1)
 	if _player.invulnerable:
 		# Sedang kebal (baru tertabrak): cukup kembali ke tepian.
@@ -624,13 +633,52 @@ func _splash() -> void:
 
 func _on_hit(vehicle: Vehicle) -> void:
 	var back := Vector2i(_player.cell.x, mini(_player.cell.y + 1, _rows - 1))
+	# Ledakan komik di sisi Masbro yang ditabrak kendaraan.
+	var center := _player.position + Vector2(TILE / 2.0, TILE / 2.0)
+	var side := -1.0 if vehicle.position.x + vehicle.length_px / 2.0 < center.x else 1.0
+	Effects.impact(_board, center + Vector2(side * TILE * 0.35, -6), "BRAK!", Palette.YELLOW)
+	_hit_stop()
+	_flash()
 	_damage_package(vehicle.damage, back)
+	_player.tumble()
 
 
 func _on_hole() -> void:
 	# Terperosok: paket terguncang, Masbro kembali ke petak sebelumnya.
 	_popup("Lubang!", Palette.ORANGE, _player.position)
+	var at := _player.position + Vector2(TILE / 2.0, TILE - 6.0)
+	Effects.dust(_board, at)
+	Effects.dust(_board, at + Vector2(0, -8))
+	Effects.gravel(_board, at, -1)
+	Effects.gravel(_board, at, 1)
+	Effects.impact(_board, at + Vector2(TILE * 0.9, -TILE * 0.3), "GEDEBUK!", Palette.ORANGE)
 	_damage_package(1, _player.cell - _player.last_direction)
+
+
+## Hit-stop: perlambat game sebentar (waktu nyata), lalu kembali normal.
+func _hit_stop() -> void:
+	Engine.time_scale = HIT_STOP_SCALE
+	get_tree().create_timer(HIT_STOP_TIME, true, false, true).timeout.connect(
+			Engine.set.bind(&"time_scale", 1.0))
+
+
+## Kilat putih singkat di layar saat benturan keras (tidak dipakai bila "Kurangi efek gerak").
+func _flash() -> void:
+	if Accessibility.reduce_motion:
+		return
+	var flash := ColorRect.new()
+	flash.color = Color(1, 1, 1, 0.35)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_hud.add_child(flash)
+	var tween := flash.create_tween()
+	tween.tween_property(flash, "color:a", 0.0, 0.18)
+	tween.tween_callback(flash.queue_free)
+
+
+func _exit_tree() -> void:
+	# Jangan sampai hit-stop tertinggal saat pindah layar.
+	Engine.time_scale = 1.0
 
 
 func _damage_package(amount: int, knock_to: Vector2i) -> void:
@@ -645,6 +693,9 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 		_player.shielded = false
 		AudioManager.vibrate(30)
 		_popup("Helm melindungi!", Palette.TEAL, _player.position)
+		var head := _player.position + Vector2(TILE / 2.0, TILE * 0.3)
+		Effects.shards(_board, head, Palette.TEAL)
+		Effects.impact(_board, head + Vector2(-TILE * 0.8, 0), "TENG!", Palette.TEAL)
 		AudioManager.play_sfx(&"hit", 0.1)
 		_player.knock_back(knock_to)
 		return
@@ -656,6 +707,10 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:
 		AudioManager.vibrate(300)
+		var center := _player.position + Vector2(TILE / 2.0, TILE / 2.0)
+		Effects.smoke(_board, center)
+		Effects.burst(_board, center, day.package.color)
+		Effects.impact(_board, center + Vector2(-TILE * 0.8, 0), "KRAK!", Palette.CORAL)
 		_invulnerable_left = 0.0
 		_player.invulnerable = false
 		_fail()
