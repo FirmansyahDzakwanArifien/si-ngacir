@@ -8,7 +8,8 @@
 # Mengubah file ini membuat CI membangun ulang template (cache berdasarkan isi file).
 
 optimize = "size"
-lto = "full"
+# LTO "thin": LTO penuh dengan inti 3D kehabisan memori runner CI saat linking.
+lto = "thin"
 threads = "no"
 
 # Font: server teks lengkap tetap dipakai (server sederhana salah mengukur Fredoka
