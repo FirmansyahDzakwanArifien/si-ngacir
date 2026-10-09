@@ -8,6 +8,8 @@ const SFX_DIR := "res://assets/audio/sfx/"
 const EXTENSIONS: Array[String] = [".ogg", ".wav", ".mp3"]
 const SETTINGS_PATH := "user://settings.cfg"
 const SFX_VOICES := 8
+## Lama fade saat berganti lagu (detik).
+const MUSIC_FADE := 0.35
 
 var music_volume := 0.7
 var sfx_volume := 0.8
@@ -22,6 +24,7 @@ var _sfx_players: Array[AudioStreamPlayer] = []
 var _next_voice := 0
 var _streams := {}
 var _current_music := &""
+var _music_tween: Tween
 
 
 func _ready() -> void:
@@ -92,17 +95,25 @@ func play_sfx(sfx_name: StringName, pitch_variation := 0.0) -> void:
 	player.play()
 
 
+## Putar lagu (di-loop). Bila lagu lain sedang diputar, yang lama di-fade out dulu.
 func play_music(music_name: StringName) -> void:
 	if music_name == _current_music and _music_player.playing:
 		return
 	_current_music = music_name
 	var stream := _find_stream(MUSIC_DIR, music_name)
-	if stream == null:
-		_music_player.stop()
+	if _music_tween:
+		_music_tween.kill()
+	if not _music_player.playing:
+		_start_music(stream)
 		return
-	_make_looping(stream)
-	_music_player.stream = stream
-	_music_player.play()
+	_music_tween = create_tween()
+	_music_tween.tween_property(_music_player, "volume_db", -40.0, MUSIC_FADE)
+	_music_tween.tween_callback(_start_music.bind(stream, -40.0))
+	_music_tween.tween_property(_music_player, "volume_db", 0.0, MUSIC_FADE)
+
+
+func current_music() -> StringName:
+	return _current_music
 
 
 func set_music_volume(value: float) -> void:
@@ -160,6 +171,16 @@ func _find_stream(directory: String, stream_name: StringName) -> AudioStream:
 				_streams[key] = load(key + extension)
 				break
 	return _streams[key]
+
+
+func _start_music(stream: AudioStream, volume_db := 0.0) -> void:
+	_music_player.volume_db = volume_db
+	if stream == null:
+		_music_player.stop()
+		return
+	_make_looping(stream)
+	_music_player.stream = stream
+	_music_player.play()
 
 
 func _make_looping(stream: AudioStream) -> void:

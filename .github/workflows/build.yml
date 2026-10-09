@@ -19,13 +19,13 @@ env:
 jobs:
   export:
     name: Export Web & Windows
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Cache Godot & export templates
         id: cache-godot
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/godot
@@ -50,7 +50,7 @@ jobs:
       # Dibangun sekali lalu disimpan di cache; bila gagal, export memakai template resmi.
       - name: Cache slim web template
         id: cache-webtpl
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/webtpl
           key: webtpl-${{ env.GODOT_VERSION }}-${{ hashFiles('.github/godot/web_template.py') }}
@@ -58,7 +58,7 @@ jobs:
       - name: Setup Emscripten
         if: steps.cache-webtpl.outputs.cache-hit != 'true'
         continue-on-error: true
-        uses: mymindstorm/setup-emsdk@v14
+        uses: emscripten-core/setup-emsdk@v16
         with:
           version: 3.1.64
 
@@ -112,6 +112,12 @@ jobs:
             done
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # Buka build hasil export (bukan proyek editor) dan pastikan cutscene, potret, dan musik ikut.
+      - name: Check exported build
+        run: |
+          godot=~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          "$godot" --headless --main-pack builds/web/index.pck --script "$GITHUB_WORKSPACE/.github/godot/check_pack.gd"
+
       - name: Package
         run: |
           cp docs/MANUAL.md builds/web/MANUAL.md
@@ -122,7 +128,7 @@ jobs:
           ls -la SiNgacir-*
 
       - name: Upload builds
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: si-ngacir-builds
           path: SiNgacir-*
@@ -130,29 +136,29 @@ jobs:
 
       - name: Upload web build for GitHub Pages
         if: vars.DEPLOY_PAGES == 'true' && github.event_name == 'push'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: builds/web
 
   android:
     name: Export Android
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       # Keystore permanen (opsional, lihat README bagian Android). Tanpa ini CI memakai keystore sementara.
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
 
       - name: Cache Godot & Android templates
         id: cache-godot
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/godot
@@ -224,7 +230,7 @@ jobs:
           cp builds/android/SiNgacir.apk SiNgacir-android.apk
           echo "APK: $(du -k SiNgacir-android.apk | cut -f1) KB, versi $name ($GITHUB_RUN_NUMBER)" >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: si-ngacir-android
           path: SiNgacir-android.apk
@@ -234,16 +240,16 @@ jobs:
     name: GitHub Release
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [export, android]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           pattern: si-ngacir-*
           merge-multiple: true
 
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           name: Si Ngacir ${{ github.ref_name }}
           files: |
@@ -268,7 +274,7 @@ jobs:
     name: Deploy GitHub Pages
     if: vars.DEPLOY_PAGES == 'true' && github.event_name == 'push'
     needs: export
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       pages: write
       id-token: write
@@ -277,18 +283,18 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
   itch:
     name: Deploy itch.io
     # Aktif bila repo variable ITCH_GAME (contoh: namauser/si-ngacir) dan secret BUTLER_API_KEY diisi.
     if: startsWith(github.ref, 'refs/tags/v') && vars.ITCH_GAME != ''
     needs: [export, android]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           pattern: si-ngacir-*
           merge-multiple: true
