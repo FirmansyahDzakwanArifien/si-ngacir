@@ -5,6 +5,17 @@ description: Catatan perubahan Si Ngacir dari versi pertama yang bisa dimainkan 
 
 Semua versi bisa diunduh di [itch.io](https://cyphera-game.itch.io/si-ngacir).
 
+## v0.13.0 — 11 Oktober 2026
+
+Perbaikan dari hasil playtest:
+
+- **Cutscene di HP:** ketuk di mana saja (kotak teks, gambar) untuk lanjut; mode Auto lebih cepat.
+- **Kontrol keyboard:** satu tekan = satu langkah; jalan terus hanya saat tombol ditahan, dengan tempo yang sama dengan HP.
+- **Koin:** langsung masuk dompet saat dipungut, penghitung koin di bar atas sama dengan toko, tidak hilang walau paket hancur.
+- **Sungai:** penanda pendaratan hijau/merah, garis pemisah dan warna selang-seling antar lane, pendaratan di ujung rakit lebih toleran.
+- **Main Lagi** setiap hari setelah lulus, untuk terus mengumpulkan koin.
+- **Suara di versi web** kembali berbunyi.
+
 ## v0.12.0 — 9 Oktober 2026
 
 - Tampilan 3D (beta) kini juga tersedia di browser.

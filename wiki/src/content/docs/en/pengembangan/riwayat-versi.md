@@ -5,6 +5,17 @@ description: Si Ngacir's change notes, from the first playable version to the la
 
 All versions can be downloaded on [itch.io](https://cyphera-game.itch.io/si-ngacir).
 
+## v0.13.0 — October 11, 2026
+
+Playtest fixes:
+
+- **Cutscenes on phones:** tap anywhere (text box, picture) to continue; Auto mode is faster.
+- **Keyboard controls:** one press = one step; continuous walking only while a key is held, at the same pace as on phones.
+- **Coins:** go straight into the wallet, the top-bar coin counter matches the shop, and coins are kept even if the package breaks.
+- **Rivers:** green/red landing marker, dividers and alternating colors between lanes, more forgiving landings at raft ends.
+- **Play Again** for every day after passing, to keep collecting coins.
+- **Sound in the web version** works again.
+
 ## v0.12.0 — October 9, 2026
 
 - 3D View (beta) is now also available in the browser.

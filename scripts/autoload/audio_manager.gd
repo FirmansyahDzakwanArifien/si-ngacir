@@ -205,9 +205,13 @@ func _apply_volume(bus_name: StringName, value: float) -> void:
 	AudioServer.set_bus_mute(index, value <= 0.001)
 
 
+## Bus Music dan SFX sudah didefinisikan di res://default_bus_layout.tres. Membuat bus saat
+## game berjalan membuat audio web Godot 4.3 menyambung bus secara melingkar sehingga
+## browser membisukan semua suara; fungsi ini hanya cadangan bila file layout hilang.
 func _ensure_bus(bus_name: StringName) -> void:
 	if AudioServer.get_bus_index(bus_name) != -1:
 		return
+	push_warning("Bus audio %s tidak ada di default_bus_layout.tres" % bus_name)
 	AudioServer.add_bus()
 	var index := AudioServer.bus_count - 1
 	AudioServer.set_bus_name(index, bus_name)

@@ -70,7 +70,9 @@ Kebutuhan minimal: Windows 10 64-bit, kartu grafis yang mendukung OpenGL 3.3.
 | Lewati cutscene | Esc | Tombol **Lewati** |
 | Mode Auto (halaman maju sendiri) | Tombol **Auto** | Tombol **Auto** |
 
-Tahan tombol arah untuk melangkah terus-menerus.
+Satu kali tekan = satu langkah. Tahan tombol arah sebentar untuk melangkah terus-menerus.
+
+Di cutscene, ketuk atau klik di mana saja (termasuk kotak teks dan gambar) untuk lanjut.
 
 **Tips tutorial** muncul sekali di atas layar saat kamu pertama kali bertemu sesuatu yang baru (koin, power-up, lubang, sungai, Pos, dan lainnya). Tips bisa dimatikan, atau dinyalakan lagi untuk mengulang semuanya, di **Pengaturan**.
 
@@ -181,7 +183,9 @@ Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan 
 Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit** yang hanyut; selama berdiri di rakit, Masbro ikut terbawa arus.
 
 * Melompat ke air tanpa rakit, rakit menjauh, atau terbawa sampai keluar layar → **paket basah** (rusak 1) dan Masbro kembali ke tepian terakhir.
-* Lane sungai yang bersebelahan mengalir berlawanan arah. Perhatikan rakit di lane berikutnya sebelum melompat.
+* Lane sungai yang bersebelahan mengalir berlawanan arah dan dipisah garis busa putus-putus. Perhatikan rakit di lane berikutnya sebelum melompat.
+* **Penanda pendaratan:** lingkaran di petak sungai tepat di depan Masbro. **Hijau** = ada rakit di sana saat Masbro mendarat, **merah** = air.
+* Mendarat sedikit di luar ujung rakit masih dihitung naik; Masbro otomatis bergeser ke atas rakit.
 * Helm juga melindungi dari air.
 
 ### Warga Kota Ngacir
@@ -207,7 +211,7 @@ Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos*
 
 | Item | Efek |
 | --- | --- |
-| **Koin** | +Rp1.000 per koin, masuk ke upah sebagai *Bonus koin* |
+| **Koin** | Langsung masuk dompet (angka koin di bar atas), dan +Rp1.000 per koin ke upah sebagai *Bonus koin* saat paket sampai |
 | **Helm** | Gelembung pelindung: menahan 1 tabrakan atau lubang tanpa merusak paket |
 | **Sepatu** | Langkah 40% lebih cepat selama 8 detik |
 
@@ -223,7 +227,7 @@ Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos*
 
 ## 8. Toko Masbro
 
-Koin yang dipungut di jalan menambah upah (*Bonus koin*) **dan** masuk ke **dompet** saat paket sampai. Belanjakan di **Toko Masbro** (menu utama):
+Koin yang dipungut di jalan **langsung masuk dompet** (angkanya terlihat di bar atas, sama dengan di toko) dan tetap tersimpan walau paket hancur atau hari diulang. Saat paket sampai, koin juga menambah upah (*Bonus koin*). Belanjakan di **Toko Masbro** (menu utama):
 
 | Slot | Pilihan |
 | --- | --- |
@@ -239,6 +243,8 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
 
 * **Tabungan cukup** — Masbro lulus masa percobaan dan diangkat menjadi kurir tetap.
 * **Tabungan kurang** — layar rekap menampilkan upah tiap hari. Pilih hari mana pun untuk diulang dan perbaiki upahnya.
+
+Setelah lulus, layar rekap (menu utama → **Lanjutkan**) tetap menyediakan tombol **Main Lagi** untuk setiap hari. Mainkan lagi untuk mengumpulkan koin tanpa Mulai Baru; upah terbaik tiap hari tetap tersimpan.
 
 ---
 

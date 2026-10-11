@@ -15,6 +15,11 @@ const DIRECTIONS := {
 
 ## Kemiringan badan saat melompat (derajat), ala pose lari di poster.
 const LEAN_DEGREES := 8.0
+## Keyboard: satu tekan = satu langkah. Langkah berulang baru jalan setelah tombol ditahan
+## selama HOLD_REPEAT_DELAY, dengan jeda HOLD_REPEAT_GAP di antara langkah, supaya tekanan
+## biasa (±150 ms) tidak menghasilkan dua langkah dan jalan terus tidak terlalu cepat.
+const HOLD_REPEAT_DELAY := 0.3
+const HOLD_REPEAT_GAP := 0.06
 
 var tile := 48.0
 var grid_size := Vector2i(15, 13)
@@ -31,6 +36,10 @@ var carrying := true:
 var input_enabled := false
 ## Opsional: func(cell: Vector2i) -> bool. Kalau false, Masbro tidak bisa masuk ke petak itu.
 var can_enter: Callable
+## Opsional: func(row: int) -> bool. true untuk baris sungai: melompat ke baris itu tidak
+## dikunci ke kolom grid, tapi meneruskan posisi Masbro di atas rakit, supaya ia mendarat
+## tepat di depan/samping tempatnya berdiri, bukan bergeser ke tepi rakit.
+var free_row: Callable
 var last_direction := Vector2i.UP
 ## true kalau langkah terakhir adalah tergelincir (bukan input pemain).
 var last_move_was_slide := false
@@ -53,6 +62,11 @@ var invulnerable := false:
 var _tween: Tween
 ## Arah dari swipe/tap layar sentuh, dijalankan begitu langkah sebelumnya selesai.
 var _queued_direction := Vector2i.ZERO
+## Arah tombol yang sedang ditahan dan lamanya, untuk langkah berulang.
+var _held_direction := Vector2i.ZERO
+var _held_time := 0.0
+## Waktu sejak langkah terakhir selesai.
+var _idle_time := 0.0
 var _facing := 1
 var _blink_time := 0.0
 ## Sprite Masbro dari Illustrator; null berarti memakai gambar placeholder di _draw().
@@ -153,17 +167,37 @@ func _process(delta: float) -> void:
 	if invulnerable:
 		_blink_time += delta
 		modulate.a = 0.35 if fmod(_blink_time, 0.16) < 0.08 else 1.0
-	if not input_enabled or is_moving():
+	if not input_enabled:
+		_queued_direction = Vector2i.ZERO
+		_held_direction = Vector2i.ZERO
 		return
+	_read_keys(delta)
+	if is_moving():
+		return
+	_idle_time += delta
 	if _queued_direction != Vector2i.ZERO:
 		var direction := _queued_direction
 		_queued_direction = Vector2i.ZERO
 		_try_move(direction)
-		return
+	elif _held_direction != Vector2i.ZERO and _held_time >= HOLD_REPEAT_DELAY \
+			and _idle_time >= HOLD_REPEAT_GAP:
+		_try_move(_held_direction)
+
+
+## Tekanan baru diantre (tetap terhitung walau Masbro masih melompat); tombol yang ditahan
+## dicatat untuk langkah berulang.
+func _read_keys(delta: float) -> void:
+	var held := Vector2i.ZERO
 	for action: StringName in DIRECTIONS:
-		if Input.is_action_pressed(action):
-			_try_move(DIRECTIONS[action])
-			break
+		if Input.is_action_just_pressed(action):
+			_queued_direction = DIRECTIONS[action]
+		if held == Vector2i.ZERO and Input.is_action_pressed(action):
+			held = DIRECTIONS[action]
+	if held != _held_direction:
+		_held_direction = held
+		_held_time = 0.0
+	elif held != Vector2i.ZERO:
+		_held_time += delta
 
 
 func _try_move(direction: Vector2i) -> void:
@@ -193,10 +227,14 @@ func _is_enterable(target: Vector2i) -> bool:
 func _hop_to(target: Vector2i, duration: float, animation := &"walk") -> void:
 	if _tween:
 		_tween.kill()
+	var destination := cell_to_position(target)
+	if free_row.is_valid() and free_row.call(target.y):
+		destination.x = clampf(position.x + (target.x - cell.x) * tile, 0.0, (grid_size.x - 1) * tile)
 	cell = target
+	_idle_time = 0.0
 	_play(animation)
 	_tween = create_tween()
-	_tween.tween_property(self, "position", cell_to_position(target), duration)
+	_tween.tween_property(self, "position", destination, duration)
 	_tween.tween_callback(_on_hop_finished.bind(animation == &"walk"))
 	if animation == &"walk":
 		_bounce(duration)

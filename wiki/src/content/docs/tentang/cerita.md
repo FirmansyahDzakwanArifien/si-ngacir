@@ -43,6 +43,8 @@ Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan **Rp350.000*
 - **Tabungan cukup:** Masbro lulus masa percobaan, diangkat menjadi kurir tetap, dan Nana bisa berobat.
 - **Tabungan kurang:** layar rekap menampilkan upah setiap hari. Pilih hari mana pun untuk diulang dan perbaiki upahnya.
 
+Setelah lulus, layar rekap (menu utama → **Lanjutkan**) tetap menyediakan tombol **Main Lagi** untuk setiap hari, jadi kamu bisa terus mengumpulkan koin tanpa Mulai Baru.
+
 :::note[Masih berkembang]
 Naskah cerita saat ini masih berupa draf. Naskah final sedang disiapkan oleh tim Writer Story.
 :::

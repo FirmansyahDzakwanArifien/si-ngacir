@@ -16,6 +16,11 @@ Menu Utama,Main Menu
 Lewati (Esc),Skip (Esc)
 Enter / klik untuk mulai,Enter / click to start
 Enter / klik untuk lanjut,Enter / click to continue
+Ketuk untuk mulai,Tap to start
+Ketuk untuk lanjut,Tap to continue
++1 koin,+1 coin
+Main Lagi %s   (%s),Play Again %s   (%s)
+Masbro masih boleh mengantar paket kapan saja. Main lagi hari mana pun untuk mengumpulkan koin; upah terbaik tiap hari tetap tersimpan.,Masbro can keep delivering any time. Replay any day to collect more coins; the best pay for each day is kept.
 PENGATURAN,SETTINGS
 Musik,Music
 Efek Suara,Sound FX
@@ -79,7 +84,7 @@ Waktu: %s (ETA %s),Time: %s (ETA %s)
 Upah dasar,Base pay
 Bonus tepat waktu,On-time bonus
 Tip pelanggan,Customer tip
-"Bonus koin (%d, juga masuk dompet)","Coin bonus (%d, also added to wallet)"
+"Bonus koin (%d, sudah masuk dompet)","Coin bonus (%d, already in your wallet)"
 Denda kerusakan,Damage fine
 Potongan telat,Late deduction
 Ganti paket di Pos (%dx),Replacement at checkpoint (%dx)

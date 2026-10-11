@@ -9,7 +9,7 @@ Si Ngacir's story is told through **dialogue cutscenes** with character portrait
 
 | Control | What it does |
 | --- | --- |
-| Enter / click / tap | Next page (or show the full text at once) |
+| Enter / click / tap anywhere | Next page (or show the full text at once) |
 | Esc / **Skip** button | Skips the cutscene |
 | **Auto** button | Pages advance on their own once the text finishes. This choice is remembered |
 
