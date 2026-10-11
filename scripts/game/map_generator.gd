@@ -10,6 +10,10 @@ const LOOP_TILES := 19
 const MIN_GAP_TILES := 3
 ## Rentang baris titik jemput (bagian dari tinggi map, 0 = rumah pelanggan, 1 = gudang).
 const PICKUP_RANGE := Vector2(0.35, 0.65)
+## Pijakan di sungai.
+const PLATFORMS: Array[StringName] = [&"rakit2", &"rakit3", &"perahu2", &"perahu3"]
+## Pengali kecepatan per jenis kendaraan: truk dan bus berat lebih lambat, motor lebih gesit.
+const TYPE_SPEED := {&"motor": 1.2, &"bajaj": 1.05, &"mobil": 1.0, &"angkot": 0.95, &"truk": 0.7, &"bus": 0.65}
 
 
 static func generate(params: MapParams, rng: RandomNumberGenerator) -> Array[LaneData]:
@@ -56,7 +60,7 @@ static func _river(params: MapParams, rng: RandomNumberGenerator, direction: int
 	var lane := LaneData.new()
 	lane.kind = LaneData.Kind.RIVER
 	lane.direction = direction
-	lane.vehicle = [&"rakit2", &"rakit3"][rng.randi() % 2]
+	lane.vehicle = PLATFORMS[rng.randi() % PLATFORMS.size()]
 	var length: int = Vehicle.TYPES[lane.vehicle]["length"]
 	lane.vehicle_count = ceili(float(LOOP_TILES) / (length + 1.5))
 	lane.speed = rng.randf_range(params.raft_speed.x, params.raft_speed.y)
@@ -151,9 +155,8 @@ static func _road(params: MapParams, rng: RandomNumberGenerator, direction: int,
 	var length: int = Vehicle.TYPES[lane.vehicle]["length"]
 	var max_count := maxi(1, floori(float(LOOP_TILES) / (length + MIN_GAP_TILES)))
 	lane.vehicle_count = clampi(rng.randi_range(params.vehicles_per_lane.x, params.vehicles_per_lane.y), 1, max_count)
-	# Truk berat lebih lambat, motor lebih gesit.
-	var type_speed := {&"motor": 1.2, &"mobil": 1.0, &"truk": 0.7}
-	lane.speed = rng.randf_range(params.speed_range.x, params.speed_range.y) * speed_scale * type_speed[lane.vehicle]
+	lane.speed = rng.randf_range(params.speed_range.x, params.speed_range.y) * speed_scale \
+			* TYPE_SPEED.get(lane.vehicle, 1.0)
 	lane.offset = rng.randf_range(0.0, LOOP_TILES * 48.0)
 	return lane
 

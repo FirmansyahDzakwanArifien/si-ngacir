@@ -22,7 +22,10 @@ Masbro has no lives. What you protect is the **package**. Every collision damage
 | --- | --- | --- |
 | <img class="sprite" src="/img/sprites/vehicle_motor.svg" alt="" /> Motorbike | Fast | 1 |
 | <img class="sprite" src="/img/sprites/vehicle_mobil.svg" alt="" /> Car | Medium | 1 |
+| <img class="sprite" src="/img/sprites/vehicle_bajaj.svg" alt="" /> Bajaj (auto rickshaw) | Fairly fast, 1 tile | 1 |
+| <img class="sprite" src="/img/sprites/vehicle_angkot.svg" alt="" /> Angkot (minibus) | Medium, 2 tiles | 1 |
 | <img class="sprite" src="/img/sprites/vehicle_truk.svg" alt="" /> Truck | Slow, long | 2 |
+| <img class="sprite" src="/img/sprites/vehicle_bus.svg" alt="" /> City bus | Slowest, 4 tiles | 2 |
 
 Fragile packages like eggs take double damage.
 

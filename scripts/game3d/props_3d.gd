@@ -223,6 +223,11 @@ const VEHICLE_COLORS := {
 	"vehicle_mobil": Color("2ec4b6"), "vehicle_mobil_2": Color("b39dff"), "vehicle_mobil_3": Color("ffd166"),
 	"vehicle_motor": Color("ff6b6b"), "vehicle_motor_2": Color("2ec4b6"), "vehicle_truk": Color("ff9f1c"),
 	"vehicle_kilat": Color("06d6a0"),
+	"vehicle_bajaj": Color("ff9f1c"), "vehicle_bajaj_2": Color("3d9970"),
+	"vehicle_angkot": Color("3bb273"), "vehicle_angkot_2": Color("4f8fe0"),
+	"vehicle_bus": Color("ff6b6b"), "vehicle_bus_2": Color("b39dff"),
+	"vehicle_perahu2": Color("2ec4b6"), "vehicle_perahu2_2": Color("ff6b6b"),
+	"vehicle_perahu3": Color("4f8fe0"), "vehicle_perahu3_2": Color("ffd166"),
 }
 
 
@@ -240,6 +245,19 @@ static func vehicle(type: StringName, length: float, color: Color) -> Node3D:
 			root.add_child(box(Vector3(0.1, 0.3, 0.7), Color("a8e3fa"), Vector3(length - 0.12, 0.72, 0.5), false))
 			for x in [0.5, 1.6, length - 0.45]:
 				wheels.append(_wheel(Vector3(x, 0.2, 0.5)))
+		&"bus", &"angkot":
+			# Badan tinggi sepanjang kendaraan dengan deretan jendela.
+			var height := 0.95 if type == &"bus" else 0.75
+			root.add_child(box(Vector3(length - 0.1, height, 0.84), color, Vector3(length / 2.0, 0.22 + height / 2.0, 0.5)))
+			root.add_child(box(Vector3(length - 0.3, 0.24, 0.86), Color("a8e3fa"), Vector3(length / 2.0, 0.22 + height * 0.72, 0.5), false))
+			root.add_child(box(Vector3(length - 0.08, 0.08, 0.86), Color.WHITE, Vector3(length / 2.0, 0.22 + height * 0.38, 0.5), false))
+			for x in ([0.55, 1.1, length - 0.6] if type == &"bus" else [0.45, length - 0.45]):
+				wheels.append(_wheel(Vector3(x, 0.2, 0.5)))
+		&"bajaj":
+			root.add_child(box(Vector3(0.82, 0.62, 0.72), color, Vector3(0.48, 0.55, 0.5)))
+			root.add_child(box(Vector3(0.3, 0.26, 0.6), Color("a8e3fa"), Vector3(0.74, 0.72, 0.5), false))
+			wheels.append(_wheel(Vector3(0.2, 0.17, 0.5), 0.16))
+			wheels.append(_wheel(Vector3(0.8, 0.17, 0.5), 0.16))
 		&"motor", &"kilat":
 			root.add_child(box(Vector3(0.75, 0.3, 0.3), color, Vector3(0.5, 0.38, 0.5)))
 			wheels.append(_wheel(Vector3(0.2, 0.18, 0.5), 0.17))
@@ -269,15 +287,24 @@ static func _wheel(at: Vector3, radius := 0.2) -> Node3D:
 	return wheel
 
 
-static func raft(length: float) -> Node3D:
+## Rakit: satu panel geladak per petak, dipisah ikatan tali, supaya panjangnya mudah dihitung.
+## Perahu: lambung berwarna dengan satu bangku per petak.
+static func raft(length: float, type := &"rakit", color := Color("c98b52")) -> Node3D:
 	var root := Node3D.new()
-	var logs := int(length * 3)
-	for i in logs:
-		var trunk := cylinder(0.15, 0.15, 0.82, Color("c98b52"), Vector3((i + 0.5) * length / logs, 0.0, 0.5))
-		trunk.rotation_degrees.x = 90.0
-		root.add_child(trunk)
-	root.add_child(box(Vector3(length * 0.92, 0.05, 0.12), Color("8e5a2b"), Vector3(length / 2.0, 0.14, 0.3), false))
-	root.add_child(box(Vector3(length * 0.92, 0.05, 0.12), Color("8e5a2b"), Vector3(length / 2.0, 0.14, 0.7), false))
+	var tiles := roundi(length)
+	if String(type).begins_with("perahu"):
+		root.add_child(box(Vector3(length - 0.06, 0.3, 0.86), color, Vector3(length / 2.0, -0.02, 0.5)))
+		root.add_child(box(Vector3(length - 0.04, 0.06, 0.9), Color("c98b52"), Vector3(length / 2.0, 0.14, 0.5)))
+		for i in tiles:
+			root.add_child(box(Vector3(0.6, 0.05, 0.7), Color("e7b58a"), Vector3(i + 0.5, 0.2, 0.5), false))
+		for i in range(1, tiles):
+			root.add_child(box(Vector3(0.05, 0.08, 0.92), OUTLINE, Vector3(i, 0.17, 0.5), false))
+		return root
+	root.add_child(box(Vector3(length - 0.06, 0.12, 0.84), Color("8e5a2b"), Vector3(length / 2.0, 0.0, 0.5)))
+	for i in tiles:
+		root.add_child(box(Vector3(0.84, 0.08, 0.72), Color("c98b52"), Vector3(i + 0.5, 0.09, 0.5)))
+	for i in range(1, tiles):
+		root.add_child(box(Vector3(0.1, 0.14, 0.86), Color("f3ddae"), Vector3(i, 0.09, 0.5)))
 	return root
 
 
