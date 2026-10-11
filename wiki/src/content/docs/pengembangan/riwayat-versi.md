@@ -5,6 +5,13 @@ description: Catatan perubahan Si Ngacir dari versi pertama yang bisa dimainkan 
 
 Semua versi bisa diunduh di [itch.io](https://cyphera-game.itch.io/si-ngacir).
 
+## v0.14.0 — 11 Oktober 2026
+
+- **Rakit digambar ulang:** satu panel kayu per petak, dipisah ikatan tali, setinggi hampir satu petak. Panjang rakit langsung terbaca dan tepinya pas dengan area pijakan (penanda lingkaran dihapus).
+- **Pijakan baru di sungai:** perahu kayu 2 dan 3 petak (beberapa warna), satu bangku per petak.
+- **Kendaraan baru di jalan:** bajaj (1 petak), angkot (2 petak), dan bus kota (4 petak, merusak paket 2). Campuran kendaraan berbeda tiap hari.
+- Model 3D ikut diperbarui: rakit per panel, perahu, bajaj, angkot, dan bus.
+
 ## v0.13.0 — 11 Oktober 2026
 
 Perbaikan dari hasil playtest:
@@ -12,7 +19,7 @@ Perbaikan dari hasil playtest:
 - **Cutscene di HP:** ketuk di mana saja (kotak teks, gambar) untuk lanjut; mode Auto lebih cepat.
 - **Kontrol keyboard:** satu tekan = satu langkah; jalan terus hanya saat tombol ditahan, dengan tempo yang sama dengan HP.
 - **Koin:** langsung masuk dompet saat dipungut, penghitung koin di bar atas sama dengan toko, tidak hilang walau paket hancur.
-- **Sungai:** penanda pendaratan hijau/merah, garis pemisah dan warna selang-seling antar lane, pendaratan di ujung rakit lebih toleran.
+- **Sungai:** garis pemisah dan warna selang-seling antar lane, pendaratan di ujung rakit lebih toleran.
 - **Main Lagi** setiap hari setelah lulus, untuk terus mengumpulkan koin.
 - **Suara di versi web** kembali berbunyi.
 

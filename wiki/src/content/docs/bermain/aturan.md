@@ -22,7 +22,10 @@ Masbro tidak punya nyawa. Yang dijaga adalah **paket**. Setiap tabrakan merusak 
 | --- | --- | --- |
 | <img class="sprite" src="/img/sprites/vehicle_motor.svg" alt="" /> Motor | Cepat | 1 |
 | <img class="sprite" src="/img/sprites/vehicle_mobil.svg" alt="" /> Mobil | Sedang | 1 |
+| <img class="sprite" src="/img/sprites/vehicle_bajaj.svg" alt="" /> Bajaj | Cukup cepat, 1 petak | 1 |
+| <img class="sprite" src="/img/sprites/vehicle_angkot.svg" alt="" /> Angkot | Sedang, 2 petak | 1 |
 | <img class="sprite" src="/img/sprites/vehicle_truk.svg" alt="" /> Truk | Lambat, panjang | 2 |
+| <img class="sprite" src="/img/sprites/vehicle_bus.svg" alt="" /> Bus kota | Paling lambat, 4 petak | 2 |
 
 Paket rapuh seperti telur menerima kerusakan dua kali lipat.
 

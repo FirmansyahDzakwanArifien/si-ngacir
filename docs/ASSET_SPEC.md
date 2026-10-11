@@ -68,8 +68,10 @@ Tiap hari memakai satu `CityTheme` (`resources/cities/*.tres`) yang menentukan t
 | File | Ukuran | Keterangan |
 | --- | --- | --- |
 | `tile_water.png` | 48 × 48 | Air sungai, sisi kiri-kanan menyambung |
-| `vehicle_rakit2.png` | 96 × 48 | Rakit 2 petak (tampak atas/samping) |
-| `vehicle_rakit3.png` | 144 × 48 | Rakit 3 petak |
+| `vehicle_rakit2.png` | 96 × 48 | Rakit 2 petak. Satu panel kayu per petak, dipisah ikatan tali di batas petak, mengisi hampir setinggi petak, ujung kiri-kanan pas di tepi gambar (= tepi pijakan) |
+| `vehicle_rakit3.png` | 144 × 48 | Rakit 3 petak, aturan sama |
+| `vehicle_perahu2.png` | 96 × 48 | Perahu kayu 2 petak, satu bangku per petak, garis pemisah di batas petak. Varian warna `_2`, `_3` |
+| `vehicle_perahu3.png` | 144 × 48 | Perahu kayu 3 petak |
 
 ## Pos (checkpoint)
 
@@ -133,7 +135,10 @@ Ikon paket di punggung Masbro, **20 × 15 px**.
 | --- | --- | --- |
 | `vehicle_motor.png` | 48 × 48 | 1 |
 | `vehicle_mobil.png` | 96 × 48 | 1 |
+| `vehicle_bajaj.png` | 48 × 48 | 1 |
+| `vehicle_angkot.png` | 96 × 48 | 1 |
 | `vehicle_truk.png` | 144 × 48 | 2 |
+| `vehicle_bus.png` | 192 × 48 | 2 |
 
 Tampak samping, menghadap kanan. **Varian warna** opsional: tambahkan `vehicle_mobil_2.png`, `vehicle_mobil_3.png`, dst. Game memilih varian secara acak. Kendaraan sebaiknya mengisi tinggi ±30 px di tengah petak supaya area tabrakan terasa adil.
 

@@ -37,9 +37,9 @@ const HONK_DISTANCE := 2.5 * 48.0
 const HONK_COOLDOWN := 2.0
 const VENDOR_COOLDOWN := 6.0
 const RIVAL_SPEED := 300.0
-## Toleransi mendarat di rakit (px di luar ujung rakit yang masih dihitung naik). Masbro lalu
-## digeser ke atas rakit, jadi lompatan yang nyaris pas tidak berakhir tercebur.
-const RAFT_GRACE := 0.3 * 48.0
+## Toleransi mendarat di rakit/perahu (px di luar ujung yang masih dihitung naik). Kecil, supaya
+## tepi sprite tetap jujur; Masbro lalu digeser ke atas rakit.
+const RAFT_GRACE := 0.2 * 48.0
 const RIVER_ALT_TINT := Color(0.72, 0.84, 1.0)
 const PEDESTRIANS := [["pejalan_ibu_walk", "pejalan_ibu_idle"], ["pejalan_anak_walk", "pejalan_anak_idle"]]
 ## Jarak (baris) ke rumah saat pelanggan mulai menyemangati.
@@ -79,9 +79,6 @@ var _vehicles: Array[Vehicle] = []
 var _rafts := {}
 ## Petak darat terakhir tempat Masbro berdiri; tujuan kembali bila jatuh ke air.
 var _last_safe_cell := Vector2i.ZERO
-## Penanda petak sungai di depan Masbro: hijau bila ada rakit di sana, merah bila air.
-var _landing_hint: Node2D
-var _landing_ok := false
 var _cats: Array[StreetCat] = []
 var _cat_timer := 1.5
 var _honk_cooldown := 0.0
@@ -222,7 +219,6 @@ func _process(delta: float) -> void:
 	_update_cats(delta)
 	_update_street_npcs(delta)
 	_update_river(delta)
-	_update_landing_hint()
 	if _boost_left > 0.0:
 		_boost_left -= delta
 		if _boost_left <= 0.0:
@@ -378,10 +374,6 @@ func _spawn_player() -> void:
 	_player.free_row = func(row: int) -> bool: return day.lanes[row].kind == LaneData.Kind.RIVER
 	_player.moved.connect(_on_player_moved)
 	_player.blocked.connect(_on_player_blocked)
-	_landing_hint = Node2D.new()
-	_landing_hint.visible = false
-	_landing_hint.draw.connect(_draw_landing_hint)
-	_board.add_child(_landing_hint)
 	_board.add_child(_player)
 
 
@@ -674,37 +666,11 @@ func _raft_under_player() -> Vehicle:
 
 
 ## Rakit di baris row yang menampung titik x (dengan toleransi RAFT_GRACE), atau null.
-## lead: perkirakan posisi rakit sekian detik lagi (lama lompatan) untuk penanda pendaratan.
-func raft_at(row: int, x: float, lead := 0.0, grace := RAFT_GRACE) -> Vehicle:
+func raft_at(row: int, x: float) -> Vehicle:
 	for raft: Vehicle in _rafts.get(row, []):
-		var left := raft.position.x + raft.speed * raft.direction * lead
-		if x >= left - grace and x <= left + raft.length_px + grace:
+		if x >= raft.position.x - RAFT_GRACE and x <= raft.position.x + raft.length_px + RAFT_GRACE:
 			return raft
 	return null
-
-
-## Saat petak di depan Masbro adalah sungai, tandai tempat ia akan mendarat.
-func _update_landing_hint() -> void:
-	var row := _player.cell.y - 1
-	var show := row >= 0 and day.lanes[row].kind == LaneData.Kind.RIVER and not _player.is_moving()
-	_landing_hint.visible = show
-	if not show:
-		return
-	_landing_hint.position = Vector2(_player.position.x, row * TILE)
-	var hop_time := _player.step_time * _player.speed_multiplier
-	# Toleransi penanda setengah toleransi mendarat: hijau berarti pasti naik rakit.
-	var ok := raft_at(row, _player.position.x + TILE / 2.0, hop_time, RAFT_GRACE / 2.0) != null
-	if ok != _landing_ok:
-		_landing_ok = ok
-		_landing_hint.queue_redraw()
-
-
-func _draw_landing_hint() -> void:
-	var color := Palette.TEAL if _landing_ok else Palette.CORAL
-	var center := Vector2(TILE / 2.0, TILE / 2.0)
-	_landing_hint.draw_circle(center, TILE * 0.36, Color(color, 0.25))
-	_landing_hint.draw_arc(center, TILE * 0.36, 0.0, TAU, 32, Color(Palette.WHITE, 0.9), 4.0, true)
-	_landing_hint.draw_arc(center, TILE * 0.36, 0.0, TAU, 32, color, 2.5, true)
 
 
 ## Mendarat di ujung rakit: geser Masbro sepenuhnya ke atas rakit.

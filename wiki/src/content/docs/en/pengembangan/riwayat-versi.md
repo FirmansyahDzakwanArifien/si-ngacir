@@ -5,6 +5,13 @@ description: Si Ngacir's change notes, from the first playable version to the la
 
 All versions can be downloaded on [itch.io](https://cyphera-game.itch.io/si-ngacir).
 
+## v0.14.0 — October 11, 2026
+
+- **Rafts redrawn:** one wooden panel per tile, split by rope lashings, almost a full tile tall. A raft's length reads at a glance and its edges match where you can stand (the ring marker was removed).
+- **New river platforms:** 2- and 3-tile wooden boats in several colors, one bench per tile.
+- **New road vehicles:** bajaj (1 tile), angkot (2 tiles), and city bus (4 tiles, 2 package damage). The vehicle mix differs each day.
+- 3D models updated too: paneled rafts, boats, bajaj, angkot, and bus.
+
 ## v0.13.0 — October 11, 2026
 
 Playtest fixes:
@@ -12,7 +19,7 @@ Playtest fixes:
 - **Cutscenes on phones:** tap anywhere (text box, picture) to continue; Auto mode is faster.
 - **Keyboard controls:** one press = one step; continuous walking only while a key is held, at the same pace as on phones.
 - **Coins:** go straight into the wallet, the top-bar coin counter matches the shop, and coins are kept even if the package breaks.
-- **Rivers:** green/red landing marker, dividers and alternating colors between lanes, more forgiving landings at raft ends.
+- **Rivers:** dividers and alternating colors between lanes, more forgiving landings at raft ends.
 - **Play Again** for every day after passing, to keep collecting coins.
 - **Sound in the web version** works again.
 

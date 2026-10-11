@@ -13,11 +13,15 @@ description: Rintangan di jalan, sungai dan rakit, Pos checkpoint, koin, power-u
 
 ## Sungai
 
-Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit** yang hanyut; selama berdiri di rakit, Masbro ikut terbawa arus.
+Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit** atau **perahu kayu** yang hanyut; selama berdiri di atasnya, Masbro ikut terbawa arus.
+
+| Pijakan | Panjang |
+| --- | --- |
+| <img class="sprite" src="/img/sprites/vehicle_rakit3.svg" alt="" /> Rakit | 2 atau 3 petak: satu panel kayu per petak, dipisah ikatan tali |
+| <img class="sprite" src="/img/sprites/vehicle_perahu3.svg" alt="" /> Perahu kayu | 2 atau 3 petak: satu bangku per petak |
 
 - Melompat ke air tanpa rakit, rakit menjauh, atau terbawa sampai keluar layar membuat Masbro tercebur ("BYUR!"): **paket basah** (rusak 1) dan Masbro kembali ke tepian terakhir.
 - Lane sungai yang bersebelahan mengalir berlawanan arah dan dipisah garis busa putus-putus. Perhatikan rakit di lane berikutnya sebelum melompat.
-- **Penanda pendaratan:** lingkaran di petak sungai tepat di depan Masbro. **Hijau** berarti ada rakit di sana saat Masbro mendarat, **merah** berarti air.
 - Mendarat sedikit di luar ujung rakit masih dihitung naik; Masbro otomatis bergeser ke atas rakit.
 - Helm juga melindungi dari air.
 
