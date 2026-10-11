@@ -129,7 +129,10 @@ Masbro tidak punya nyawa. Yang harus dijaga adalah **paket**. Setiap tabrakan me
 | --- | --- | --- |
 | Motor | Cepat | 1 |
 | Mobil | Sedang | 1 |
+| Bajaj | Cukup cepat, 1 petak | 1 |
+| Angkot | Sedang, 2 petak | 1 |
 | Truk | Lambat, panjang | 2 |
+| Bus kota | Paling lambat, 4 petak | 2 |
 
 ### Timer ETA
 
@@ -183,8 +186,8 @@ Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan 
 Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit** yang hanyut; selama berdiri di rakit, Masbro ikut terbawa arus.
 
 * Melompat ke air tanpa rakit, rakit menjauh, atau terbawa sampai keluar layar → **paket basah** (rusak 1) dan Masbro kembali ke tepian terakhir.
+* Pijakan di sungai: **rakit** (2 atau 3 petak) dan **perahu kayu** (2 atau 3 petak). Setiap petak pijakan terlihat sebagai satu panel kayu (rakit) atau satu bangku (perahu), dipisah ikatan tali, jadi panjangnya mudah dihitung.
 * Lane sungai yang bersebelahan mengalir berlawanan arah dan dipisah garis busa putus-putus. Perhatikan rakit di lane berikutnya sebelum melompat.
-* **Penanda pendaratan:** lingkaran di petak sungai tepat di depan Masbro. **Hijau** = ada rakit di sana saat Masbro mendarat, **merah** = air.
 * Mendarat sedikit di luar ujung rakit masih dihitung naik; Masbro otomatis bergeser ke atas rakit.
 * Helm juga melindungi dari air.
 

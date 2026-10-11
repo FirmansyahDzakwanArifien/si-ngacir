@@ -378,13 +378,13 @@ func _sync_vehicles() -> void:
 func _make_vehicle(vehicle: Vehicle) -> Node3D:
 	var length := vehicle.length_px / TILE
 	var node: Node3D
+	var sprite_name := ""
+	if vehicle._sprite and vehicle._sprite.texture:
+		sprite_name = vehicle._sprite.texture.resource_path.get_file().get_basename()
+	var color: Color = Props.VEHICLE_COLORS.get(sprite_name, vehicle.color)
 	if vehicle.is_platform:
-		node = Props.raft(length)
+		node = Props.raft(length, vehicle.type, color)
 	else:
-		var sprite_name := ""
-		if vehicle._sprite and vehicle._sprite.texture:
-			sprite_name = vehicle._sprite.texture.resource_path.get_file().get_basename()
-		var color: Color = Props.VEHICLE_COLORS.get(sprite_name, vehicle.color)
 		node = Props.vehicle(vehicle.type, length, color)
 		if vehicle.headlights:
 			_add_headlight(node, length)

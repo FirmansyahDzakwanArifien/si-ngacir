@@ -6,11 +6,17 @@ const TYPES := {
 	&"motor": {"length": 1, "damage": 1, "color": Color("e04f5f")},
 	&"mobil": {"length": 2, "damage": 1, "color": Color("4f8fe0")},
 	&"truk": {"length": 3, "damage": 2, "color": Color("e0a84f")},
+	&"bajaj": {"length": 1, "damage": 1, "color": Color("ff9f1c")},
+	&"angkot": {"length": 2, "damage": 1, "color": Color("3bb273")},
+	&"bus": {"length": 4, "damage": 2, "color": Color("ff6b6b")},
 	# Bang Kilat, kurir rival: sekali lewat dengan sangat cepat.
 	&"kilat": {"length": 1, "damage": 1, "color": Color("06d6a0")},
 	# Rakit di sungai: bukan penabrak, tapi pijakan.
 	&"rakit2": {"length": 2, "damage": 0, "color": Color("c98b52"), "platform": true},
 	&"rakit3": {"length": 3, "damage": 0, "color": Color("c98b52"), "platform": true},
+	# Perahu kayu: pijakan seperti rakit, satu bangku per petak.
+	&"perahu2": {"length": 2, "damage": 0, "color": Color("2ec4b6"), "platform": true},
+	&"perahu3": {"length": 3, "damage": 0, "color": Color("4f8fe0"), "platform": true},
 }
 ## Tinggi lampu depan pada sprite (bagian dari tinggi petak) dan panjang berkas cahayanya.
 const HEADLIGHT_Y := 0.62

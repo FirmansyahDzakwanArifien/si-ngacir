@@ -13,11 +13,15 @@ description: Road hazards, rivers and rafts, checkpoints, coins, power-ups, and 
 
 ## Rivers
 
-From Day 2, some road blocks can be **rivers**. Hop onto a drifting **raft**; while standing on it, Masbro drifts with the current.
+From Day 2, some road blocks can be **rivers**. Hop onto a drifting **raft** or **wooden boat**; while standing on it, Masbro drifts with the current.
+
+| Platform | Length |
+| --- | --- |
+| <img class="sprite" src="/img/sprites/vehicle_rakit3.svg" alt="" /> Raft | 2 or 3 tiles: one wooden panel per tile, split by rope lashings |
+| <img class="sprite" src="/img/sprites/vehicle_perahu3.svg" alt="" /> Wooden boat | 2 or 3 tiles: one bench per tile |
 
 - Jumping into the water without a raft, the raft drifting away, or being carried off-screen makes Masbro fall in ("BYUR!"): **the package gets wet** (1 damage) and Masbro returns to the last bank.
 - Adjacent river lanes flow in opposite directions and are separated by a dashed foam line. Watch the raft in the next lane before you jump.
-- **Landing marker:** a ring on the river tile right in front of Masbro. **Green** means a raft will be there when Masbro lands, **red** means water.
 - Landing just past the end of a raft still counts; Masbro slides fully onto the raft.
 - The helmet also protects against water.
 
