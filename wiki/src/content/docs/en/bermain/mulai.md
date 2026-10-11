@@ -38,7 +38,7 @@ The game is not digitally signed yet. If Windows blocks `SiNgacir.exe`, choose *
 | Skip cutscene | Esc | **Skip** button |
 | Cutscene Auto mode | **Auto** button | **Auto** button |
 
-Hold a direction key to keep stepping.
+One press = one step. Hold a direction key for a moment to keep stepping.
 
 ## Main menu
 

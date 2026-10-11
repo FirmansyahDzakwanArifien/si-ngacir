@@ -16,7 +16,9 @@ description: Road hazards, rivers and rafts, checkpoints, coins, power-ups, and 
 From Day 2, some road blocks can be **rivers**. Hop onto a drifting **raft**; while standing on it, Masbro drifts with the current.
 
 - Jumping into the water without a raft, the raft drifting away, or being carried off-screen makes Masbro fall in ("BYUR!"): **the package gets wet** (1 damage) and Masbro returns to the last bank.
-- Adjacent river lanes flow in opposite directions. Watch the raft in the next lane before you jump.
+- Adjacent river lanes flow in opposite directions and are separated by a dashed foam line. Watch the raft in the next lane before you jump.
+- **Landing marker:** a ring on the river tile right in front of Masbro. **Green** means a raft will be there when Masbro lands, **red** means water.
+- Landing just past the end of a raft still counts; Masbro slides fully onto the raft.
 - The helmet also protects against water.
 
 ## Checkpoints
@@ -33,7 +35,7 @@ If the package is destroyed **after** passing a checkpoint, you can choose **Con
 
 | Item | Effect |
 | --- | --- |
-| <img class="sprite" src="/img/sprites/item_coin.svg" alt="" /> **Coin** | +Rp1,000 per coin as a *Coin bonus*, and goes into your wallet for shopping at the [Masbro's Shop](/en/fitur/toko/) |
+| <img class="sprite" src="/img/sprites/item_coin.svg" alt="" /> **Coin** | Goes straight into your wallet (the coin counter in the top bar) for shopping at [Masbro's Shop](/en/fitur/toko/), plus Rp1,000 per coin to your pay as a *Coin bonus* |
 | <img class="sprite" src="/img/sprites/item_helmet.svg" alt="" /> **Helmet** | A protective bubble: absorbs 1 collision, pothole, or fall into the river without damaging the package ("TENG!") |
 | <img class="sprite" src="/img/sprites/item_shoes.svg" alt="" /> **Shoes** | 40% faster steps for 8 seconds |
 

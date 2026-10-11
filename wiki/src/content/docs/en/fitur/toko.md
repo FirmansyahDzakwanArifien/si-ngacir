@@ -3,7 +3,7 @@ title: Masbro's Shop
 description: Buy hats, glasses, and bags for Masbro with the coins you collect on the road.
 ---
 
-Coins picked up on the road add to your pay (*Coin bonus*) **and** go into your **wallet** when the package is delivered. Spend them at the **Masbro's Shop** from the main menu.
+Coins picked up on the road go **straight into your wallet**. The count shows in the top bar while you deliver and always matches the shop. Coins are kept even if the package breaks or you retry the day. When the package arrives, coins also add to your pay (*Coin bonus*). Spend them at **Masbro's Shop** from the main menu.
 
 - Click an item to buy it; click an item you own to equip or remove it.
 - Accessories show up right away while you deliver, and in [3D View](/en/fitur/pengaturan/#3d-view-beta) too.

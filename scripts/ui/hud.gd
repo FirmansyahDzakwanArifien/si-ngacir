@@ -30,6 +30,9 @@ var _time_pill: PanelContainer
 var _time_pulse: Tween
 var _package_icons: Array[Control] = []
 var _route: RouteMeter
+## Isi dompet (sama dengan angka di Toko Masbro), bertambah saat koin dipungut.
+var _coin_label: Label
+var _coin_pill: PanelContainer
 ## Teks tujuan di bar atas: "ambil di <pengirim>" lalu "ke <pelanggan>".
 var _objective: Label
 ## Hari ini paket diambil dulu di titik jemput.
@@ -224,7 +227,7 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 		_money_row("Upah dasar", report.base_wage),
 		_money_row("Bonus tepat waktu", report.eta_bonus),
 		_money_row("Tip pelanggan", report.tip) if report.strict else null,
-		_money_row(tr("Bonus koin (%d, juga masuk dompet)") % report.coins, report.coin_bonus) if report.coins > 0 else null,
+		_money_row(tr("Bonus koin (%d, sudah masuk dompet)") % report.coins, report.coin_bonus) if report.coins > 0 else null,
 		_money_row(tr("Denda kerusakan") + (" (2x)" if report.strict else ""), -report.damage_penalty),
 		_money_row("Potongan telat", -report.late_penalty),
 		_money_row(tr("Ganti paket di Pos (%dx)") % report.checkpoint_uses, -report.checkpoint_penalty)
@@ -300,6 +303,8 @@ func _build_top_bar() -> void:
 	_route.custom_minimum_size.x = 40.0 if Screen.is_compact() else 70.0
 	_route.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(_route)
+	_coin_pill = _coin_counter()
+	row.add_child(_coin_pill)
 	_time_label = _label("", 17, Palette.WHITE, false, 600)
 	_time_pill = _pill(_time_label, Palette.TEAL)
 	row.add_child(_time_pill)
@@ -321,6 +326,33 @@ func _build_top_bar() -> void:
 		pause.add_theme_font_size_override("font_size", 16)
 		pause.pressed.connect(pause_pressed.emit)
 		row.add_child(pause)
+
+
+func _coin_counter() -> PanelContainer:
+	var content := HBoxContainer.new()
+	content.add_theme_constant_override("separation", 4)
+	var coin := TextureRect.new()
+	coin.texture = SpriteLibrary.hires("icon_coin", 1.0)
+	coin.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	coin.custom_minimum_size = Vector2(20, 20)
+	coin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	content.add_child(coin)
+	_coin_label = _label(str(GameState.wallet), 17, Palette.TEXT, false, 600)
+	_coin_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	content.add_child(_coin_label)
+	return _pill(content, Palette.CREAM_DARK)
+
+
+## Angka koin di bar atas; berdenyut kecil setiap koin baru masuk dompet.
+func update_coins(total: int) -> void:
+	if _coin_label == null:
+		return
+	var grew := total > int(_coin_label.text)
+	_coin_label.text = str(total)
+	if grew and not Accessibility.reduce_motion:
+		_coin_pill.pivot_offset = _coin_pill.size / 2.0
+		_coin_pill.scale = Vector2(1.2, 1.2)
+		_coin_pill.create_tween().tween_property(_coin_pill, "scale", Vector2.ONE, 0.2)
 
 
 func _build_overlay() -> void:

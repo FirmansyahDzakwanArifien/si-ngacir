@@ -43,6 +43,8 @@ After Day 5, your total savings are compared with the treatment cost of **Rp350,
 - **Enough savings:** Masbro passes his probation, is hired as a permanent courier, and Nana gets her treatment.
 - **Not enough:** a recap screen shows your pay for each day. Pick any day to replay and improve its pay.
 
+After passing, the recap screen (main menu → **Continue**) still offers **Play Again** for every day, so you can keep collecting coins without starting a New Game.
+
 :::note[Work in progress]
 The story script is still a draft. The final script is being prepared by the Story Writer team.
 :::

@@ -38,7 +38,7 @@ Game belum memiliki tanda tangan digital. Bila Windows memblokir `SiNgacir.exe`,
 | Lewati cutscene | Esc | Tombol **Lewati** |
 | Mode Auto cutscene | Tombol **Auto** | Tombol **Auto** |
 
-Tahan tombol arah untuk melangkah terus-menerus.
+Satu kali tekan = satu langkah. Tahan tombol arah sebentar untuk melangkah terus-menerus.
 
 ## Menu utama
 

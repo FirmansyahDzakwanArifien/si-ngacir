@@ -3,7 +3,7 @@ title: Toko Masbro
 description: Belanja topi, kacamata, dan tas untuk Masbro dengan koin yang dikumpulkan di jalan.
 ---
 
-Koin yang dipungut di jalan menambah upah (*Bonus koin*) **dan** masuk ke **dompet** saat paket sampai. Belanjakan koin di **Toko Masbro** dari menu utama.
+Koin yang dipungut di jalan **langsung masuk dompet**. Angkanya terlihat di bar atas saat mengantar dan selalu sama dengan angka di toko. Koin tetap tersimpan walau paket hancur atau hari diulang. Saat paket sampai, koin juga menambah upah (*Bonus koin*). Belanjakan koin di **Toko Masbro** dari menu utama.
 
 - Klik barang untuk membeli; klik barang milikmu untuk memakai atau melepasnya.
 - Aksesori langsung terlihat saat mengantar paket, juga di [Tampilan 3D](/fitur/pengaturan/#tampilan-3d-beta).

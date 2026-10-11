@@ -1,14 +1,14 @@
 extends Control
 ## Memutar GameState.pending_story halaman demi halaman, lalu pindah ke GameState.pending_scene.
 ## Halaman bisa berupa narasi atau dialog (potret + papan nama tokoh).
-## Enter / Spasi / klik: tampilkan teks penuh atau lanjut halaman. Esc: lewati semua.
+## Enter / Spasi / klik / ketuk di mana saja: tampilkan teks penuh atau lanjut halaman. Esc: lewati semua.
 ## Mode Auto: halaman maju sendiri setelah teks selesai dibaca.
 
 const IMAGE_DIR := "res://assets/story/"
 const CHARS_PER_SECOND := 45.0
 ## Jeda mode Auto setelah teks selesai: dasar + per huruf (waktu baca).
-const AUTO_DELAY := 1.2
-const AUTO_DELAY_PER_CHAR := 0.03
+const AUTO_DELAY := 1.0
+const AUTO_DELAY_PER_CHAR := 0.012
 
 var _story: StoryData
 var _page := -1
@@ -141,6 +141,14 @@ func _ready() -> void:
 	add_child(_auto_button)
 	_update_auto_text()
 
+	# Hanya tombol yang menangkap klik/ketukan; gambar dan kotak teks meneruskannya ke
+	# _unhandled_input supaya mengetuk di mana saja melanjutkan cerita (dulu kotak teks
+	# menelan ketukan, sehingga di HP cerita hanya bisa dilewati).
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for node in find_children("*", "Control", true, false):
+		if not node is BaseButton:
+			(node as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 	_next_page()
 
 
@@ -248,7 +256,10 @@ func _play_page_music() -> void:
 
 func _update_hint() -> void:
 	var last := _page == _story.pages.size() - 1
-	_hint.text = tr("Enter / klik untuk mulai") if last else tr("Enter / klik untuk lanjut")
+	if DisplayServer.is_touchscreen_available():
+		_hint.text = tr("Ketuk untuk mulai") if last else tr("Ketuk untuk lanjut")
+	else:
+		_hint.text = tr("Enter / klik untuk mulai") if last else tr("Enter / klik untuk lanjut")
 	if GameState.story_auto:
 		_auto_timer.start(AUTO_DELAY + _text.text.length() * AUTO_DELAY_PER_CHAR)
 

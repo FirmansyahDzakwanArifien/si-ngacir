@@ -9,7 +9,7 @@ Cerita Si Ngacir disampaikan lewat **cutscene dialog** dengan potret tokoh dan i
 
 | Kontrol | Fungsi |
 | --- | --- |
-| Enter / klik / tap | Halaman berikutnya (atau tampilkan teks sekaligus) |
+| Enter / klik / ketuk di mana saja | Halaman berikutnya (atau tampilkan teks sekaligus) |
 | Esc / tombol **Lewati** | Melewati cutscene |
 | Tombol **Auto** | Halaman maju sendiri setelah teks selesai. Pilihan ini diingat |
 

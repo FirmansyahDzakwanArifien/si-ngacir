@@ -5,6 +5,8 @@ const SUCCESS_TEXT := "Paket VIP sampai di tangan Bu Direktur. Masbro resmi dian
 		+ "kurir tetap Ngacir Express, dan tabungannya cukup untuk menyembuhkan adiknya. Trobos Ajalah!"
 const SHORTFALL_TEXT := "Tabungan masih kurang %s. Ulangi hari mana pun untuk memperbaiki upah. " \
 		+ "Upah terbaik tiap hari yang dihitung."
+const FREE_PLAY_TEXT := "Masbro masih boleh mengantar paket kapan saja. Main lagi hari mana pun untuk " \
+		+ "mengumpulkan koin; upah terbaik tiap hari tetap tersimpan."
 const BAD_ENDING_TEXT := "Masa percobaan berakhir, tapi tabungan Masbro belum cukup untuk biaya " \
 		+ "pengobatan adiknya. Besok ia harus mencari jalan lain."
 
@@ -37,10 +39,13 @@ func _ready() -> void:
 	fit.call_deferred()
 
 	var enough := GameState.savings_enough()
-	var can_replay := not enough and GameState.SHORTFALL_RULE == GameState.ShortfallRule.REPLAY_DAYS
+	# Setelah lulus, hari mana pun tetap bisa dimainkan lagi (mengumpulkan koin untuk toko)
+	# tanpa Mulai Baru. Bila tabungan kurang, mengulang hari untuk memperbaiki upah.
+	var can_replay := enough or GameState.SHORTFALL_RULE == GameState.ShortfallRule.REPLAY_DAYS
 	if enough:
 		column.add_child(_label("MASA PERCOBAAN LULUS!", 32, Palette.TEAL, true))
 		column.add_child(_label(SUCCESS_TEXT, 16, Palette.TEXT, true))
+		column.add_child(_label(FREE_PLAY_TEXT, 15, Palette.TEXT_SOFT, true))
 	elif can_replay:
 		column.add_child(_label("TABUNGAN BELUM CUKUP", 32, Palette.YELLOW, true))
 		var missing := GameState.MEDICAL_COST - GameState.total_savings()
@@ -57,7 +62,8 @@ func _ready() -> void:
 		var caption := tr("Hari %d: %s") % [day.day, tr(day.package.display_name)]
 		if can_replay:
 			var button := Button.new()
-			button.text = tr("Ulangi %s   (%s)") % [caption, GameState.rupiah(wage)]
+			var template := tr("Main Lagi %s   (%s)") if enough else tr("Ulangi %s   (%s)")
+			button.text = template % [caption, GameState.rupiah(wage)]
 			button.pressed.connect(GameState.replay_day.bind(i))
 			column.add_child(button)
 			if first_button == null:

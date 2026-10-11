@@ -58,6 +58,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Ambil paket dulu: Masbro berangkat tanpa paket, mengambil paket di kios pengirim (titik jemput acak di tengah map, `MapGenerator.pick_pickup`), lalu mengantarnya. Map panjang: 12–16 blok jalan (±45–90 baris), dengan Pos setiap 3–4 blok
 * [x] Efek benturan ala komik (`scripts/game/effects.gd`): BRAK! + Masbro berputar + hit-stop + kilat putih saat tertabrak, BYUR! + riak + gelembung saat tercebur, GEDEBUK! di lubang, TENG! saat helm pecah, KRAK! + asap saat paket hancur, cipratan saat tergelincir
 * [x] Album Cerita (tonton ulang cutscene), ringkasan "Sebelumnya…" saat Lanjutkan, mode Auto di cutscene
+* [x] Perbaikan playtest (v0.13): cutscene bisa diketuk di mana saja di HP, satu tekan = satu langkah di keyboard, koin langsung masuk dompet (penghitung di bar atas), penanda pendaratan dan batas lane di sungai, Main Lagi setelah lulus, dan suara di build web
 * [ ] Naskah final dari tim Writer Story
 
 ## Struktur
@@ -107,6 +108,8 @@ Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/r
 ## Audio
 
 `AudioManager` mencari file berdasarkan nama di `assets/audio/music/` dan `assets/audio/sfx/`. Semua file saat ini adalah suara placeholder sintetis — tim Audio cukup mengganti file dengan **nama yang sama**, tanpa mengubah kode. Musik otomatis di-loop dan berganti lagu dengan fade singkat.
+
+Bus **Music** dan **SFX** didefinisikan di `default_bus_layout.tres`. Jangan membuat bus lewat kode saat game berjalan: di build web Godot 4.3 hal itu menyambung bus secara melingkar sehingga browser membisukan semua suara (CI memeriksa layout ini).
 
 Pakai format **`.wav`**. Musik dikompres QOA saat import (`compress/mode=2` di file `.import`), jadi tetap kecil. Build web ramping tidak menyertakan dekoder `.ogg` dan `.mp3`, jadi kedua format itu tidak berbunyi di browser.
 
