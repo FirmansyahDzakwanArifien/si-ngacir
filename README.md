@@ -4,6 +4,8 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 
 📖 **Manual pemain** (storyline, cara main, kontrol, tips): [`docs/MANUAL.md`](docs/MANUAL.md)
 
+🌐 **Wiki publik** (Indonesia & English): https://wiki-si-ngacir.cyphera.my.id — sumbernya di folder [`wiki/`](wiki/), lihat bagian [Wiki](#wiki).
+
 ## Teknologi
 
 * Godot Engine 4.3 Stable (GDScript)
@@ -56,6 +58,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 * [x] Ambil paket dulu: Masbro berangkat tanpa paket, mengambil paket di kios pengirim (titik jemput acak di tengah map, `MapGenerator.pick_pickup`), lalu mengantarnya. Map panjang: 12–16 blok jalan (±45–90 baris), dengan Pos setiap 3–4 blok
 * [x] Efek benturan ala komik (`scripts/game/effects.gd`): BRAK! + Masbro berputar + hit-stop + kilat putih saat tertabrak, BYUR! + riak + gelembung saat tercebur, GEDEBUK! di lubang, TENG! saat helm pecah, KRAK! + asap saat paket hancur, cipratan saat tergelincir
 * [x] Album Cerita (tonton ulang cutscene), ringkasan "Sebelumnya…" saat Lanjutkan, mode Auto di cutscene
+* [x] Perbaikan playtest (v0.13): cutscene bisa diketuk di mana saja di HP, satu tekan = satu langkah di keyboard, koin langsung masuk dompet (penghitung di bar atas), penanda pendaratan dan batas lane di sungai, Main Lagi setelah lulus, dan suara di build web
 * [ ] Naskah final dari tim Writer Story
 
 ## Struktur
@@ -105,6 +108,8 @@ Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/r
 ## Audio
 
 `AudioManager` mencari file berdasarkan nama di `assets/audio/music/` dan `assets/audio/sfx/`. Semua file saat ini adalah suara placeholder sintetis — tim Audio cukup mengganti file dengan **nama yang sama**, tanpa mengubah kode. Musik otomatis di-loop dan berganti lagu dengan fade singkat.
+
+Bus **Music** dan **SFX** didefinisikan di `default_bus_layout.tres`. Jangan membuat bus lewat kode saat game berjalan: di build web Godot 4.3 hal itu menyambung bus secara melingkar sehingga browser membisukan semua suara (CI memeriksa layout ini).
 
 Pakai format **`.wav`**. Musik dikompres QOA saat import (`compress/mode=2` di file `.import`), jadi tetap kecil. Build web ramping tidak menyertakan dekoder `.ogg` dan `.mp3`, jadi kedua format itu tidak berbunyi di browser.
 
@@ -261,6 +266,30 @@ base64 -w0 singacir.keystore > keystore.txt   # Windows PowerShell: [Convert]::T
 ```
 
 Isi di GitHub → Settings → Secrets and variables → Actions: `ANDROID_KEYSTORE_BASE64` = isi `keystore.txt`, `ANDROID_KEYSTORE_PASSWORD` = password keystore, `ANDROID_KEY_ALIAS` = `singacir`. **Simpan file keystore dan password-nya baik-baik**: kalau hilang, update APK berikutnya tidak bisa menimpa versi lama.
+
+## Wiki
+
+Wiki publik dibangun dengan [Astro Starlight](https://starlight.astro.build) dari folder `wiki/` dan di-hosting di **Cloudflare Pages**, jadi repo ini tetap private. Hanya isi `wiki/` yang dipublikasikan.
+
+| Isi | Lokasi |
+| --- | --- |
+| Halaman Indonesia | `wiki/src/content/docs/` |
+| Halaman Inggris | `wiki/src/content/docs/en/` (nama file sama dengan versi Indonesia) |
+| Menu samping | `sidebar` di `wiki/astro.config.mjs` |
+| Gambar | `wiki/public/img/` (salinan dari `assets/`) dan `wiki/src/assets/press/` |
+
+```bash
+cd wiki
+npm install
+npm run dev      # pratinjau di http://localhost:4321
+npm run build    # hasil di wiki/dist
+```
+
+Setiap merge ke `main` otomatis tayang; Pull Request ke `dev` mendapat link pratinjau dari Cloudflare. `wiki/.gdignore` membuat Godot mengabaikan folder ini, dan perubahan yang hanya menyentuh `wiki/` tidak memicu build game.
+
+Pengaturan proyek Cloudflare Pages: *Framework preset* Astro, *Root directory* `wiki`, *Build command* `npm run build`, *Build output* `dist`, *Production branch* `main`, *Build watch paths* include `wiki/*`. Custom domain: `wiki-si-ngacir.cyphera.my.id`.
+
+Saat menambah fitur game, perbarui juga halaman wiki yang terkait (minimal **Riwayat Versi**).
 
 ## Workflow Git
 

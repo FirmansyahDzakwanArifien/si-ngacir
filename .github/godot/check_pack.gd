@@ -36,6 +36,12 @@ func _initialize() -> void:
 
 	for music in MUSIC:
 		_check(ResourceLoader.exists("res://assets/audio/music/%s.wav" % music), "musik %s" % music)
+	# Bus Music & SFX harus sudah ada dari layout: membuatnya saat berjalan membisukan
+	# semua suara di build web Godot 4.3.
+	var layout: AudioBusLayout = load("res://default_bus_layout.tres")
+	_check(layout != null, "layout bus audio ikut")
+	var buses := [AudioServer.get_bus_index(&"Music"), AudioServer.get_bus_index(&"SFX")]
+	_check(buses[0] > 0 and buses[1] > 0, "bus Music & SFX ada sejak awal (%s)" % [buses])
 
 	print("check_pack: %d gagal" % _errors)
 	quit(1 if _errors > 0 else 0)

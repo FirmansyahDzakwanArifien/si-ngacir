@@ -37,6 +37,10 @@ const HONK_DISTANCE := 2.5 * 48.0
 const HONK_COOLDOWN := 2.0
 const VENDOR_COOLDOWN := 6.0
 const RIVAL_SPEED := 300.0
+## Toleransi mendarat di rakit (px di luar ujung rakit yang masih dihitung naik). Masbro lalu
+## digeser ke atas rakit, jadi lompatan yang nyaris pas tidak berakhir tercebur.
+const RAFT_GRACE := 0.3 * 48.0
+const RIVER_ALT_TINT := Color(0.72, 0.84, 1.0)
 const PEDESTRIANS := [["pejalan_ibu_walk", "pejalan_ibu_idle"], ["pejalan_anak_walk", "pejalan_anak_idle"]]
 ## Jarak (baris) ke rumah saat pelanggan mulai menyemangati.
 const CUSTOMER_CHEER_ROWS := 6
@@ -75,6 +79,9 @@ var _vehicles: Array[Vehicle] = []
 var _rafts := {}
 ## Petak darat terakhir tempat Masbro berdiri; tujuan kembali bila jatuh ke air.
 var _last_safe_cell := Vector2i.ZERO
+## Penanda petak sungai di depan Masbro: hijau bila ada rakit di sana, merah bila air.
+var _landing_hint: Node2D
+var _landing_ok := false
 var _cats: Array[StreetCat] = []
 var _cat_timer := 1.5
 var _honk_cooldown := 0.0
@@ -215,6 +222,7 @@ func _process(delta: float) -> void:
 	_update_cats(delta)
 	_update_street_npcs(delta)
 	_update_river(delta)
+	_update_landing_hint()
 	if _boost_left > 0.0:
 		_boost_left -= delta
 		if _boost_left <= 0.0:
@@ -367,8 +375,13 @@ func _spawn_player() -> void:
 	_player.place(Vector2i(START_COLUMN, _rows - 1))
 	_last_safe_cell = _player.cell
 	_player.can_enter = _is_cell_free
+	_player.free_row = func(row: int) -> bool: return day.lanes[row].kind == LaneData.Kind.RIVER
 	_player.moved.connect(_on_player_moved)
 	_player.blocked.connect(_on_player_blocked)
+	_landing_hint = Node2D.new()
+	_landing_hint.visible = false
+	_landing_hint.draw.connect(_draw_landing_hint)
+	_board.add_child(_landing_hint)
 	_board.add_child(_player)
 
 
@@ -585,8 +598,11 @@ func _on_player_moved(cell: Vector2i) -> void:
 			_customer_line(&"no_package", "Lho, paketnya mana, Masbro?", CustomerNpc.Mood.IMPATIENT)
 		return
 	if day.lanes[cell.y].kind == LaneData.Kind.RIVER:
-		if _raft_under_player() == null:
+		var raft := _raft_under_player()
+		if raft == null:
 			_splash()
+		else:
+			_keep_on_raft(raft)
 		return
 	_last_safe_cell = cell
 	if not has_package and cell == pickup_cell:
@@ -624,7 +640,11 @@ func _collect_item(cell: Vector2i) -> void:
 	match type:
 		&"coin":
 			coins += 1
-			_popup("+%s" % GameState.rupiah(DeliveryReport.COIN_VALUE), Palette.YELLOW, _player.position)
+			# Koin langsung masuk dompet, jadi angka di bar atas sama dengan di Toko Masbro
+			# dan tidak hilang walau paket hancur atau hari diulang.
+			GameState.add_coins(1, false)
+			_hud.update_coins(GameState.wallet)
+			_popup(tr("+1 koin"), Palette.YELLOW, _player.position)
 		&"helmet":
 			_player.shielded = true
 			_popup("Helm! Kebal 1x", Palette.TEAL, _player.position)
@@ -643,17 +663,57 @@ func _update_river(delta: float) -> void:
 		_splash()
 		return
 	_player.ride(raft.speed * raft.direction * delta)
+	_keep_on_raft(raft)
 	var center := _player.position.x + TILE / 2.0
 	if center < 0.0 or center > COLUMNS * TILE:
 		_splash()
 
 
 func _raft_under_player() -> Vehicle:
-	var center := _player.position.x + TILE / 2.0
-	for raft: Vehicle in _rafts.get(_player.cell.y, []):
-		if center >= raft.position.x + 4.0 and center <= raft.position.x + raft.length_px - 4.0:
+	return raft_at(_player.cell.y, _player.position.x + TILE / 2.0)
+
+
+## Rakit di baris row yang menampung titik x (dengan toleransi RAFT_GRACE), atau null.
+## lead: perkirakan posisi rakit sekian detik lagi (lama lompatan) untuk penanda pendaratan.
+func raft_at(row: int, x: float, lead := 0.0, grace := RAFT_GRACE) -> Vehicle:
+	for raft: Vehicle in _rafts.get(row, []):
+		var left := raft.position.x + raft.speed * raft.direction * lead
+		if x >= left - grace and x <= left + raft.length_px + grace:
 			return raft
 	return null
+
+
+## Saat petak di depan Masbro adalah sungai, tandai tempat ia akan mendarat.
+func _update_landing_hint() -> void:
+	var row := _player.cell.y - 1
+	var show := row >= 0 and day.lanes[row].kind == LaneData.Kind.RIVER and not _player.is_moving()
+	_landing_hint.visible = show
+	if not show:
+		return
+	_landing_hint.position = Vector2(_player.position.x, row * TILE)
+	var hop_time := _player.step_time * _player.speed_multiplier
+	# Toleransi penanda setengah toleransi mendarat: hijau berarti pasti naik rakit.
+	var ok := raft_at(row, _player.position.x + TILE / 2.0, hop_time, RAFT_GRACE / 2.0) != null
+	if ok != _landing_ok:
+		_landing_ok = ok
+		_landing_hint.queue_redraw()
+
+
+func _draw_landing_hint() -> void:
+	var color := Palette.TEAL if _landing_ok else Palette.CORAL
+	var center := Vector2(TILE / 2.0, TILE / 2.0)
+	_landing_hint.draw_circle(center, TILE * 0.36, Color(color, 0.25))
+	_landing_hint.draw_arc(center, TILE * 0.36, 0.0, TAU, 32, Color(Palette.WHITE, 0.9), 4.0, true)
+	_landing_hint.draw_arc(center, TILE * 0.36, 0.0, TAU, 32, color, 2.5, true)
+
+
+## Mendarat di ujung rakit: geser Masbro sepenuhnya ke atas rakit.
+func _keep_on_raft(raft: Vehicle) -> void:
+	var left := raft.position.x
+	var right := raft.position.x + raft.length_px - TILE
+	var x := clampf(_player.position.x, left, maxf(left, right))
+	if not is_equal_approx(x, _player.position.x):
+		_player.ride(x - _player.position.x)
 
 
 func _splash() -> void:
@@ -791,6 +851,9 @@ func _flash() -> void:
 func _exit_tree() -> void:
 	# Jangan sampai hit-stop tertinggal saat pindah layar.
 	Engine.time_scale = 1.0
+	# Koin yang dipungut sebelum keluar ke menu atau mengulang hari tetap tersimpan.
+	if coins > 0:
+		GameState.save_profile()
 
 
 func _damage_package(amount: int, knock_to: Vector2i) -> void:
@@ -847,8 +910,7 @@ func _deliver() -> void:
 	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins, checkpoint_uses)
 	GameState.record_delivery(day, report.wage)
 	GameState.last_day_good = report.integrity >= GOOD_DAY_INTEGRITY
-	# Koin yang dipungut masuk dompet untuk belanja di toko.
-	GameState.add_coins(coins)
+	GameState.save_profile()
 	AudioManager.play_sfx(&"delivery")
 	_player.celebrate()
 	_customer.set_mood(CustomerNpc.Mood.HAPPY)
@@ -865,6 +927,7 @@ func _fail() -> void:
 	_player.input_enabled = false
 	_player.invulnerable = false
 	GameState.record_delivery(day, 0)
+	GameState.save_profile()
 	AudioManager.play_sfx(&"fail")
 	_customer.set_mood(CustomerNpc.Mood.SAD)
 	_customer.say("Yah... paketnya...", 0.0)
@@ -1011,6 +1074,9 @@ func _draw_board() -> void:
 		var tile_texture: Texture2D = tiles[kind]
 		if tile_texture:
 			var tint := city.road_tint if kind == LaneData.Kind.ROAD else Color.WHITE
+			# Lane sungai bersebelahan diberi warna selang-seling supaya batasnya terlihat.
+			if kind == LaneData.Kind.RIVER and row % 2 == 1:
+				tint = RIVER_ALT_TINT
 			for col in COLUMNS:
 				_board.draw_texture_rect(tile_texture, Rect2(col * TILE, y, TILE, TILE), false, tint)
 			if kind == LaneData.Kind.ROAD:
@@ -1107,6 +1173,13 @@ func _draw_river_banks() -> void:
 			_board.draw_line(Vector2(0, edge * TILE), Vector2(COLUMNS * TILE, edge * TILE), Palette.OUTLINE, 3.0)
 			_board.draw_line(Vector2(0, edge * TILE + (2 if edge == row else -2)),
 					Vector2(COLUMNS * TILE, edge * TILE + (2 if edge == row else -2)), Color(1, 1, 1, 0.6), 2.0)
+		# Garis busa putus-putus di antara dua lane sungai (arus berlawanan).
+		if row + 1 < _rows and day.lanes[row + 1].kind == LaneData.Kind.RIVER:
+			var y := (row + 1) * TILE
+			var x := 4.0
+			while x < COLUMNS * TILE:
+				_board.draw_line(Vector2(x, y), Vector2(x + 18.0, y), Color(1, 1, 1, 0.75), 3.0)
+				x += 30.0
 
 
 func _draw_obstacles() -> void:

@@ -1,0 +1,58 @@
+---
+title: Si Ngacir
+description: Wiki resmi Si Ngacir, game arcade 2D tentang Masbro si capybara kurir. Cerita, cara bermain, fitur, dan catatan pengembangan.
+template: splash
+hero:
+  tagline: '"Trobos Ajalah!" Bantu Masbro si capybara lolos lima hari masa percobaan sebagai kurir demi biaya pengobatan adiknya.'
+  image:
+    file: ../../assets/press/cover.png
+    alt: Cover Si Ngacir
+  actions:
+    - text: Main sekarang
+      link: https://cyphera-game.itch.io/si-ngacir
+      icon: external
+      variant: primary
+    - text: Cara bermain
+      link: /bermain/mulai/
+      icon: right-arrow
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { Image } from 'astro:assets';
+import shotPasar from '../../assets/press/id/04_gameplay_pasar.png';
+import shotKilat from '../../assets/press/id/02_story_kilat.png';
+
+## Apa itu Si Ngacir?
+
+**Si Ngacir** adalah game arcade 2D bergaya penyeberangan jalan. Kamu mengendalikan **Masbro**, capybara yang bekerja sebagai kurir **Ngacir Express**. Ambil paket di kios pengirim, seberangi jalan raya yang padat dan sungai berarus, lalu antar paket ke pelanggan sebelum waktu habis.
+
+Bedanya dengan game penyeberangan jalan biasa: **Masbro tidak punya nyawa. Yang harus dijaga adalah paket.** Setiap benturan merusak paket dan memotong upah.
+
+<CardGrid>
+	<Card title="5 hari cerita" icon="open-book">
+		Bantal, galon air, telur, barang sensitif saat hujan, dan Paket VIP. Setiap paket mengubah cara bermain.
+	</Card>
+	<Card title="Peta selalu baru" icon="random">
+		Jalan, sungai, rakit, koin, dan power-up disusun ulang setiap kali hari dimulai.
+	</Card>
+	<Card title="Main di mana saja" icon="laptop">
+		Browser, HP (swipe), Windows, dan Android. Bahasa Indonesia dan English.
+	</Card>
+	<Card title="Ramah semua pemain" icon="heart">
+		Ukuran teks, filter buta warna, dan mode kurangi efek gerak.
+	</Card>
+</CardGrid>
+
+<Image src={shotPasar} alt="Masbro menyeberang di Pasar Ngacir" />
+
+<Image src={shotKilat} alt="Cutscene Bang Kilat" />
+
+## Jelajahi wiki
+
+<CardGrid>
+	<LinkCard title="Cerita & tokoh" href="/tentang/cerita/" description="Masbro, Nana, Bang Kilat, dan warga Kota Ngacir." />
+	<LinkCard title="Cara bermain" href="/bermain/mulai/" description="Kontrol, aturan, upah, dan lima hari masa percobaan." />
+	<LinkCard title="Pengembangan" href="/pengembangan/desain/" description="Desain game, teknologi, riwayat versi, dan rencana." />
+	<LinkCard title="Tim pengembang" href="/tim/" description="Varmintz KW Studio dan peran setiap anggota." />
+</CardGrid>

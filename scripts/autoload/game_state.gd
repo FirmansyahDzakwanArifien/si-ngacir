@@ -215,9 +215,12 @@ func ending_story() -> StoryData:
 	return null
 
 
-func add_coins(amount: int) -> void:
+## Koin langsung masuk dompet. save = false saat masih di jalan (disimpan saat hari selesai,
+## gagal, atau ditinggalkan) supaya tidak menulis file setiap koin.
+func add_coins(amount: int, save := true) -> void:
 	wallet += amount
-	save_profile()
+	if save:
+		save_profile()
 
 
 ## Beli aksesori bila koin cukup. Mengembalikan true bila berhasil (atau sudah punya).
