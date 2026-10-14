@@ -20,6 +20,7 @@ Game arcade 2D tentang Masbro, capybara yang harus lolos masa percobaan lima har
 | --- | --- |
 | W A S D / panah | Gerak |
 | Esc / P | Pause |
+| M | Bisukan / nyalakan semua suara |
 | Enter | Pilih tombol di panel |
 | Layar sentuh | Swipe kiri / kanan / atas (maju), tap = maju, swipe bawah = mundur, tombol II = pause |
 
@@ -110,7 +111,7 @@ Untuk map tetap buatan tangan, kosongkan `map` dan isi `lanes` (urut dari atas/r
 
 `AudioManager` mencari file berdasarkan nama di `assets/audio/music/` dan `assets/audio/sfx/`. Semua file saat ini adalah suara placeholder sintetis — tim Audio cukup mengganti file dengan **nama yang sama**, tanpa mengubah kode. Musik otomatis di-loop dan berganti lagu dengan fade singkat.
 
-Bus **Music** dan **SFX** didefinisikan di `default_bus_layout.tres`. Jangan membuat bus lewat kode saat game berjalan: di build web Godot 4.3 hal itu menyambung bus secara melingkar sehingga browser membisukan semua suara (CI memeriksa layout ini).
+Bus **Music**, **SFX**, dan **Voice** (suara NPC) didefinisikan di `default_bus_layout.tres`. Jangan membuat bus lewat kode saat game berjalan: di build web Godot 4.3 hal itu menyambung bus secara melingkar sehingga browser membisukan semua suara (CI memeriksa layout ini).
 
 Pakai format **`.wav`**. Musik dikompres QOA saat import (`compress/mode=2` di file `.import`), jadi tetap kecil. Build web ramping tidak menyertakan dekoder `.ogg` dan `.mp3`, jadi kedua format itu tidak berbunyi di browser.
 
@@ -119,7 +120,8 @@ Pakai format **`.wav`**. Musik dikompres QOA saat import (`compress/mode=2` di f
 | `music/menu` | Menu utama, rekap, dan cutscene yang santai |
 | `music/nana` | Cutscene sedih: Nana sakit, rumah sakit, Masbro sedih |
 | `music/kilat` | Cutscene tegang: Bang Kilat menyombong atau kaget |
-| `music/gameplay` | Selama hari pengiriman |
+| `music/gameplay_ceria` | Selama hari pengiriman (arcade ceria, 120 BPM, 32 detik, loop mulus). Bila file ini tidak ada, game memakai `music/gameplay` |
+| `music/gameplay` | Cadangan musik hari pengiriman bila `gameplay_ceria` tidak ada |
 | `sfx/step` | Masbro melangkah |
 | `sfx/pickup` | Mulai hari (ambil paket) |
 | `sfx/hit` | Tertabrak |
@@ -134,6 +136,26 @@ Pakai format **`.wav`**. Musik dikompres QOA saat import (`compress/mode=2` di f
 | `sfx/click` | Semua tombol |
 | `sfx/chime_sad` | Saat cutscene masuk ke tema Nana |
 | `sfx/sting_kilat` | Saat cutscene masuk ke tema Bang Kilat |
+
+### Suara NPC saat Masbro mendekat
+
+`NpcVoiceDirector` (`scripts/game/npc_voice_director.gd`) memicu dialog NPC **sekali saat Masbro masuk radius** (dalam petak), lalu NPC itu baru bicara lagi setelah Masbro menjauh dan cooldown selesai. Hanya satu suara NPC berbunyi pada satu waktu (prioritas: pelanggan dan kios jemput > pedagang bakso > pejalan kaki > kucing, ditambah jeda 2 detik antar suara). Selama NPC bicara, bus **Music** turun 8 dB lalu naik perlahan (*ducking*).
+
+Semua dialog, radius, cooldown, prioritas, dan peluang ada di satu tempat: `scripts/data/npc_voices.gd`. Menambah kalimat = menambah satu baris `["teks", &"nama_suara"]` dan padanan Inggrisnya di `translations/strings.csv`. Bila file suaranya belum ada, NPC tetap menampilkan balon ucapan tanpa suara.
+
+| Nama (`assets/audio/voice/`) | Dipakai oleh |
+| --- | --- |
+| `customer_1`, `customer_2`, `customer_3` | Pelanggan di depan rumah (saat Masbro membawa paket) |
+| `sender_1`, `sender_2` | Penjual di kios jemput (sebelum paket diambil) |
+| `vendor_1`, `vendor_2`, `vendor_3` | Pedagang bakso |
+| `pedestrian_1`, `pedestrian_2`, `pedestrian_3` | Pejalan kaki |
+| `sfx/meow` | Kucing (memakai ulang SFX yang sudah ada) |
+
+File di folder `voice/` saat ini adalah **celoteh placeholder** buatan skrip (`python3 tools/generate_audio.py`, tanpa sampel pihak ketiga), bukan dialog nyata. Untuk rekaman asli, ganti file dengan nama yang sama (durasi ideal 0,4–1,5 detik; satu file per baris dialog bila ingin tiap kalimat punya suara sendiri, lalu ubah nama suaranya di `npc_voices.gd`).
+
+Pengaturan pemain: slider **Suara NPC** dan kotak **Bisukan semua suara** di Pengaturan, atau tombol **M** kapan saja. Status mute dan volume tersimpan di `user://settings.cfg`.
+
+Tes: `godot --headless --path . --script .github/godot/check_voice.gd` menguji logika radius, cooldown, prioritas, dan batas bicara serentak. `python3 tools/generate_audio.py --check` memeriksa level, durasi, dan sambungan loop aset buatan skrip.
 
 ## Side conflict per hari
 

@@ -55,6 +55,14 @@ func _ready() -> void:
 
 	var music := _slider_row(column, "Musik", AudioManager.music_volume, AudioManager.set_music_volume)
 	_slider_row(column, "Efek Suara", AudioManager.sfx_volume, _on_sfx_changed)
+	_slider_row(column, "Suara NPC", AudioManager.voice_volume, _on_voice_changed)
+	var mute := CheckButton.new()
+	mute.text = "Bisukan semua suara (M)"
+	mute.button_pressed = AudioManager.muted
+	mute.toggled.connect(AudioManager.set_muted)
+	# Tombol M di keyboard ikut memperbarui kotak ini (koneksi putus otomatis saat panel ditutup).
+	AudioManager.muted_changed.connect(mute.set_pressed_no_signal)
+	column.add_child(mute)
 
 	if not OS.has_feature("web"):
 		var fullscreen := CheckButton.new()
@@ -157,6 +165,14 @@ func _on_language_selected(index: int) -> void:
 func _on_sfx_changed(value: float) -> void:
 	AudioManager.set_sfx_volume(value)
 	AudioManager.play_sfx(&"star")
+
+
+func _on_voice_changed(value: float) -> void:
+	AudioManager.set_voice_volume(value)
+	# Contoh suara supaya terdengar seberapa kerasnya; tidak diulang selama masih berbunyi
+	# (slider mengirim banyak nilai saat digeser).
+	if not AudioManager.is_voice_playing():
+		AudioManager.play_voice(&"customer_1", 0.0, 99)
 
 
 func _section(caption: String) -> Label:
