@@ -202,7 +202,7 @@ Ekspresi yang belum ada otomatis memakai `normal`. Nama tampilan dan warna papan
 
 ## Audio
 
-Lokasi: `assets/audio/music/` dan `assets/audio/sfx/`. Format **`.wav`** (16-bit, mono atau stereo); musik dikompres otomatis saat import. Jangan pakai `.ogg` / `.mp3`: build web tidak bisa memutarnya. Daftar nama file ada di README bagian **Audio**. Musik otomatis di-loop, jadi buat ujung dan awal lagu menyambung.
+Lokasi: `assets/audio/music/`, `assets/audio/sfx/`, dan `assets/audio/voice/` (suara NPC saat Masbro mendekat; daftar nama di README bagian **Suara NPC**). Format **`.wav`** (16-bit, mono atau stereo); musik dikompres otomatis saat import. Jangan pakai `.ogg` / `.mp3`: build web tidak bisa memutarnya. Daftar nama file ada di README bagian **Audio**. Musik otomatis di-loop, jadi buat ujung dan awal lagu menyambung. Jaga level: musik sekitar −18 dBFS (RMS) dan suara NPC sekitar −15 dBFS supaya dialog tetap jelas di atas musik.
 
 ## Checklist sebelum push aset
 

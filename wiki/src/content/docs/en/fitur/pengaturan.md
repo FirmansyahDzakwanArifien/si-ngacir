@@ -9,7 +9,8 @@ Open **Settings** from the main menu or the pause menu.
 
 | Option | What it does |
 | --- | --- |
-| **Music / sound effects volume** | Sets the loudness of each |
+| **Music / sound effects / NPC voices volume** | Sets the loudness of each. While an NPC speaks, the music dips briefly so the voice stays clear |
+| **Mute all sound** | Silences everything at once. On a keyboard, just press **M** |
 | **Fullscreen** | Desktop only |
 | **Language** | Indonesian or English (from the main menu). Defaults to your device language |
 | **Tutorial tips** | Turn off, or turn back on to replay all tips |

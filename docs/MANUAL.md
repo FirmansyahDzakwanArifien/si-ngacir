@@ -65,6 +65,7 @@ Kebutuhan minimal: Windows 10 64-bit, kartu grafis yang mendukung OpenGL 3.3.
 | Mundur | S / ↓ | Swipe ke bawah |
 | Kiri / kanan | A / ← , D / → | Swipe ke kiri/kanan |
 | Pause | Esc / P | Tombol **II** di pojok kanan atas |
+| Bisukan / nyalakan suara | M | Pengaturan → **Bisukan semua suara** |
 | Pilih tombol menu | Enter / klik | Tap |
 | Lanjut cutscene | Enter / klik | Tap |
 | Lewati cutscene | Esc | Tombol **Lewati** |
@@ -259,7 +260,7 @@ Setelah lulus, layar rekap (menu utama → **Lanjutkan**) tetap menyediakan tomb
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
 | **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
 | **Album Cerita** | Menonton ulang cutscene yang sudah pernah diputar. Cerita yang belum terbuka tampil **???**; tetap terbuka walau memilih Mulai Baru |
-| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama), aksesibilitas |
+| **Pengaturan** | Volume musik, volume efek suara, volume suara NPC, bisukan semua suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama), aksesibilitas |
 | **Keluar** | Menutup game (desktop) |
 
 Game **otomatis pause** saat tab browser ditinggal, jendela kehilangan fokus, atau aplikasi HP diminimalkan. Di HP, layar bergetar saat menabrak atau paket rusak (bisa dimatikan di **Pengaturan → Getar saat menabrak**).
