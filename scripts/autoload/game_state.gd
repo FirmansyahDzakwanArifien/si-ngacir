@@ -49,6 +49,8 @@ const INPUT_KEYS := {
 	&"move_left": [KEY_A, KEY_LEFT],
 	&"move_right": [KEY_D, KEY_RIGHT],
 	&"pause": [KEY_ESCAPE, KEY_P],
+	# Bisukan / nyalakan semua suara (ditangani AudioManager).
+	&"mute": [KEY_M],
 }
 
 var current_day_index := 0

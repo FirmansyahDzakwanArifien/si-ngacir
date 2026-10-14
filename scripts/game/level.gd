@@ -35,7 +35,6 @@ const GOOD_DAY_INTEGRITY := 0.7
 const BLOCKERS := [&"cone", &"barrier", &"gerobak"]
 const HONK_DISTANCE := 2.5 * 48.0
 const HONK_COOLDOWN := 2.0
-const VENDOR_COOLDOWN := 6.0
 const RIVAL_SPEED := 300.0
 ## Toleransi mendarat di rakit/perahu (px di luar ujung yang masih dihitung naik). Kecil, supaya
 ## tepi sprite tetap jujur; Masbro lalu digeser ke atas rakit.
@@ -43,7 +42,6 @@ const RAFT_GRACE := 0.2 * 48.0
 const RIVER_ALT_TINT := Color(0.72, 0.84, 1.0)
 const PEDESTRIANS := [["pejalan_ibu_walk", "pejalan_ibu_idle"], ["pejalan_anak_walk", "pejalan_anak_idle"]]
 ## Jarak (baris) ke rumah saat pelanggan mulai menyemangati.
-const CUSTOMER_CHEER_ROWS := 6
 
 enum State { INTRO, PLAYING, FINISHED }
 
@@ -83,8 +81,6 @@ var _cats: Array[StreetCat] = []
 var _cat_timer := 1.5
 var _honk_cooldown := 0.0
 var _rival_timer := 6.0
-## Waktu teriak terakhir tiap gerobak, key: Vector2i sel.
-var _vendor_shouts := {}
 var _popup_cooldown := 0.0
 var _boost_left := 0.0
 ## Node item di papan, key: Vector2i(kolom, baris).
@@ -106,6 +102,8 @@ var pickup_cell := Vector2i(-1, -1)
 var _pickup_stall: Node2D
 var _pickup_marker: Node2D
 var _sunlight: Sunlight
+## Mengatur suara NPC saat Masbro mendekat (pelanggan, kios, gerobak, kucing, pejalan kaki).
+var _voices: NpcVoiceDirector
 ## Lapisan Tampilan 3D (null = tampilan 2D biasa).
 var _view_3d: Node
 
@@ -135,6 +133,7 @@ func _ready() -> void:
 	_spawn_customer()
 	_spawn_pickup()
 	_spawn_player()
+	_setup_voices()
 	if day.rainy:
 		_rain = RainOverlay.new()
 		_rain.area = Vector2(COLUMNS * TILE, _view_height)
@@ -181,7 +180,7 @@ func _ready() -> void:
 	touch.player = _player
 	add_child(touch)
 	_hud.pause_pressed.connect(_on_pause_pressed)
-	AudioManager.play_music(&"gameplay")
+	AudioManager.play_music(&"gameplay_ceria", &"gameplay")
 
 
 ## Rakit map prosedural untuk hari ini. DayData diduplikasi supaya resource asli tidak berubah.
@@ -328,8 +327,7 @@ func _update_customer() -> void:
 		_customer_line(&"late", "Kok lama, ya...", CustomerNpc.Mood.IMPATIENT)
 	elif left <= 10.0:
 		_customer_line(&"hurry", "Cepetan, Masbro...", CustomerNpc.Mood.IMPATIENT)
-	elif _player.cell.y <= CUSTOMER_CHEER_ROWS and has_package:
-		_customer_line(&"close", "Sedikit lagi, Masbro!", CustomerNpc.Mood.WAITING)
+	# Sapaan saat Masbro mendekat ("Sedikit lagi, Masbro!", dll.) dibawakan _voices.
 
 
 ## Cek apa yang ada di depan Masbro untuk tips tutorial (4x per detik).
@@ -425,6 +423,8 @@ func _spawn_cat(kind: StringName = &"cat") -> void:
 	# Kucing di bawah Masbro supaya Masbro tetap terlihat.
 	_board.move_child(cat, _player.get_index())
 	_cats.append(cat)
+	if _voices:
+		_voices.track_node(kind, cat, Vector2(TILE / 2.0, TILE / 2.0), _walker_say.bind(cat))
 
 
 func _is_cell_free(cell: Vector2i) -> bool:
@@ -462,8 +462,9 @@ func _walker_at(cell: Vector2i) -> StreetCat:
 	return null
 
 
-## Klakson pengemudi, teriakan pedagang bakso, dan Bang Kilat.
+## Klakson pengemudi dan Bang Kilat. (Suara NPC lain: lihat _setup_voices.)
 func _update_street_npcs(delta: float) -> void:
+	_voices.tick(delta, _player.position + Vector2(TILE / 2.0, TILE / 2.0))
 	_honk_cooldown = maxf(0.0, _honk_cooldown - delta)
 	var row := _player.cell.y
 	if _honk_cooldown <= 0.0 and day.lanes[row].kind == LaneData.Kind.ROAD:
@@ -480,17 +481,6 @@ func _update_street_npcs(delta: float) -> void:
 				AudioManager.play_sfx(&"horn", 0.08)
 				break
 
-	for check_row in range(maxi(0, row - 1), mini(_rows, row + 2)):
-		var obstacles := day.lanes[check_row].obstacles
-		for col: int in obstacles:
-			if obstacles[col] != &"gerobak" or absi(col - _player.cell.x) > 2:
-				continue
-			var cell := Vector2i(col, check_row)
-			if elapsed - _vendor_shouts.get(cell, -VENDOR_COOLDOWN) >= VENDOR_COOLDOWN:
-				_vendor_shouts[cell] = elapsed
-				var bubble := _npc_say(_board, "Bakso! Bakso!", Vector2(cell) * TILE + Vector2(TILE / 2.0, 6))
-				bubble.get_parent().move_child(bubble, -1)
-
 	if day.rival_interval > 0.0:
 		for i in range(_vehicles.size() - 1, -1, -1):
 			if not is_instance_valid(_vehicles[i]):
@@ -499,6 +489,65 @@ func _update_street_npcs(delta: float) -> void:
 		if _rival_timer <= 0.0:
 			_rival_timer = day.rival_interval * randf_range(0.8, 1.2)
 			_spawn_rival()
+
+
+## Pasang NpcVoiceDirector dan daftarkan NPC yang sudah ada sejak awal. Kucing dan pejalan
+## kaki mendaftar sendiri saat muncul (_spawn_cat). Audio disuntikkan lewat Callable supaya
+## direktur tidak bergantung pada autoload.
+func _setup_voices() -> void:
+	_voices = NpcVoiceDirector.new()
+	_voices.name = "NpcVoices"
+	_voices.tile = TILE
+	_voices.can_speak = AudioManager.can_play_voice
+	_voices.speak_audio = AudioManager.play_voice
+	add_child(_voices)
+	var center := Vector2(TILE / 2.0, TILE / 2.0)
+	# Pelanggan: hanya saat Masbro membawa paket dan belum waktunya "Cepetan" / telat.
+	_voices.track_node(&"customer", _customer, center, _customer_say, _customer_can_speak)
+	# Penjual di kios jemput: hanya sebelum paket diambil.
+	if _pickup_stall:
+		_voices.track_node(&"sender", _pickup_stall, center, _stall_say, _sender_can_speak)
+	# Gerobak bakso: titik tetap di petaknya.
+	for row in day.lanes.size():
+		var obstacles := day.lanes[row].obstacles
+		for col: int in obstacles:
+			if obstacles[col] == &"gerobak":
+				var cell := Vector2i(col, row)
+				_voices.track_point(&"vendor", Vector2(cell) * TILE + center, _vendor_say.bind(cell))
+
+
+func _customer_say(text: String) -> void:
+	_customer.say(text)
+
+
+func _customer_can_speak() -> bool:
+	return has_package and day.eta_seconds - elapsed > 10.0
+
+
+func _sender_can_speak() -> bool:
+	return not has_package
+
+
+func _vendor_say(text: String, cell: Vector2i) -> void:
+	var bubble := _npc_say(_board, text, Vector2(cell) * TILE + Vector2(TILE / 2.0, 6))
+	# Balon di atas semua yang lain di papan.
+	bubble.get_parent().move_child(bubble, -1)
+
+
+## Balon di sisi kios yang lebih lapang supaya tidak terpotong tepi layar.
+func _stall_say(text: String) -> void:
+	if _pickup_stall == null:
+		return
+	if pickup_cell.x >= COLUMNS / 2:
+		_npc_say(_pickup_stall, text, Vector2(4.0, 14.0), SpeechBubble.Side.LEFT)
+	else:
+		_npc_say(_pickup_stall, text, Vector2(TILE - 4.0, 14.0), SpeechBubble.Side.RIGHT)
+
+
+func _walker_say(text: String, walker: Node2D) -> void:
+	# Kucing hanya mengeong (tanpa balon) agar layar tidak ramai; pejalan kaki berbalon.
+	if is_instance_valid(walker) and walker is StreetCat and (walker as StreetCat).kind == &"pedestrian":
+		_npc_say(walker, text, Vector2(TILE / 2.0, 6))
 
 
 ## Balon ucapan sementara yang menempel pada node (ikut bergerak bersamanya).
@@ -760,11 +809,11 @@ func _pick_up() -> void:
 	AudioManager.play_sfx(&"delivery", 0.05)
 	_popup("Paket diambil!", Palette.TEAL, _player.position)
 	if _pickup_stall:
-		# Balon di sisi kios yang lebih lapang supaya tidak terpotong tepi layar.
-		if pickup_cell.x >= COLUMNS / 2:
-			_npc_say(_pickup_stall, day.sender_line, Vector2(4.0, 14.0), SpeechBubble.Side.LEFT)
-		else:
-			_npc_say(_pickup_stall, day.sender_line, Vector2(TILE - 4.0, 14.0), SpeechBubble.Side.RIGHT)
+		# Sapaan penjual saat Masbro mendekat diganti kalimat perpisahan, bukan ditumpuk.
+		for child in _pickup_stall.get_children():
+			if child is SpeechBubble:
+				child.queue_free()
+		_stall_say(day.sender_line)
 	_hud.set_objective_delivery()
 	_customer.set_mood(CustomerNpc.Mood.WAITING)
 
@@ -817,6 +866,10 @@ func _flash() -> void:
 func _exit_tree() -> void:
 	# Jangan sampai hit-stop tertinggal saat pindah layar.
 	Engine.time_scale = 1.0
+	# Suara NPC yang masih berbunyi dihentikan dan musik dinaikkan lagi (ducking dilepas).
+	if _voices:
+		_voices.clear()
+	AudioManager.stop_voices()
 	# Koin yang dipungut sebelum keluar ke menu atau mengulang hari tetap tersimpan.
 	if coins > 0:
 		GameState.save_profile()
@@ -877,6 +930,7 @@ func _deliver() -> void:
 	GameState.record_delivery(day, report.wage)
 	GameState.last_day_good = report.integrity >= GOOD_DAY_INTEGRITY
 	GameState.save_profile()
+	AudioManager.stop_voices()
 	AudioManager.play_sfx(&"delivery")
 	_player.celebrate()
 	_customer.set_mood(CustomerNpc.Mood.HAPPY)
@@ -894,6 +948,7 @@ func _fail() -> void:
 	_player.invulnerable = false
 	GameState.record_delivery(day, 0)
 	GameState.save_profile()
+	AudioManager.stop_voices()
 	AudioManager.play_sfx(&"fail")
 	_customer.set_mood(CustomerNpc.Mood.SAD)
 	_customer.say("Yah... paketnya...", 0.0)
