@@ -267,7 +267,7 @@ Workflow `.github/workflows/build.yml`:
 | Push tag `v*` (contoh `v0.2.0`) | **GitHub Release** otomatis berisi `SiNgacir-web.zip`, `SiNgacir-windows.zip`, `SiNgacir-android.apk`, dan manual, lalu upload ke itch.io (+ GitHub Pages bila diaktifkan) |
 | Tombol **Run workflow** di tab Actions | Build manual kapan saja; centang input `itch` untuk mengunggah tag yang dipilih ke itch.io |
 
-Push ke `main` tidak lagi memicu build: isinya sama dengan PR yang sudah lolos cek, dan rilis dibuat lewat tag. Perubahan yang hanya menyentuh dokumen (`wiki/**`, `docs/**` kecuali `docs/MANUAL.md`, `*.md` di root, `uts/**`) tidak memicu build. Setiap job punya batas waktu (`timeout-minutes`) supaya run yang macet tidak menghabiskan menit Actions.
+Push ke `main` tidak membangun ulang game: isinya sama dengan PR yang sudah lolos cek, dan rilis dibuat lewat tag. Yang jalan hanya job **warm-cache** (beberapa detik bila cache ada): memastikan Godot, export template, dan template web ramping tersimpan di cache scope `main`, karena cache dari PR atau tag tidak bisa dipakai ref lain. Tanpa ini setiap PR dan tag membangun ulang template web (±30 menit). Perubahan yang hanya menyentuh dokumen (`wiki/**`, `docs/**` kecuali `docs/MANUAL.md`, `*.md` di root, `uts/**`) tidak memicu build. Setiap job punya batas waktu (`timeout-minutes`) supaya run yang macet tidak menghabiskan menit Actions.
 
 Build Web memakai **template Godot ramping** (modul yang tidak dipakai dibuang, inti 3D tetap ada untuk Tampilan 3D, lihat `.github/godot/web_template.py`). Template dibangun sekali (sekitar 30 menit) lalu disimpan di cache Actions; mengubah file profil itu akan membangunnya ulang. Ukuran file web tercatat di ringkasan setiap run.
 
