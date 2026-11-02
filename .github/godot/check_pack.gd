@@ -5,7 +5,7 @@ extends SceneTree
 
 const STORY_DIR := "res://resources/story/"
 const DAY_DIR := "res://resources/days/"
-const MUSIC: Array[String] = ["menu", "gameplay", "gameplay_ceria", "nana", "kilat"]
+const MUSIC: Array[String] = ["menu", "gameplay", "gameplay_ceria", "sedih", "tegang"]
 
 var _errors := 0
 

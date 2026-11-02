@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PackageData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/package_data.gd" id="1_pkg"]
+
+[resource]
+script = ExtResource("1_pkg")
+id = &"kristal"
+display_name = "Patung Kristal Jeruk"
+description = "Pesanan Pak Wali Kota. Sangat rapuh: dua benturan dan patungnya pecah."
+max_damage = 2
+fragility = 1
+step_time = 0.12
+color = Color(1.0, 0.7, 0.28, 1)

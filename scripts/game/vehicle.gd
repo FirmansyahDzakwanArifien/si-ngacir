@@ -9,8 +9,8 @@ const TYPES := {
 	&"bajaj": {"length": 1, "damage": 1, "color": Color("ff9f1c")},
 	&"angkot": {"length": 2, "damage": 1, "color": Color("3bb273")},
 	&"bus": {"length": 4, "damage": 2, "color": Color("ff6b6b")},
-	# Bang Kilat, kurir rival: sekali lewat dengan sangat cepat.
-	&"kilat": {"length": 1, "damage": 1, "color": Color("06d6a0")},
+	# Kuro, kurir rival: sekali lewat dengan sangat cepat.
+	&"kuro": {"length": 1, "damage": 1, "color": Color("2b2d42")},
 	# Rakit di sungai: bukan penabrak, tapi pijakan.
 	&"rakit2": {"length": 2, "damage": 0, "color": Color("c98b52"), "platform": true},
 	&"rakit3": {"length": 3, "damage": 0, "color": Color("c98b52"), "platform": true},

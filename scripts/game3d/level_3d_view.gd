@@ -37,6 +37,8 @@ var _pose: Node3D
 var _vehicles := {}
 var _items := {}
 var _cats := {}
+## Kulit pisang Kuro, key: node Peel di papan 2D.
+var _peels := {}
 ## Teks dan balon 2D yang dicerminkan ke 3D: sumber → Label3D.
 var _labels := {}
 var _bubbles := {}
@@ -437,14 +439,31 @@ func _sync_cats() -> void:
 			continue
 		var node: Node3D = _cats.get(cat)
 		if node == null:
-			node = Props.cat() if cat.kind == &"cat" else Props.pedestrian()
+			match cat.kind:
+				&"cat":
+					node = Props.cat()
+				&"buldog":
+					node = Props.buldog()
+				_:
+					node = Props.pedestrian()
 			add_child(node)
 			_cats[cat] = node
 		var center := cat.position + Vector2(TILE / 2.0, TILE / 2.0)
 		node.position = Vector3(center.x / TILE, _surface(int(center.y / TILE)), center.y / TILE)
 		node.rotation.y = 0.0 if cat.direction > 0 else PI
-		if cat.kind != &"cat":
+		if cat.kind == &"pedestrian":
 			node.rotation.y += -PI / 2.0
+	for key in _peels.keys():
+		if not is_instance_valid(key) or not key in level._peels.values():
+			_peels[key].queue_free()
+			_peels.erase(key)
+	for holder: Node2D in level._peels.values():
+		if is_instance_valid(holder) and not _peels.has(holder):
+			var peel := Props.peel()
+			var center := holder.position + Vector2(TILE / 2.0, TILE / 2.0)
+			peel.position = Vector3(center.x / TILE, _surface(int(center.y / TILE)), center.y / TILE)
+			add_child(peel)
+			_peels[holder] = peel
 
 
 # ------------------------------------------------------------------ Teks, balon, dan partikel dari Level

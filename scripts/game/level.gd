@@ -36,6 +36,21 @@ const BLOCKERS := [&"cone", &"barrier", &"gerobak"]
 const HONK_DISTANCE := 2.5 * 48.0
 const HONK_COOLDOWN := 2.0
 const RIVAL_SPEED := 300.0
+## Kulit pisang Kuro hilang sendiri setelah sekian detik.
+const PEEL_TIME := 12.0
+## Pak Buldog menggonggong bila Masbro dalam jarak ini (petak, termasuk diagonal).
+const BARK_RANGE := 1
+const BARK_COOLDOWN := 6.0
+## Mode panik setelah digonggong: langkah secepat sepatu, tapi aspal jadi licin.
+const PANIC_TIME := 3.0
+const PANIC_SLIP_CHANCE := 0.3
+## Teriakan Bos Koko lewat earpiece (docs/STORY.md bagian 5).
+const KOKO_CARGO_CRITICAL := "WOI MASBRO! Isinya remuk tuh! Pelan-pelan dikit!"
+const KOKO_TIME_LOW := "Waktu tipis, Masbro! Jangan ngelamun!"
+## Kondisi paket yang memicu teriakan "isinya remuk".
+const CARGO_CRITICAL_INTEGRITY := 0.34
+## Sisa ETA yang memicu teriakan "waktu tipis".
+const TIME_LOW_SECONDS := 15.0
 ## Toleransi mendarat di rakit/perahu (px di luar ujung yang masih dihitung naik). Kecil, supaya
 ## tepi sprite tetap jujur; Masbro lalu digeser ke atas rakit.
 const RAFT_GRACE := 0.2 * 48.0
@@ -81,6 +96,13 @@ var _cats: Array[StreetCat] = []
 var _cat_timer := 1.5
 var _honk_cooldown := 0.0
 var _rival_timer := 6.0
+## Kulit pisang di papan, key: Vector2i sel, value: node gambarnya.
+var _peels := {}
+## Sisa waktu mode panik (Pak Buldog) dan jeda gonggongan tiap Pak Buldog.
+var _panic_left := 0.0
+var _bark_cooldowns := {}
+## Teriakan Bos Koko yang sudah keluar hari ini (sekali per jenis).
+var _koko_said: Array[StringName] = []
 var _popup_cooldown := 0.0
 var _boost_left := 0.0
 ## Node item di papan, key: Vector2i(kolom, baris).
@@ -133,6 +155,7 @@ func _ready() -> void:
 	_spawn_customer()
 	_spawn_pickup()
 	_spawn_player()
+	_spawn_buldogs()
 	_setup_voices()
 	if day.rainy:
 		_rain = RainOverlay.new()
@@ -216,8 +239,10 @@ func _process(delta: float) -> void:
 	_scan_tips(delta)
 	_update_customer()
 	_update_cats(delta)
+	_update_buldogs(delta)
 	_update_street_npcs(delta)
 	_update_river(delta)
+	_panic_left = maxf(0.0, _panic_left - delta)
 	if _boost_left > 0.0:
 		_boost_left -= delta
 		if _boost_left <= 0.0:
@@ -324,9 +349,11 @@ func _spawn_customer() -> void:
 func _update_customer() -> void:
 	var left := day.eta_seconds - elapsed
 	if left < 0.0:
-		_customer_line(&"late", "Kok lama, ya...", CustomerNpc.Mood.IMPATIENT)
+		_customer_line(&"late", day.customer_late_line, CustomerNpc.Mood.IMPATIENT)
 	elif left <= 10.0:
-		_customer_line(&"hurry", "Cepetan, Masbro...", CustomerNpc.Mood.IMPATIENT)
+		_customer_line(&"hurry", day.customer_hurry_line, CustomerNpc.Mood.IMPATIENT)
+	if left <= TIME_LOW_SECONDS and has_package:
+		_koko_say(&"time_low", KOKO_TIME_LOW)
 	# Sapaan saat Masbro mendekat ("Sedikit lagi, Masbro!", dll.) dibawakan _voices.
 
 
@@ -384,7 +411,7 @@ func _update_cats(delta: float) -> void:
 		if _cat_timer <= 0.0:
 			_cat_timer = randf_range(CAT_SPAWN_DELAY.x, CAT_SPAWN_DELAY.y)
 			var cats := _cats.filter(func(w: StreetCat) -> bool: return w.kind == &"cat").size()
-			var walkers := _cats.size() - cats
+			var walkers := _cats.filter(func(w: StreetCat) -> bool: return w.kind == &"pedestrian").size()
 			var want_walker := walkers < day.pedestrian_count and (cats >= day.cat_count or randf() < 0.5)
 			if want_walker:
 				_spawn_cat(&"pedestrian")
@@ -392,7 +419,7 @@ func _update_cats(delta: float) -> void:
 				_spawn_cat(&"cat")
 	var player_box := _player.hitbox()
 	for cat in _cats:
-		if cat.hitbox().intersects(player_box) and cat.notice_player():
+		if cat.kind != &"buldog" and cat.hitbox().intersects(player_box) and cat.notice_player():
 			_popup("Meong?" if cat.kind == &"cat" else "Eh, maaf!", Color("f4a259"), cat.position)
 
 
@@ -449,6 +476,8 @@ func _on_player_blocked(cell: Vector2i) -> void:
 		_popup("Awas!", Palette.ORANGE, _player.position)
 	elif _walker_at(cell) and _walker_at(cell).kind == &"pedestrian":
 		_popup("Permisi, Mas!", Palette.CORAL, _player.position)
+	elif _walker_at(cell) and _walker_at(cell).kind == &"buldog":
+		_popup("GRRR!", Palette.ORANGE, _player.position)
 	else:
 		_popup("Meong!", Color("f4a259"), _player.position)
 		AudioManager.play_sfx(&"meow", 0.1)
@@ -462,14 +491,14 @@ func _walker_at(cell: Vector2i) -> StreetCat:
 	return null
 
 
-## Klakson pengemudi dan Bang Kilat. (Suara NPC lain: lihat _setup_voices.)
+## Klakson pengemudi dan Kuro. (Suara NPC lain: lihat _setup_voices.)
 func _update_street_npcs(delta: float) -> void:
 	_voices.tick(delta, _player.position + Vector2(TILE / 2.0, TILE / 2.0))
 	_honk_cooldown = maxf(0.0, _honk_cooldown - delta)
 	var row := _player.cell.y
 	if _honk_cooldown <= 0.0 and day.lanes[row].kind == LaneData.Kind.ROAD:
 		for vehicle in _vehicles:
-			if not is_instance_valid(vehicle) or vehicle.is_platform or vehicle.type == &"kilat":
+			if not is_instance_valid(vehicle) or vehicle.is_platform or vehicle.type == &"kuro":
 				continue
 			if roundi(vehicle.position.y / TILE) != row:
 				continue
@@ -557,7 +586,7 @@ func _npc_say(owner: Node2D, text: String, offset: Vector2, side := SpeechBubble
 	bubble.position = offset
 	owner.add_child(bubble)
 	bubble.say(text, 1.6)
-	# Simpan id, bukan objeknya: pemilik balon (misalnya motor Bang Kilat) bisa hilang lebih dulu.
+	# Simpan id, bukan objeknya: pemilik balon (misalnya motor Kuro) bisa hilang lebih dulu.
 	var bubble_id := bubble.get_instance_id()
 	get_tree().create_timer(1.8, false).timeout.connect(func() -> void:
 		var node := instance_from_id(bubble_id) as Node
@@ -566,7 +595,7 @@ func _npc_say(owner: Node2D, text: String, offset: Vector2, side := SpeechBubble
 	return bubble
 
 
-## Bang Kilat melesat sekali di lane jalan yang terlihat di depan Masbro.
+## Kuro melesat sekali di lane jalan yang terlihat di depan Masbro, kadang membuang kulit pisang.
 func _spawn_rival() -> void:
 	var view := _visible_rows()
 	var rows: Array[int] = []
@@ -577,15 +606,118 @@ func _spawn_rival() -> void:
 		return
 	var rival := Vehicle.new()
 	var direction := 1 if randf() < 0.5 else -1
-	rival.setup(&"kilat", TILE, RIVAL_SPEED, direction, -TILE * 2.0, COLUMNS * TILE + TILE * 4.0)
+	var row: int = rows.pick_random()
+	rival.setup(&"kuro", TILE, RIVAL_SPEED, direction, -TILE * 2.0, COLUMNS * TILE + TILE * 4.0)
 	rival.one_shot = true
 	rival.headlights = day.rainy
-	rival.position = Vector2(-TILE * 2.0 if direction > 0 else COLUMNS * TILE + TILE, rows.pick_random() * TILE)
+	rival.position = Vector2(-TILE * 2.0 if direction > 0 else COLUMNS * TILE + TILE, row * TILE)
 	_board.add_child(rival)
 	_vehicles.append(rival)
-	_npc_say(rival, "Minggir, Masbro!", Vector2(TILE / 2.0, 6))
+	_npc_say(rival, "Minggir, kapibara!", Vector2(TILE / 2.0, 6))
 	_tips.trigger(&"rival")
 	AudioManager.play_sfx(&"horn", 0.15)
+	if randf() < day.peel_chance:
+		_drop_peel(row, rival.position.x)
+
+
+## Kulit pisang jatuh dari motor Kuro saat ia melewati satu petak acak di lane-nya.
+func _drop_peel(row: int, start_x: float) -> void:
+	var columns: Array[int] = []
+	for col in COLUMNS:
+		var cell := Vector2i(col, row)
+		if cell != _player.cell and not _peels.has(cell) and day.lanes[row].obstacles.get(col, &"") == &"":
+			columns.append(col)
+	if columns.is_empty():
+		return
+	var col: int = columns.pick_random()
+	var delay := absf(col * TILE - start_x) / RIVAL_SPEED
+	get_tree().create_timer(delay, false).timeout.connect(_place_peel.bind(Vector2i(col, row)))
+
+
+func _place_peel(cell: Vector2i) -> void:
+	if state != State.PLAYING or _peels.has(cell) or cell == _player.cell:
+		return
+	var holder := Node2D.new()
+	holder.name = "Peel"
+	holder.position = Vector2(cell) * TILE
+	var node := SpriteLibrary.sprite("item_kulit_pisang")
+	if node:
+		holder.add_child(node)
+	_board.add_child(holder)
+	_board.move_child(holder, _player.get_index())
+	_peels[cell] = holder
+	get_tree().create_timer(PEEL_TIME, false).timeout.connect(_remove_peel.bind(cell, holder))
+	_tips.trigger(&"peel")
+
+
+func _remove_peel(cell: Vector2i, holder: Node2D) -> void:
+	if _peels.get(cell) == holder:
+		_peels.erase(cell)
+	if is_instance_valid(holder):
+		var tween := holder.create_tween()
+		tween.tween_property(holder, "modulate:a", 0.0, 0.25)
+		tween.tween_callback(holder.queue_free)
+
+
+## Pak Buldog duduk di median di tengah rute (tidak di baris Pos atau baris titik jemput).
+func _spawn_buldogs() -> void:
+	var rows: Array[int] = []
+	for row in range(4, _rows - 4):
+		if day.lanes[row].kind == LaneData.Kind.MEDIAN and not day.lanes[row].checkpoint and row != pickup_cell.y:
+			rows.append(row)
+	rows.shuffle()
+	for i in mini(day.buldog_count, rows.size()):
+		var row := rows[i]
+		var lane := day.lanes[row]
+		var columns: Array[int] = []
+		for col in range(1, COLUMNS - 1):
+			if not lane.obstacles.has(col) and not lane.items.has(col):
+				columns.append(col)
+		if columns.is_empty():
+			continue
+		var dog := StreetCat.new()
+		dog.kind = &"buldog"
+		dog.walk_sprite = "buldog_sit"
+		dog.idle_sprite = "buldog_bark"
+		dog.tile = TILE
+		dog.board_width = COLUMNS * TILE
+		dog.speed = 0.0
+		dog.direction = 1 if randf() < 0.5 else -1
+		dog.position = Vector2(columns.pick_random(), row) * TILE
+		_board.add_child(dog)
+		_board.move_child(dog, _player.get_index())
+		_cats.append(dog)
+
+
+## Pak Buldog menggonggong saat Masbro lewat dekat: layar bergetar dan Masbro panik.
+func _update_buldogs(delta: float) -> void:
+	for dog in _cats:
+		if not is_instance_valid(dog) or dog.kind != &"buldog":
+			continue
+		var cooldown: float = maxf(0.0, _bark_cooldowns.get(dog, 0.0) - delta)
+		_bark_cooldowns[dog] = cooldown
+		var dog_cell := Vector2i(roundi(dog.position.x / TILE), roundi(dog.position.y / TILE))
+		var gap := (_player.cell - dog_cell).abs()
+		if cooldown > 0.0 or maxi(gap.x, gap.y) > BARK_RANGE:
+			continue
+		_bark_cooldowns[dog] = BARK_COOLDOWN
+		dog.notice_player()
+		_npc_say(dog, "GUK! GUK!", Vector2(TILE / 2.0, 6))
+		AudioManager.play_sfx(&"bark", 0.1)
+		_shake()
+		_panic_left = PANIC_TIME
+		_boost_left = maxf(_boost_left, PANIC_TIME)
+		_player.speed_multiplier = SHOES_SPEED
+		_popup("Panik! Ngacir!", Palette.ORANGE, _player.position)
+		_tips.trigger(&"buldog")
+
+
+## Bos Koko berteriak lewat earpiece, sekali per jenis per hari.
+func _koko_say(id: StringName, text: String) -> void:
+	if id in _koko_said:
+		return
+	_koko_said.append(id)
+	_hud.show_radio(tr(text))
 
 
 func _popup(text: String, color: Color, at: Vector2) -> void:
@@ -654,9 +786,19 @@ func _on_player_moved(cell: Vector2i) -> void:
 	if day.lanes[cell.y].obstacles.get(cell.x, &"") == &"hole" and not _player.invulnerable:
 		_on_hole()
 		return
-	var on_wet_road := day.rainy and day.lanes[cell.y].kind == LaneData.Kind.ROAD
-	if on_wet_road and not _player.last_move_was_slide and not _player.invulnerable \
-			and randf() < day.slip_chance and _player.slide():
+	if _peels.has(cell) and not _player.last_move_was_slide:
+		_remove_peel(cell, _peels[cell])
+		if not _player.invulnerable and _player.slide():
+			_popup("Kulit pisang!", Palette.YELLOW, _player.position)
+			Effects.spray(_board, _player.position + Vector2(TILE / 2.0, TILE - 4.0), Vector2(_player.last_direction))
+			AudioManager.play_sfx(&"slip")
+			return
+	var on_road := day.lanes[cell.y].kind == LaneData.Kind.ROAD
+	var slip_chance := day.slip_chance if day.rainy else 0.0
+	if _panic_left > 0.0:
+		slip_chance = maxf(slip_chance, PANIC_SLIP_CHANCE)
+	if on_road and not _player.last_move_was_slide and not _player.invulnerable \
+			and randf() < slip_chance and _player.slide():
 		_popup("Licin!", Color("8ecae6"), _player.position)
 		Effects.spray(_board, _player.position + Vector2(TILE / 2.0, TILE - 4.0), Vector2(_player.last_direction))
 		AudioManager.play_sfx(&"slip")
@@ -905,6 +1047,9 @@ func _damage_package(amount: int, knock_to: Vector2i) -> void:
 	_tips.trigger(&"hit")
 	damage = mini(damage + amount * day.package.fragility, day.package.max_damage)
 	_hud.update_package(damage)
+	if damage < day.package.max_damage \
+			and 1.0 - float(damage) / day.package.max_damage <= CARGO_CRITICAL_INTEGRITY:
+		_koko_say(&"cargo_critical", KOKO_CARGO_CRITICAL)
 	Effects.burst(_board, _player.position + Vector2(TILE / 2.0, TILE / 2.0), day.package.color)
 	AudioManager.play_sfx(&"hit", 0.1)
 	if damage >= day.package.max_damage:

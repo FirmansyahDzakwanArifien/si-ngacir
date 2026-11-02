@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/data/day_data.gd" id="1_day"]
 [ext_resource type="Script" path="res://scripts/data/map_params.gd" id="2_map"]
-[ext_resource type="Resource" path="res://resources/packages/vip.tres" id="3_pkg"]
+[ext_resource type="Resource" path="res://resources/packages/kristal.tres" id="3_pkg"]
 [ext_resource type="Resource" path="res://resources/cities/bisnis.tres" id="5_city"]
 [ext_resource type="Resource" path="res://resources/story/day_05.tres" id="4_story"]
 
@@ -32,13 +32,13 @@ vendor_chance = 0.3
 [resource]
 script = ExtResource("1_day")
 day = 5
-title = "Paket VIP"
+title = "Ujian Akhir: Kristal Jeruk"
 package = ExtResource("3_pkg")
-customer_name = "Bu Direktur Ngacir"
-customer_id = &"bu_direktur"
-customer_greeting = "Ini penentuan, Masbro. Saya tunggu."
-sender_name = "Kantor Pusat Ngacir"
-sender_line = "Paket VIP. Jangan kecewakan Ngacir Express!"
+customer_name = "Pak Wali Kota"
+customer_id = &"walikota"
+customer_greeting = "Patungnya untuk upacara hari ini. Saya tunggu di Balai Kota."
+sender_name = "Galeri Kristal Kota"
+sender_line = "Ini satu-satunya di dunia. Jangan sampai tergores!"
 eta_seconds = 30.0
 base_wage = 100000
 eta_bonus = 30000
@@ -52,6 +52,10 @@ rival_interval = 9.0
 rainy = true
 slip_chance = 0.15
 visibility_tiles = 5.5
-strict_customer = false
-perfect_tip = 0
+strict_customer = true
+customer_hurry_line = "Upacaranya hampir mulai..."
+customer_late_line = "Para tamu sudah menunggu, Masbro."
+peel_chance = 0.5
+buldog_count = 1
+perfect_tip = 25000
 story = ExtResource("4_story")

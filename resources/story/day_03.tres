@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource("1_story")
-pages = PackedStringArray("Masbro, pesanan Pak Ojan. Pelanggan paling teliti sekota. Telurnya dicek satu-satu.", "Pak Ojan?! Aku pernah didenda dua kali lipat gara-gara satu telur retak!", "Pelan-pelan, asal pasti.")
-images = PackedStringArray("eggs", "depot", "eggs")
-speakers = PackedStringArray("direktur:normal", "kilat:kaget", "masbro:mantap")
+pages = PackedStringArray("Darurat! Jalan utama dibongkar galian pipa. Hari ini kamu antar es krim lewat Gang Tiga ke rumah Pak Budi.", "Es krim... siang bolong... lewat gang?", "Makanya cepat! Telat sedikit, es krimnya cair. Satu lagi: di gang ada Pak Buldog, satpam komplek. Dia benci yang lari-lari.", "GUK! GUK! Di komplek ini jalan pelan! Yang lari-lari saya kejar!", "Kalau Pak Buldog menggonggong, Masbro panik dan ngacir: langkahnya lebih cepat, tapi gampang tergelincir. Awas juga lubang galian di aspal!")
+images = PackedStringArray("office", "office", "office", "gang", "gang")
+speakers = PackedStringArray("koko:marah", "masbro:kaget", "koko:normal", "buldog:marah", "")

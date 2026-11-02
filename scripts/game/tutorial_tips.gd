@@ -14,7 +14,9 @@ const TIPS := {
 	&"checkpoint": "Ini Pos. Kalau paket hancur setelah ini, kamu bisa lanjut dari sini.",
 	&"eta": "ETA hampir habis! Terlambat membuat upah dipotong per detik.",
 	&"walker": "Kucing dan pejalan kaki tidak merusak paket, tapi menghalangi. Cari jalur lain.",
-	&"rival": "Itu Bang Kilat, kurir rival! Dia ngebut, jangan berdiri di lane-nya.",
+	&"rival": "Itu Kuro, kurir rival! Dia ngebut, jangan berdiri di lane-nya.",
+	&"peel": "Kulit pisang dari Kuro! Menginjaknya bikin Masbro tergelincir satu petak.",
+	&"buldog": "Pak Buldog menggonggong! Masbro panik: langkah lebih cepat, tapi gampang tergelincir di aspal.",
 }
 
 var _hud: GameHud

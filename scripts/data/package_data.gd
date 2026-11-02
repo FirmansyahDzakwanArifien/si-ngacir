@@ -8,8 +8,8 @@ extends Resource
 @export_multiline var description: String = ""
 ## Jumlah poin damage sampai paket hancur.
 @export_range(1, 10) var max_damage: int = 3
-## Pengali damage dari setiap tabrakan (contoh: telur = 2).
+## Pengali damage dari setiap tabrakan (contoh: 2 = satu benturan dihitung dua).
 @export_range(1, 5) var fragility: int = 1
-## Durasi satu langkah Masbro dalam detik. Makin besar, makin lambat (contoh: galon).
+## Durasi satu langkah Masbro dalam detik. Makin besar, makin lambat (contoh: kue ultah & akuarium).
 @export_range(0.05, 0.5, 0.01) var step_time: float = 0.12
 @export var color: Color = Color("efe6cf")

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PackageData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/package_data.gd" id="1_pkg"]
+
+[resource]
+script = ExtResource("1_pkg")
+id = &"gorengan"
+display_name = "Gorengan Hangat"
+description = "Pesanan Nana. Kuat dibenturkan, tapi harus sampai sebelum dingin dan melempem."
+max_damage = 4
+fragility = 1
+step_time = 0.12
+color = Color(0.96, 0.72, 0.33, 1)

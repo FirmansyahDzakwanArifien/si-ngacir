@@ -3,26 +3,38 @@ extends RefCounted
 ## Menghitung rating pelanggan dan upah harian dari hasil satu pengiriman.
 
 const COMMENTS := {
-	5: "Paketnya utuh, kurirnya santai. Recommended!",
-	3: "Hati-hati kalau antar paket, Masbro.",
-	2: "Masbro... paketnya rusak, tapi masih bisa diterima.",
-	1: "Mas... ini paket apa habis perang?",
+	5: "Mukanya santai, tapi paketnya mulus tanpa lecet. Mantap!",
+	3: "Lain kali lebih hati-hati, Masbro.",
+	2: "Paketnya agak hancur, tapi isinya masih bisa dipakai.",
+	1: "Ini paket atau hasil bongkar muatan kapal karam?!",
 }
 const FAILED_COMMENT := "Masbro... paket saya mana?"
-## Komentar pelanggan perfeksionis (Pak Ojan).
+## Omelan Bos Koko saat paket hancur.
+const KOKO_FAILED_COMMENT := "ASTAGA, MASBRO! Itu barang kiriman, bukan onde-onde yang boleh diremukin!"
+## Komentar pelanggan teliti (Pak Wali Kota).
 const STRICT_COMMENTS := {
-	5: "Sempurna. Saya jarang bilang begini, Masbro.",
-	4: "Utuh, tapi saya tidak suka menunggu.",
-	3: "Ada lecet. Saya catat di aplikasi.",
-	2: "Ini jauh dari standar saya, Masbro.",
+	5: "Sempurna. Ini layak dipajang di Balai Kota.",
+	4: "Utuh, tapi upacaranya hampir dimulai.",
+	3: "Ada goresan. Saya catat.",
+	2: "Ini jauh dari standar Balai Kota, Masbro.",
 	1: "Saya akan bicara dengan atasanmu.",
+}
+## Komentar pelanggan tidak sabaran (Nana).
+const IMPATIENT_COMMENTS := {
+	5: "T-tepat waktu? Gak lecet sedikit pun? Oke... bintang lima terpaksa saya kasih!",
+	4: "Lumayan. Tapi detiknya tetap saya hitung, ya.",
+	3: "Lama! Saya tulis di ulasan.",
+	2: "Sudah telat, penyok pula!",
+	1: "Bintang satu! Plus ulasan dua paragraf!",
 }
 ## Upah tambahan per koin yang dipungut di jalan.
 const COIN_VALUE := 1000
 ## Bintang maksimal bila paket sempat diganti di Pos.
 const CHECKPOINT_MAX_STARS := 3
-## Bintang maksimal dari pelanggan perfeksionis kalau paket rusak sedikit pun.
+## Bintang maksimal dari pelanggan teliti kalau paket rusak sedikit pun.
 const STRICT_DAMAGED_MAX_STARS := 3
+## Bintang maksimal dari pelanggan tidak sabaran kalau terlambat.
+const IMPATIENT_LATE_MAX_STARS := 3
 
 var customer := ""
 var stars := 0
@@ -43,6 +55,7 @@ var coin_bonus := 0
 var checkpoint_uses := 0
 var checkpoint_penalty := 0
 var strict := false
+var impatient := false
 var wage := 0
 
 
@@ -59,6 +72,9 @@ static func evaluate(day: DayData, damage: int, collisions: int, elapsed: float,
 	report.strict = day.strict_customer
 	if report.strict and damage > 0:
 		report.stars = mini(report.stars, STRICT_DAMAGED_MAX_STARS)
+	report.impatient = day.impatient_customer
+	if report.impatient and not report.on_time:
+		report.stars = mini(report.stars, IMPATIENT_LATE_MAX_STARS)
 	report.checkpoint_uses = checkpoint_uses
 	if checkpoint_uses > 0:
 		# Paket pengganti dari Pos: pelanggan tahu ada masalah di jalan.
@@ -68,7 +84,7 @@ static func evaluate(day: DayData, damage: int, collisions: int, elapsed: float,
 	report.base_wage = day.base_wage
 	report.eta_bonus = day.eta_bonus if report.on_time else 0
 	report.damage_penalty = damage * day.damage_penalty * (2 if report.strict else 1)
-	report.late_penalty = report.late_seconds * day.late_penalty_per_second
+	report.late_penalty = report.late_seconds * day.late_penalty_per_second * (2 if report.impatient else 1)
 	report.tip = day.perfect_tip if damage == 0 and report.on_time else 0
 	report.coins = coins
 	report.coin_bonus = coins * COIN_VALUE
@@ -82,6 +98,8 @@ static func evaluate(day: DayData, damage: int, collisions: int, elapsed: float,
 static func _comment_for(report: DeliveryReport) -> String:
 	if report.strict:
 		return STRICT_COMMENTS[report.stars]
+	if report.impatient:
+		return IMPATIENT_COMMENTS[report.stars]
 	if report.stars == 4:
 		return "Paket agak penyok, tapi masih aman." if report.on_time \
 				else "Paketnya sampai dengan baik, cuma agak lama."

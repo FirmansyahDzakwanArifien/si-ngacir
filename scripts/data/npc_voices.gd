@@ -25,7 +25,7 @@ const PROFILES := {
 			["Sedikit lagi, Masbro!", &"customer_1"],
 			["Itu dia kurirnya!", &"customer_2"],
 			["Hati-hati, jangan sampai lecet ya!", &"customer_3"],
-			["Yeay, paketku datang!", &"customer_1"],
+			["Tuh dia datang! Awas aja kalau lecet!", &"customer_1"],
 		],
 	},
 	# Penjual di kios jemput. Hanya bicara sebelum Masbro mengambil paket.
