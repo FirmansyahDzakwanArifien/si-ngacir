@@ -5,7 +5,7 @@ extends SceneTree
 
 const STORY_DIR := "res://resources/story/"
 const DAY_DIR := "res://resources/days/"
-const MUSIC: Array[String] = ["menu", "gameplay", "nana", "kilat"]
+const MUSIC: Array[String] = ["menu", "gameplay", "gameplay_ceria", "nana", "kilat"]
 
 var _errors := 0
 
@@ -36,12 +36,19 @@ func _initialize() -> void:
 
 	for music in MUSIC:
 		_check(ResourceLoader.exists("res://assets/audio/music/%s.wav" % music), "musik %s" % music)
-	# Bus Music & SFX harus sudah ada dari layout: membuatnya saat berjalan membisukan
+	# Bus Music, SFX & Voice harus sudah ada dari layout: membuatnya saat berjalan membisukan
 	# semua suara di build web Godot 4.3.
 	var layout: AudioBusLayout = load("res://default_bus_layout.tres")
 	_check(layout != null, "layout bus audio ikut")
-	var buses := [AudioServer.get_bus_index(&"Music"), AudioServer.get_bus_index(&"SFX")]
-	_check(buses[0] > 0 and buses[1] > 0, "bus Music & SFX ada sejak awal (%s)" % [buses])
+	var buses := [AudioServer.get_bus_index(&"Music"), AudioServer.get_bus_index(&"SFX"),
+			AudioServer.get_bus_index(&"Voice")]
+	_check(buses[0] > 0 and buses[1] > 0 and buses[2] > 0, "bus Music, SFX & Voice ada sejak awal (%s)" % [buses])
+
+	# Setiap suara yang dirujuk dialog NPC harus ada filenya (suara NPC di folder voice,
+	# atau SFX yang dipakai ulang, misalnya meow).
+	for voice in NpcVoices.voice_names():
+		_check(ResourceLoader.exists("res://assets/audio/voice/%s.wav" % voice)
+				or ResourceLoader.exists("res://assets/audio/sfx/%s.wav" % voice), "suara NPC %s" % voice)
 
 	print("check_pack: %d gagal" % _errors)
 	quit(1 if _errors > 0 else 0)
