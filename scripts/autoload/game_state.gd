@@ -16,9 +16,10 @@ const DAYS: Array[String] = [
 	"res://resources/days/day_04.tres",
 	"res://resources/days/day_05.tres",
 ]
-## Placeholder. Upah maksimal 5 hari = Rp505.000 (termasuk tip Pak Ojan); nilai final ditentukan tim Writer Story.
-const MEDICAL_COST := 350000
-## Placeholder sampai tim Writer Story memutuskan.
+## Tunggakan sewa Kedai Chill yang harus lunas setelah masa percobaan (docs/STORY.md).
+## Upah maksimal 5 hari = Rp530.000 (upah dasar + bonus tepat waktu + tip, tanpa koin).
+const RENT_DUE := 350000
+## Tabungan kurang setelah Hari 5: Pemilik Lahan masih memberi waktu, jadi hari boleh diulang.
 const SHORTFALL_RULE := ShortfallRule.REPLAY_DAYS
 const LEVEL_SCENE := "res://scenes/game/level.tscn"
 const ENDING_SCENE := "res://scenes/ending.tscn"
@@ -31,16 +32,17 @@ const SAVE_PATH := "user://save.cfg"
 ## Dompet koin dan koleksi aksesori; tidak terhapus oleh "Mulai Baru".
 const PROFILE_PATH := "user://profile.cfg"
 const SHOP_SCENE := "res://scenes/shop.tscn"
-## Aksesori bawaan ala poster: dimiliki dan dipakai sejak awal (bisa dilepas di toko).
-const STARTER_ITEM := &"kacamata_piksel"
+## Aksesori bawaan: kacamata ala poster dan jeruk khas Masbro. Dimiliki dan dipakai sejak awal
+## (bisa dilepas di toko).
+const STARTER_ITEMS: Array[StringName] = [&"kacamata_piksel", &"jeruk"]
 const ALBUM_SCENE := "res://scenes/album.tscn"
 ## Ringkasan "Sebelumnya…" saat melanjutkan, per hari: [teks, gambar].
 const RECAPS := [
-	["Sebelumnya… Nana dirawat dengan biaya {target}. Masbro mendaftar jadi kurir masa percobaan di Ngacir Express.", "hospital"],
-	["Sebelumnya… Hari pertama selesai. Bang Kilat masih meremehkan si kurir baru, dan Nana menunggu kabar baik.", "depot"],
-	["Sebelumnya… Masbro mulai hafal jalanan kota. Hari ini giliran pesanan Pak Ojan, pelanggan paling teliti sekota.", "eggs"],
-	["Sebelumnya… Telur Pak Ojan sudah lewat. Hari ini hujan deras turun tepat di jam sibuk.", "rain"],
-	["Sebelumnya… Tinggal satu hari. Paket VIP hari ini menentukan lolos atau tidaknya masa percobaan.", "vip"],
+	["Sebelumnya… Pemilik Lahan menagih tunggakan sewa Kedai Chill sebesar {target}. Masbro mendaftar jadi kurir masa percobaan di Ngacir Express.", "sp3"],
+	["Sebelumnya… Gorengan Nana sudah terantar. Kuro, kurir rival dari CepatKilat, mulai mengincar rute Masbro.", "depot"],
+	["Sebelumnya… Jalan utama ditutup galian pipa. Hari ini Masbro harus lewat Gang Tiga, wilayah Pak Buldog.", "gang"],
+	["Sebelumnya… Es krim Pak Budi sudah lewat. Hari ini badai turun, dan Nana menunggu laptop VIP-nya.", "rain"],
+	["Sebelumnya… Tinggal satu hari. Patung Kristal Jeruk Pak Wali Kota menentukan lolos atau tidaknya masa percobaan.", "kristal"],
 ]
 
 const INPUT_KEYS := {
@@ -49,6 +51,8 @@ const INPUT_KEYS := {
 	&"move_left": [KEY_A, KEY_LEFT],
 	&"move_right": [KEY_D, KEY_RIGHT],
 	&"pause": [KEY_ESCAPE, KEY_P],
+	# Bisukan / nyalakan semua suara (ditangani AudioManager).
+	&"mute": [KEY_M],
 }
 
 var current_day_index := 0
@@ -71,8 +75,8 @@ var tips_enabled := true
 var seen_stories: Array[String] = []
 ## Cutscene maju sendiri setelah teks selesai.
 var story_auto := false
-## Aksesori bawaan sudah pernah diberikan (supaya pemain tetap bisa melepasnya).
-var starter_given := false
+## Aksesori bawaan yang sudah pernah diberikan (supaya pemain tetap bisa melepasnya).
+var starters_given: Array[StringName] = []
 ## Cutscene yang akan diputar dan scene tujuan setelahnya (lihat play_story).
 var pending_story: StoryData
 var pending_scene := ""
@@ -137,7 +141,7 @@ func total_savings() -> int:
 
 
 func savings_enough() -> bool:
-	return total_savings() >= MEDICAL_COST
+	return total_savings() >= RENT_DUE
 
 
 ## Build ini punya modul 3D (web, Windows, Android). Build tanpa 3D menyembunyikan opsi Tampilan 3D.
@@ -187,9 +191,9 @@ func recap_story() -> StoryData:
 	recap.images.append(entry[1])
 	recap.speakers.append("")
 	if total_savings() > 0:
-		recap.pages.append(tr("Tabungan pengobatan Nana: {saved} dari {target}. Sudah cukup, tinggal lolos masa percobaan!")
-				if savings_enough() else tr("Tabungan pengobatan Nana: {saved} dari {target}. Kurang {left} lagi."))
-		recap.images.append("home_night")
+		recap.pages.append(tr("Tabungan sewa Kedai Chill: {saved} dari {target}. Sudah cukup, tinggal lolos masa percobaan!")
+				if savings_enough() else tr("Tabungan sewa Kedai Chill: {saved} dari {target}. Kurang {left} lagi."))
+		recap.images.append("kedai_night")
 		recap.speakers.append("")
 	recap.pages.append(tr("Hari %d. Trobos Ajalah!") % (current_day_index + 1))
 	recap.images.append("road")
@@ -201,8 +205,8 @@ func recap_story() -> StoryData:
 func story_text(text: String) -> String:
 	return tr(text).format({
 		"saved": rupiah(total_savings()),
-		"target": rupiah(MEDICAL_COST),
-		"left": rupiah(maxi(0, MEDICAL_COST - total_savings())),
+		"target": rupiah(RENT_DUE),
+		"left": rupiah(maxi(0, RENT_DUE - total_savings())),
 	})
 
 
@@ -267,17 +271,21 @@ func set_tips_enabled(value: bool) -> void:
 	save_profile()
 
 
-## Beri aksesori bawaan sekali per profil (juga untuk profil lama), dan pakai bila slotnya kosong.
+## Beri tiap aksesori bawaan sekali per profil (juga untuk profil lama), dan pakai bila slotnya kosong.
 func _give_starter() -> void:
-	if starter_given:
-		return
-	starter_given = true
-	if not STARTER_ITEM in owned:
-		owned.append(STARTER_ITEM)
-	var slot: int = Cosmetics.item(STARTER_ITEM)["slot"]
-	if not equipped.has(slot):
-		equipped[slot] = STARTER_ITEM
-	save_profile()
+	var changed := false
+	for id in STARTER_ITEMS:
+		if id in starters_given:
+			continue
+		starters_given.append(id)
+		changed = true
+		if not id in owned:
+			owned.append(id)
+		var slot: int = Cosmetics.item(id)["slot"]
+		if not equipped.has(slot):
+			equipped[slot] = id
+	if changed:
+		save_profile()
 
 
 func save_profile() -> void:
@@ -289,7 +297,7 @@ func save_profile() -> void:
 	config.set_value("profile", "tips_enabled", tips_enabled)
 	config.set_value("profile", "seen_stories", seen_stories)
 	config.set_value("profile", "story_auto", story_auto)
-	config.set_value("profile", "starter_given", starter_given)
+	config.set_value("profile", "starters_given", starters_given)
 	config.save(PROFILE_PATH)
 
 
@@ -304,7 +312,10 @@ func load_profile() -> void:
 	tips_enabled = config.get_value("profile", "tips_enabled", true)
 	seen_stories.assign(config.get_value("profile", "seen_stories", []))
 	story_auto = config.get_value("profile", "story_auto", false)
-	starter_given = config.get_value("profile", "starter_given", false)
+	starters_given.assign(config.get_value("profile", "starters_given", []))
+	# Profil lama (sebelum jeruk) hanya mencatat kacamata bawaan sebagai bool.
+	if config.get_value("profile", "starter_given", false) and not STARTER_ITEMS[0] in starters_given:
+		starters_given.append(STARTER_ITEMS[0])
 
 
 func reset_profile() -> void:
@@ -315,7 +326,7 @@ func reset_profile() -> void:
 	tips_enabled = true
 	seen_stories.clear()
 	story_auto = false
-	starter_given = false
+	starters_given.clear()
 	if FileAccess.file_exists(PROFILE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 

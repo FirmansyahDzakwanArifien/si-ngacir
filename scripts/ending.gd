@@ -1,14 +1,14 @@
 extends Control
 ## Rekap masa percobaan setelah Hari 5: upah per hari, total tabungan, dan ending.
 
-const SUCCESS_TEXT := "Paket VIP sampai di tangan Bu Direktur. Masbro resmi diangkat menjadi " \
-		+ "kurir tetap Ngacir Express, dan tabungannya cukup untuk menyembuhkan adiknya. Trobos Ajalah!"
-const SHORTFALL_TEXT := "Tabungan masih kurang %s. Ulangi hari mana pun untuk memperbaiki upah. " \
-		+ "Upah terbaik tiap hari yang dihitung."
-const FREE_PLAY_TEXT := "Masbro masih boleh mengantar paket kapan saja. Main lagi hari mana pun untuk " \
-		+ "mengumpulkan koin; upah terbaik tiap hari tetap tersimpan."
-const BAD_ENDING_TEXT := "Masa percobaan berakhir, tapi tabungan Masbro belum cukup untuk biaya " \
-		+ "pengobatan adiknya. Besok ia harus mencari jalan lain."
+const SUCCESS_TEXT := "Patung Kristal Jeruk sampai di Balai Kota. Masbro resmi diangkat menjadi " \
+		+ "kurir tetap Ngacir Express, dan sewa Kedai Chill lunas. Trobos Ajalah!"
+const SHORTFALL_TEXT := "Tabungan masih kurang %s. Pemilik Lahan masih memberi waktu: ulangi hari " \
+		+ "mana pun untuk memperbaiki upah. Upah terbaik tiap hari yang dihitung."
+const FREE_PLAY_TEXT := "Shift Malam: Kedai Chill tetap butuh biaya operasional. Main lagi hari mana pun " \
+		+ "untuk mengumpulkan koin; upah terbaik tiap hari tetap tersimpan."
+const BAD_ENDING_TEXT := "Masa percobaan berakhir, tapi tabungan Masbro belum cukup untuk sewa " \
+		+ "Kedai Chill. Kedai disegel sampai sisa sewanya lunas."
 
 
 func _ready() -> void:
@@ -48,7 +48,7 @@ func _ready() -> void:
 		column.add_child(_label(FREE_PLAY_TEXT, 15, Palette.TEXT_SOFT, true))
 	elif can_replay:
 		column.add_child(_label("TABUNGAN BELUM CUKUP", 32, Palette.YELLOW, true))
-		var missing := GameState.MEDICAL_COST - GameState.total_savings()
+		var missing := GameState.RENT_DUE - GameState.total_savings()
 		column.add_child(_label(tr(SHORTFALL_TEXT) % GameState.rupiah(missing), 16, Palette.TEXT, true))
 	else:
 		column.add_child(_label("MASA PERCOBAAN BERAKHIR", 32, Palette.CORAL, true))
@@ -73,7 +73,7 @@ func _ready() -> void:
 	column.add_child(HSeparator.new())
 	column.add_child(_money_row("Total tabungan", GameState.total_savings(),
 			Palette.TEAL_DARK if enough else Palette.CORAL_DARK))
-	column.add_child(_money_row("Biaya pengobatan", GameState.MEDICAL_COST, Palette.TEXT_SOFT))
+	column.add_child(_money_row("Sewa Kedai Chill", GameState.RENT_DUE, Palette.TEXT_SOFT))
 
 	var menu := Button.new()
 	menu.text = "Menu Utama"

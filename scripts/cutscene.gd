@@ -238,7 +238,7 @@ func _show_speaker(entry: String) -> void:
 				.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-## Ganti musik sesuai suasana halaman; masuknya tema Nana atau Bang Kilat diberi efek suara.
+## Ganti musik sesuai suasana halaman; masuknya tema sedih atau tegang diberi efek suara.
 func _play_page_music() -> void:
 	var music := Speakers.music_for(_story.speaker_at(_page), _story.image_at(_page))
 	if music == &"":
@@ -251,7 +251,7 @@ func _play_page_music() -> void:
 	if music == Speakers.SAD_MUSIC:
 		AudioManager.play_sfx(&"chime_sad")
 	elif music == Speakers.TENSE_MUSIC:
-		AudioManager.play_sfx(&"sting_kilat")
+		AudioManager.play_sfx(&"sting_tegang")
 
 
 func _update_hint() -> void:

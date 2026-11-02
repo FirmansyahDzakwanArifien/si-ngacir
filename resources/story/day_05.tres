@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource("1_story")
-pages = PackedStringArray("Hari terakhir. Paket VIP ini untuk saya sendiri. Antar tanpa cacat, dan kita bicara soal kontrak.", "Masbro! Satu tips dari aku: jangan ikut ritme orang lain. Ikuti ritmemu sendiri.", "Trobos Ajalah!")
-images = PackedStringArray("vip", "depot", "vip")
-speakers = PackedStringArray("direktur:normal", "kilat:senang", "masbro:mantap")
+pages = PackedStringArray("Hari penentuan! Patung Kristal Jeruk untuk Pak Wali Kota, antar ke Balai Kota. Satu goresan pun dihitung.", "Bonus Wali Kota itu punyaku, Masbro! Hari ini aku ngebut habis-habisan.", "Maaf, Kuro. Sewa Kedai Chill harus lunas. Hari ini aku gak bisa santai.", "Itu semangat yang saya cari! NGACIR!", "Rute terpanjang: galian, Pak Buldog, Kuro, dan sisa hujan. Pak Wali Kota teliti: denda kerusakan 2x.")
+images = PackedStringArray("kristal", "depot", "depot", "depot", "kristal")
+speakers = PackedStringArray("koko:normal", "kuro:sombong", "masbro:mantap", "koko:senang", "")

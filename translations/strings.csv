@@ -20,7 +20,6 @@ Ketuk untuk mulai,Tap to start
 Ketuk untuk lanjut,Tap to continue
 +1 koin,+1 coin
 Main Lagi %s   (%s),Play Again %s   (%s)
-Masbro masih boleh mengantar paket kapan saja. Main lagi hari mana pun untuk mengumpulkan koin; upah terbaik tiap hari tetap tersimpan.,Masbro can keep delivering any time. Replay any day to collect more coins; the best pay for each day is kept.
 PENGATURAN,SETTINGS
 Musik,Music
 Efek Suara,Sound FX
@@ -71,10 +70,8 @@ Lokasi: %s,Location: %s
 Antar ke: %s,Deliver to: %s
 Target ETA: %s   Upah dasar: %s,Target ETA: %s   Base pay: %s
 Gerak: WASD / panah / swipe   Pause: Esc / P,Move: WASD / arrows / swipe   Pause: Esc / P
-%s perfeksionis: denda kerusakan 2x. Paket sempurna dan tepat waktu dapat tip %s.,"%s is a perfectionist: damage fines are doubled. A perfect, on-time package earns a %s tip."
 Hujan deras: jarak pandang terbatas dan aspal licin.,Heavy rain: limited visibility and slippery asphalt.
 Kucing jalanan suka menghalangi jalan. Cari jalur lain!,Street cats like to block the way. Find another path!
-"Bang Kilat, kurir rival, suka ngebut tiba-tiba. Hati-hati!","Bang Kilat, the rival courier, speeds by out of nowhere. Watch out!"
 PAUSE,PAUSED
 Lanjut,Resume
 Ulangi Hari,Retry Day
@@ -89,7 +86,6 @@ Denda kerusakan,Damage fine
 Potongan telat,Late deduction
 Ganti paket di Pos (%dx),Replacement at checkpoint (%dx)
 UPAH HARI INI,TODAY'S PAY
-Tabungan pengobatan: %s / %s,Medical savings: %s / %s
 PAKET HANCUR!,PACKAGE DESTROYED!
 Kamu sudah sampai di Pos. Ambil paket pengganti dan lanjutkan perjalanan?,You reached a checkpoint. Take a replacement package and keep going?
 Pengiriman gagal. Upah hari ini hangus untuk ganti rugi.,Delivery failed. Today's pay goes to compensation.
@@ -100,23 +96,11 @@ Lihat Hasil Masa Percobaan,See Probation Results
 MASA PERCOBAAN LULUS!,PROBATION PASSED!
 TABUNGAN BELUM CUKUP,NOT ENOUGH SAVINGS
 MASA PERCOBAAN BERAKHIR,PROBATION OVER
-"Paket VIP sampai di tangan Bu Direktur. Masbro resmi diangkat menjadi kurir tetap Ngacir Express, dan tabungannya cukup untuk menyembuhkan adiknya. Trobos Ajalah!","The VIP package reached the Director. Masbro is officially hired as a permanent Ngacir Express courier, and his savings are enough to cure his little sister. Just go for it!"
-Tabungan masih kurang %s. Ulangi hari mana pun untuk memperbaiki upah. Upah terbaik tiap hari yang dihitung.,Savings are still %s short. Replay any day to improve your pay. Only each day's best pay counts.
-"Masa percobaan berakhir, tapi tabungan Masbro belum cukup untuk biaya pengobatan adiknya. Besok ia harus mencari jalan lain.","The probation is over, but Masbro's savings aren't enough for his sister's treatment. Tomorrow he'll have to find another way."
 Ulangi %s   (%s),Replay %s   (%s)
 Total tabungan,Total savings
-Biaya pengobatan,Medical costs
-"Paketnya utuh, kurirnya santai. Recommended!","Package intact, courier chill. Recommended!"
 "Paket agak penyok, tapi masih aman.","The package is a bit dented, but still fine."
 "Paketnya sampai dengan baik, cuma agak lama.","It arrived in good shape, just a little slow."
-"Hati-hati kalau antar paket, Masbro.","Be careful with deliveries, Masbro."
-"Masbro... paketnya rusak, tapi masih bisa diterima.","Masbro... it's damaged, but I'll take it."
-Mas... ini paket apa habis perang?,Dude... did this package go through a war?
 Masbro... paket saya mana?,Masbro... where's my package?
-"Sempurna. Saya jarang bilang begini, Masbro.","Perfect. I rarely say that, Masbro."
-"Utuh, tapi saya tidak suka menunggu.","Intact, but I don't like waiting."
-Ada lecet. Saya catat di aplikasi.,There's a scratch. I'm noting it in the app.
-"Ini jauh dari standar saya, Masbro.","This is far below my standards, Masbro."
 Saya akan bicara dengan atasanmu.,I'll be speaking to your manager.
 "Kok lama, ya...",What's taking so long...
 "Cepetan, Masbro...","Hurry up, Masbro..."
@@ -132,7 +116,6 @@ Awas!,Watch out!
 Meong!,Meow!
 Meong?,Meow?
 Tin tin!,Beep beep!
-"Minggir, Masbro!","Move it, Masbro!"
 Licin!,Slippery!
 Helm! Kebal 1x,Helmet! 1 free hit
 Sepatu kilat!,Speed shoes!
@@ -153,34 +136,12 @@ Sungai! Lompat ke atas rakit dan ikut arusnya. Jangan sampai tercebur.,A river! 
 "Ini Pos. Kalau paket hancur setelah ini, kamu bisa lanjut dari sini.","This is a checkpoint. If the package breaks after this, you can continue from here."
 ETA hampir habis! Terlambat membuat upah dipotong per detik.,The ETA is almost up! Being late cuts your pay every second.
 "Kucing dan pejalan kaki tidak merusak paket, tapi menghalangi. Cari jalur lain.","Cats and pedestrians don't damage the package, but they block you. Find another path."
-"Itu Bang Kilat, kurir rival! Dia ngebut, jangan berdiri di lane-nya.","That's Bang Kilat, the rival courier! He speeds, so stay out of his lane."
-Pengiriman Pertama,First Delivery
-Pengiriman Berat,Heavy Delivery
-Pesanan Pak Ojan,Mr. Ojan's Order
-Hujan di Jam Sibuk,Rush Hour Rain
-Paket VIP,VIP Package
-Bantal,Pillow
-Galon Air,Water Jug
-Telur,Eggs
-Barang Sensitif,Fragile Goods
-"Empuk dan pemaaf. Tahan beberapa benturan, cocok untuk hari pertama.","Soft and forgiving. Survives a few bumps, perfect for day one."
-Berat! Langkah Masbro jadi lebih lambat. Atur timing menyeberang.,Heavy! Masbro walks slower. Time your crossings.
-Rapuh. Satu senggolan langsung bikin retak parah.,Fragile. A single bump cracks it badly.
-Barang mahal di tengah lalu lintas yang makin padat.,Expensive goods in ever heavier traffic.
-Paket terakhir masa percobaan. Satu goresan pun akan dicatat.,The last package of the probation. Every scratch will be noted.
-"Bantalnya buat cucu saya. Hati-hati, Masbro!","The pillow is for my grandkid. Careful, Masbro!"
-"Air di rumah habis, galonnya ditunggu!","We're out of water at home, I need that jug!"
-Telurnya harus utuh. Saya cek satu-satu.,The eggs must be intact. I'll check every one.
-Hujan begini... barangnya jangan sampai basah!,In this rain... don't let it get wet!
-"Ini penentuan, Masbro. Saya tunggu.","This is the decider, Masbro. I'm waiting."
 Kota Ngacir,Ngacir City
 Kompleks Perumahan,Housing Estate
 Pasar Ngacir,Ngacir Market
 Sekitar Sekolah,School District
 Pusat Kota,Downtown
 Kawasan Bisnis,Business District
-Bu Dokter,Doctor
-Bu Direktur,The Director
 Album Cerita,Story Album
 ALBUM CERITA,STORY ALBUM
 %d/%d cerita terbuka,%d/%d stories unlocked
@@ -206,84 +167,185 @@ ambil di %s,pick up at %s
 Ambil di: %s,Pick up at: %s
 "Ambil paket dulu di kios penjemputan (ikon paket melayang), baru antar ke rumah pelanggan di ujung atas.","Pick up the package at the sender's stall first (look for the floating package), then deliver it to the customer's house at the top."
 Toko Serba Ada,General Store
-Toko Kasur Empuk,Comfy Mattress Shop
-Depot Air Segar,Fresh Water Depot
-Peternakan Bu Tini,Mrs. Tini's Farm
-Toko Elektronik Jaya,Jaya Electronics
-Kantor Pusat Ngacir,Ngacir Head Office
 "Titip ya, Masbro!","Take care of it, Masbro!"
-"Bantalnya titip, ya. Jangan sampai kotor!",Take good care of the pillow. Keep it clean!
-"Galonnya berat, jalan pelan-pelan saja.","The jug is heavy, take it slow."
-"Telurnya baru dipanen. Hati-hati, Masbro!","Fresh eggs! Careful, Masbro!"
-Barangnya sensitif. Jangan sampai kena air!,It's fragile. Keep it out of the water!
-Paket VIP. Jangan kecewakan Ngacir Express!,VIP package. Don't let Ngacir Express down!
 Auto: Mati,Auto: Off
-Sebelumnya… Nana dirawat dengan biaya {target}. Masbro mendaftar jadi kurir masa percobaan di Ngacir Express.,Previously… Nana is in treatment that costs {target}. Masbro signed up as a probation courier at Ngacir Express.
-"Sebelumnya… Hari pertama selesai. Bang Kilat masih meremehkan si kurir baru, dan Nana menunggu kabar baik.","Previously… Day one is done. Bang Kilat still looks down on the new courier, and Nana is waiting for good news."
-"Sebelumnya… Masbro mulai hafal jalanan kota. Hari ini giliran pesanan Pak Ojan, pelanggan paling teliti sekota.","Previously… Masbro is learning the city streets. Today it's Mr. Ojan's order, the pickiest customer in town."
-Sebelumnya… Telur Pak Ojan sudah lewat. Hari ini hujan deras turun tepat di jam sibuk.,Previously… Mr. Ojan's eggs made it. Today heavy rain pours down right at rush hour.
-Sebelumnya… Tinggal satu hari. Paket VIP hari ini menentukan lolos atau tidaknya masa percobaan.,Previously… One day left. Today's VIP package decides whether Masbro passes probation.
-Tabungan pengobatan Nana: {saved} dari {target}. Kurang {left} lagi.,Nana's treatment savings: {saved} of {target}. {left} to go.
-"Tabungan pengobatan Nana: {saved} dari {target}. Sudah cukup, tinggal lolos masa percobaan!","Nana's treatment savings: {saved} of {target}. That's enough, now just pass the probation!"
 Hari %d. Trobos Ajalah!,Day %d. Just go for it!
-"Kota Ngacir, suatu pagi. Masbro, capybara paling santai sekampung, tinggal berdua dengan adiknya, Nana.","Ngacir City, one morning. Masbro, the most laid-back capybara in the neighborhood, lives with his little sister, Nana."
-"Bang, sore nanti kita main ke taman, ya? Janji!","Big bro, let's go to the park this afternoon, okay? Promise!"
-Santai. Abang pulang cepat hari ini.,Relax. I'll be home early today.
-"Tapi sore itu, Nana demam tinggi dan tidak bisa bangun dari kasur.","But that afternoon, Nana came down with a high fever and couldn't get out of bed."
-"Nana harus dirawat. Biayanya {target}, paling lambat lima hari lagi.","Nana needs treatment. It will cost {target}, due within five days."
-Lima hari...?,Five days...?
-"Abang jangan sedih. Nana kuat, kok.","Don't be sad, big bro. I'm strong."
-"Keesokan paginya, Masbro melihat lowongan di Ngacir Express: kurir masa percobaan, dibayar harian.","The next morning, Masbro spotted a job at Ngacir Express: probation courier, paid daily."
-"Lima hari masa percobaan. Telat atau paket rusak, upahmu dipotong. Lolos, kamu jadi kurir tetap.","Five days of probation. Late or damaged packages cut your pay. Pass, and you're hired for good."
-"Heh, kurir baru? Di sini yang cepat yang dapat. Jangan nangis kalau kesalip, ya!","Heh, a new courier? Around here, the fastest gets paid. Don't cry when I overtake you!"
-"Cepat boleh, asal paketnya selamat.","Fast is fine, as long as the package arrives safe."
-"Kejar Timer ETA. Jaga paket dari benturan. Jangan sampai upah terpotong denda ganti rugi.
+Suara NPC,NPC Voices
+Bisukan semua suara (M),Mute all sound (M)
+Itu dia kurirnya!,There's the courier!
+"Hati-hati, jangan sampai lecet ya!","Careful, don't let it get scratched!"
+"Paketnya sudah siap, Mas!",Your package is ready!
+"Sini, Mas! Jangan sampai lecet ya!",Over here! Don't let it get scratched!
+"Kurir baru, ya? Semangat!",New courier? Good luck!
+"Bakso panas, Mas! Mampir dulu!","Hot meatballs, sir! Come on over!"
+"Bakso urat, bakso telur!","Gristle meatballs, egg meatballs!"
+"Eh, ada kurir lewat!","Oh, a courier's coming through!"
+"Semangat, Mas Kurir!","Keep it up, Mr. Courier!"
+"Wah, capybara jadi kurir?","Wow, a capybara courier?"
+"Hati-hati di jalan, ya!",Take care on the road!
+Meong~,Meow~
+Miaw!,Mew!
+Prrr...,Purr...
+"Kota Ngacir, kota yang tidak pernah berhenti ngebut. Di tengahnya ada Kedai Chill: kedai minum dan kolam air hangat milik Masbro, tempat warga kota melepas penat.","Ngacir City, a city that never stops speeding. In the middle of it sits Kedai Chill: Masbro's drink stall and warm pool, where the city's residents come to unwind."
+"Air hangat, jeruk dingin, hidup tenang.","Warm water, cold oranges, a calm life."
+Sore itu pintu kedai digedor. Pemilik Lahan datang membawa Surat Peringatan Ketiga.,That afternoon someone pounded on the door. The landlord had come with a Third Warning Letter.
+"Sewa kedai ini nunggak tiga bulan. Totalnya {target}. Lima hari lagi belum lunas, tempat ini saya kosongkan.","The rent on this place is three months overdue. That's {target} in total. If it isn't paid in five days, I'm clearing this place out."
+"Lima hari...? Boleh dicicil, Pak?",Five days...? Can I pay in installments?
+Boleh. Asal lunas dalam lima hari.,You can. As long as it's all paid in five days.
+"Kerja yang dibayar harian cuma satu: kurir masa percobaan Ngacir Express. Masbro memasang jeruk di kepala, lalu mendaftar.",Only one job pays daily: a probationary courier at Ngacir Express. Masbro balanced an orange on his head and signed up.
+"Saya Bos Koko, kepala kurir. Moto kita: Kalo gak kilat, gak selamat!","I'm Boss Koko, head of couriers. Our motto: If it ain't lightning, it ain't landing!"
+"Kurir kita jalan kaki. Kota semacet ini, yang berani nyeberang yang sampai duluan. Telat, upah dipotong. Paket rusak, ganti rugi!","Our couriers go on foot. In traffic this bad, whoever dares to cross gets there first. Late? Your pay gets cut. Damaged package? You pay for it!"
+Kurir baru? Kapibara? Jalanan kota cuma muat buat yang gesit. Mending balik berendam sana.,A new courier? A capybara? These streets are only for the quick. Better go back to your bath.
+"Santai. Cepat boleh, asal paketnya selamat.","Relax. Fast is fine, as long as the package arrives safe."
+"Kejar Timer ETA. Jaga paket dari benturan. Kumpulkan upah untuk melunasi sewa Kedai Chill.
 
-Trobos Ajalah!","Beat the ETA timer. Keep the package safe from bumps. Don't let damage fines eat your pay.
+Trobos Ajalah!","Beat the ETA timer. Protect the package from bumps. Save your wages to pay Kedai Chill's rent.
 
-Just go for it!"
-Hari kedua. Gudang Ngacir Express sudah ramai sejak subuh.,Day two. The Ngacir Express depot has been busy since dawn.
-Galon? Paket gampang. Aku sudah antar tiga sambil merem!,A water jug? Easy job. I delivered three with my eyes closed!
-"Aku antar satu saja, tapi sampai utuh.","I'll deliver just one, but in one piece."
-"Pesanan Pak Budi: galon air. Berat, langkah Masbro jadi lebih lambat. Atur waktu menyeberang!","Mr. Budi's order: a water jug. It's heavy, so Masbro walks slower. Time your crossings!"
-"Masbro, pesanan Pak Ojan. Pelanggan paling teliti sekota. Telurnya dicek satu-satu.","Masbro, an order for Mr. Ojan. The pickiest customer in town. He checks every single egg."
-Pak Ojan?! Aku pernah didenda dua kali lipat gara-gara satu telur retak!,Mr. Ojan?! He fined me double for one cracked egg!
-"Pelan-pelan, asal pasti.",Slow and steady.
-Hari keempat. Hujan deras turun tepat di jam sibuk.,Day four. Heavy rain pours down right at rush hour.
-"Masbro... jalanan licin. Aku tadi ngebut, paketku pecah. Upahku hari ini habis buat ganti rugi.",Masbro... the roads are slippery. I sped earlier and smashed my package. Today's pay all went to the fine.
-Bang Kilat! Kamu nggak apa-apa?,Bang Kilat! Are you okay?
-"Cuma gengsiku yang lecet. Sudah, sana antar paketmu.","Only my pride got scratched. Go on, deliver your package."
-"Barang sensitif untuk Pak Joko. Jarak pandang pendek, aspal basah bisa bikin tergelincir.","Fragile goods for Mr. Joko. Short visibility, and the wet asphalt can make you slip."
-"Hari terakhir. Paket VIP ini untuk saya sendiri. Antar tanpa cacat, dan kita bicara soal kontrak.","The last day. This VIP package is for me. Deliver it flawlessly, and we'll talk about a contract."
-Masbro! Satu tips dari aku: jangan ikut ritme orang lain. Ikuti ritmemu sendiri.,Masbro! One tip from me: don't follow anyone else's rhythm. Follow your own.
-Malam pertama. Tabungan pengobatan: {saved} dari {target}.,The first night. Treatment savings: {saved} of {target}.
-Abang bau asap knalpot! Tapi Nana bangga.,You smell like exhaust fumes! But I'm proud of you.
-"Besok Abang antar galon. Doain, ya.",Tomorrow I'm delivering a water jug. Wish me luck.
-Bantalnya penyok... upah Abang kepotong.,The pillow got squashed... my pay was cut.
-"Nggak apa-apa, Bang. Hari pertama memang susah. Besok pasti lebih baik.",It's okay. First days are always hard. Tomorrow will be better.
-Malam kedua. Tabungan: {saved}. Masih kurang {left}.,The second night. Savings: {saved}. Still {left} to go.
-Bang... besok antar apa?,Big bro... what are you delivering tomorrow?
-"Telur, buat Pak Ojan. Katanya beliau paling teliti sekota.","Eggs, for Mr. Ojan. They say he's the pickiest man in town."
-"Hihi, hati-hati telurnya jadi telur dadar.","Hehe, careful they don't turn into an omelette."
-Galonnya bocor. Bang Kilat malah ketawa di gudang.,The jug leaked. Bang Kilat just laughed at the depot.
-Abang kan bukan Bang Kilat. Abang yang paling hati-hati.,But you're not Bang Kilat. You're the careful one.
-Nana! Pak Ojan cek telurnya satu-satu... semuanya utuh!,Nana! Mr. Ojan checked the eggs one by one... every single one was fine!
-"Abang hebat! Tabungannya sudah {saved}, kan?","You're amazing! The savings are at {saved} now, right?"
-Malam itu langit mendung. Ramalan cuaca: besok hujan deras.,That night the sky clouded over. The forecast: heavy rain tomorrow.
-Ada telur yang retak. Pak Ojan geleng-geleng kepala.,Some eggs cracked. Mr. Ojan just shook his head.
-"Tapi tetap sampai, kan? Tabungannya {saved}. Pelan-pelan, Bang.","But you still delivered, right? Savings are at {saved}. One step at a time."
-"Hujan reda. Di rumah sakit, demam Nana mulai turun.","The rain stopped. At the hospital, Nana's fever began to drop."
-"Obatnya bekerja. Tinggal pelunasan, ya. Kurang {left} lagi.",The medicine is working. Only the payment is left. {left} to go.
-Besok hari terakhir. Paket VIP dari Bu Direktur sendiri.,Tomorrow is the last day. A VIP package for the Director herself.
-"Masbro pulang basah kuyup. Tabungan: {saved}, kurang {left}.","Masbro came home soaked. Savings: {saved}, {left} short."
-"Abang kedinginan... Nana bikinin teh, ya?",You're freezing... want me to make you tea?
-Kamu istirahat saja. Besok hari terakhir. Abang pasti bisa.,You rest. Tomorrow is the last day. I can do this.
-"Tanpa cacat. Selamat, Masbro. Mulai besok kamu kurir tetap Ngacir Express!","Flawless. Congratulations, Masbro. Starting tomorrow, you're a permanent Ngacir Express courier!"
-"Hei, rekan kerja! Nanti ajari aku caranya santai, ya.","Hey, coworker! Teach me how to be that chill sometime."
-Tabungan {saved} cukup untuk melunasi seluruh biaya pengobatan.,The {saved} in savings covers the whole treatment.
-"Abang! Nana sudah sembuh! Jadi kan, main ke taman?","Big bro! I'm all better! So, are we going to the park?"
-Jadi. Kali ini Abang nggak telat.,We are. And this time I won't be late.
-"Trobos Ajalah, Masbro!","Just go for it, Masbro!"
-"Masa percobaan selesai. Tabungan {saved}, masih kurang {left}.","The probation is over. Savings: {saved}, still {left} short."
-Upahmu belum cukup. Tapi saya lihat kamu tidak pernah ugal-ugalan.,Your pay isn't enough yet. But I noticed you never drove recklessly.
-"Belum selesai. Abang coba lagi, Nana.","It's not over. I'll try again, Nana."
+Trobos Ajalah!"
+"Lama banget sih! Untung gorengannya masih garing. Lecet dikit aja, udah saya kasih bintang satu plus ulasan dua paragraf!",You took forever! Lucky the fritters are still crispy. One scratch and I'd have given you one star plus a two-paragraph review!
+"Sama-sama, Kak. Selamat makan, jangan lupa napas pas ngunyah.","You're welcome. Enjoy, and remember to breathe while you chew."
+Malamnya di Kedai Chill. Tabungan sewa: {saved} dari {target}.,That night at Kedai Chill. Rent savings: {saved} of {target}.
+"Lumayan buat kapibara lamban! Besok kamu bawa kue ulang tahun tiga tingkat plus akuarium cupang. Pecah sedikit, upah dipotong!",Not bad for a slow capybara! Tomorrow you're carrying a three-tier birthday cake plus a betta fish tank. One crack and your pay gets cut!
+"Kue aman, dompet tenang.","Safe cake, calm wallet."
+Gorengannya remuk begini? Untung masih bisa dimakan. Awas aja besok-besok!,The fritters are crushed! Lucky they're still edible. Watch it next time!
+"Maaf, Kak. Besok lebih hati-hati.",Sorry. I'll be more careful tomorrow.
+"Hari pertama sudah kena denda! Besok kue ulang tahun dan akuarium cupang. Kalau itu pecah, upahmu habis!",Fined on your first day! Tomorrow it's a birthday cake and a betta fish tank. Break those and your pay is gone!
+"Siap, Bos. Pelan... tapi pasti.","Got it, Boss. Slow... but sure."
+"Hari kedua! Kue ulang tahun tiga tingkat plus akuarium cupang untuk cucu Bu Sri. Dua-duanya rapuh, akuariumnya berat.","Day two! A three-tier birthday cake plus a betta fish tank for Mrs. Sri's grandchild. Both are fragile, and the tank is heavy."
+"Yo, kapibara! Bawa akuarium jalan kaki? Hari ini aku lewat rute yang sama. Jangan nangis kalau kesalip!","Yo, capybara! Carrying a fish tank on foot? I'm on the same route today. Don't cry when I pass you!"
+"Bawa kue itu mirip bawa ketenangan jiwa, Kuro. Pelan tapi pasti.","Carrying a cake is like carrying inner peace, Kuro. Slow but sure."
+"Gak ada pelan-pelan! Cepat tapi utuh! Awas kulit pisang, Kuro suka buang sampah dari motornya.","No slow and sure here! Fast and intact! And watch for banana peels, Kuro likes to toss trash off his bike."
+"Akuariumnya berat, langkah Masbro jadi lebih lambat. Rute hari ini juga melewati sungai. Atur waktu menyeberang!","The tank is heavy, so Masbro walks slower. Today's route crosses a river too. Time your crossings!"
+"Kuenya masih berdiri tegak, cupangnya masih berenang. Cucu Bu Sri meniup lilin sambil tertawa.","The cake is still standing tall and the betta is still swimming. Mrs. Sri's grandchild blew out the candles, laughing."
+"Kuncinya satu: pasrah, tapi tetap ngerem.","There's only one secret: go with the flow, but keep braking."
+"Kabar buruk, Masbro! Besok jalan utama ditutup galian pipa. Semua kurir harus lewat gang sempit. Semoga badan gembulmu muat!","Bad news, Masbro! Tomorrow the main road is closed for pipe works. Every courier has to use the narrow alleys. Hope your chubby body fits!"
+Gang sempit... badan mepet...,Narrow alleys... tight squeeze...
+Kuenya miring dan air akuariumnya tumpah separuh. Untung cupangnya masih hidup.,The cake is leaning and half the tank's water spilled. Luckily the betta is still alive.
+Upah hari ini kepotong denda lagi...,Today's pay got cut by fines again...
+Darurat! Jalan utama dibongkar galian pipa. Hari ini kamu antar es krim lewat Gang Tiga ke rumah Pak Budi.,Emergency! The main road is torn up for pipe works. Today you're taking ice cream through Alley Three to Mr. Budi's house.
+Es krim... siang bolong... lewat gang?,Ice cream... at high noon... through the alleys?
+"Makanya cepat! Telat sedikit, es krimnya cair. Satu lagi: di gang ada Pak Buldog, satpam komplek. Dia benci yang lari-lari.",So hurry! A little late and it melts. One more thing: Mr. Bulldog guards that neighborhood. He hates anyone running around.
+GUK! GUK! Di komplek ini jalan pelan! Yang lari-lari saya kejar!,WOOF! WOOF! Walk slowly in this neighborhood! Anyone running gets chased!
+"Kalau Pak Buldog menggonggong, Masbro panik dan ngacir: langkahnya lebih cepat, tapi gampang tergelincir. Awas juga lubang galian di aspal!","When Mr. Bulldog barks, Masbro panics and bolts: his steps get faster, but he slips easily. And watch out for the dug-up holes in the road!"
+Es krimnya masih beku. Pak Budi heran melihat kurir datang sambil diiringi gonggongan.,The ice cream was still frozen. Mr. Budi was puzzled to see a courier arrive with barking right behind him.
+Tadi ada dorongan semangat ekstra dari Pak Buldog.,I had some extra motivation from Mr. Bulldog.
+"Dengar petir itu? Besok badai, dan pesanan VIP Nana sudah menunggu. Gagal besok, sewa Kedai Chill makin jauh dari lunas!","Hear that thunder? There's a storm tomorrow, and Nana's VIP order is waiting. Fail tomorrow and Kedai Chill's rent drifts even further away!"
+"Badai, ya... jeruknya harus diikat lebih kencang.","A storm, huh... I'd better tie this orange on tighter."
+"Es krimnya sudah mulai cair. Pak Budi menghela napas, tapi tetap menerimanya.","The ice cream had started to melt. Mr. Budi sighed, but he took it anyway."
+Pak Buldog terlalu bersemangat hari ini...,Mr. Bulldog was a little too enthusiastic today...
+"Hari keempat. Badai turun tepat di jam sibuk, genangan di mana-mana.","Day four. A storm hits right at rush hour, with puddles everywhere."
+"Gak ada waktu buat neduh! Laptop VIP punya Nana harus sampai kering. Pakai jas hujanmu, ngacir sekarang!",No time to take shelter! Nana's VIP laptop has to arrive dry. Put on your raincoat and go!
+"Hujan, ya... padahal enak banget berendam air hangat sekarang.","Rain, huh... a warm soak would be perfect right now."
+"Laptop saya harus sampai sebelum rapat! Telat satu detik, bintang satu!",My laptop has to arrive before my meeting! One second late and it's one star!
+Jarak pandang pendek dan aspal licin. Jangan sampai laptopnya tercebur!,Visibility is short and the road is slippery. Don't let the laptop fall in the water!
+B-badai begini laptopnya masih kering? Oke... kamu kurir pertama yang bikin saya terkesan.,"In a st-storm like this, and the laptop's still dry? Okay... you're the first courier who's ever impressed me."
+Yang basah cuma celana. Yang penting reputasi aman.,Only my pants got wet. My reputation stayed dry.
+"Besok ujian akhirmu: Patung Kristal Jeruk milik Pak Wali Kota. Antar dengan selamat, dan kamu lulus.",Tomorrow is your final test: the Mayor's Crystal Orange Statue. Deliver it safely and you pass.
+Kristal... jeruk. Akhirnya ada paket yang sejalan dengan jiwaku.,"A crystal... orange. Finally, a package that speaks to my soul."
+"Laptopnya lembap! Kalau sampai rusak, ulasan saya tiga paragraf!","The laptop is damp! If it's broken, my review will be three paragraphs!"
+"Maaf, Kak. Badainya ganas.",Sorry. The storm was brutal.
+"Hari penentuan! Patung Kristal Jeruk untuk Pak Wali Kota, antar ke Balai Kota. Satu goresan pun dihitung.","Judgment day! The Crystal Orange Statue for the Mayor, delivered to City Hall. Every scratch counts."
+"Bonus Wali Kota itu punyaku, Masbro! Hari ini aku ngebut habis-habisan.","That Mayor's bonus is mine, Masbro! Today I'm going full throttle."
+"Maaf, Kuro. Sewa Kedai Chill harus lunas. Hari ini aku gak bisa santai.","Sorry, Kuro. Kedai Chill's rent has to be paid. Today I can't take it easy."
+Itu semangat yang saya cari! NGACIR!,That's the spirit I've been looking for! NGACIR!
+"Rute terpanjang: galian, Pak Buldog, Kuro, dan sisa hujan. Pak Wali Kota teliti: denda kerusakan 2x.","The longest route yet: road works, Mr. Bulldog, Kuro, and leftover rain. The Mayor is meticulous: damage fines are doubled."
+"Patung kristal saya sampai dengan selamat! Terima kasih, Kurir Kapibara.","My crystal statue arrived safely! Thank you, Capybara Courier."
+"SQUAWK! Selamat, Masbro. Mulai besok kamu kurir tetap Ngacir Express!","SQUAWK! Congratulations, Masbro. Starting tomorrow you're a permanent Ngacir Express courier!"
+"Hmph. Kali ini kamu menang. ...Kedai Chill-mu masih buka, kan? Aku boleh mampir?","Hmph. You win this time. ...Your Kedai Chill is still open, right? Can I drop by?"
+Tabungan {saved} cukup untuk melunasi sewa {target}.,Savings of {saved} are enough to pay the {target} rent.
+Lunas. Kedai Chill boleh tetap buka.,Paid in full. Kedai Chill can stay open.
+Kedai aman. Saatnya balik berendam.,The kedai is safe. Time to get back in the pool.
+"Kedai Chill selamat, dan kini jadi tempat istirahat para kurir kota. Trobos Ajalah, Masbro!","Kedai Chill is saved, and it's now where the city's couriers come to rest. Trobos Ajalah, Masbro!"
+"Masa percobaan selesai. Tabungan {saved}, belum cukup untuk sewa {target}.","The probation is over. Savings: {saved}, not enough for the {target} rent."
+Upahmu belum cukup. Tapi saya catat: kamu tidak pernah ugal-ugalan.,Your pay isn't enough. But I noted that you were never reckless.
+"Kedai Chill saya segel dulu. Lunasi sisanya, kuncinya saya kembalikan.",I'm sealing Kedai Chill for now. Pay the rest and you'll get the keys back.
+Belum selesai. Besok aku antar paket lagi.,It's not over. Tomorrow I'll deliver again.
+Sebelumnya… Pemilik Lahan menagih tunggakan sewa Kedai Chill sebesar {target}. Masbro mendaftar jadi kurir masa percobaan di Ngacir Express.,Previously… The landlord demanded {target} in overdue rent for Kedai Chill. Masbro signed up as a probationary courier at Ngacir Express.
+"Sebelumnya… Gorengan Nana sudah terantar. Kuro, kurir rival dari CepatKilat, mulai mengincar rute Masbro.","Previously… Nana's fritters were delivered. Kuro, the rival courier from CepatKilat, started eyeing Masbro's routes."
+"Sebelumnya… Jalan utama ditutup galian pipa. Hari ini Masbro harus lewat Gang Tiga, wilayah Pak Buldog.","Previously… The main road was closed for pipe works. Today Masbro has to go through Alley Three, Mr. Bulldog's turf."
+"Sebelumnya… Es krim Pak Budi sudah lewat. Hari ini badai turun, dan Nana menunggu laptop VIP-nya.","Previously… Mr. Budi's ice cream made it. Today a storm rolls in, and Nana is waiting for her VIP laptop."
+Sebelumnya… Tinggal satu hari. Patung Kristal Jeruk Pak Wali Kota menentukan lolos atau tidaknya masa percobaan.,Previously… One day left. The Mayor's Crystal Orange Statue decides whether Masbro passes probation.
+"Tabungan sewa Kedai Chill: {saved} dari {target}. Sudah cukup, tinggal lolos masa percobaan!","Kedai Chill rent savings: {saved} of {target}. That's enough, now just pass the probation!"
+Tabungan sewa Kedai Chill: {saved} dari {target}. Kurang {left} lagi.,Kedai Chill rent savings: {saved} of {target}. {left} to go.
+"Patung Kristal Jeruk sampai di Balai Kota. Masbro resmi diangkat menjadi kurir tetap Ngacir Express, dan sewa Kedai Chill lunas. Trobos Ajalah!","The Crystal Orange Statue reached City Hall. Masbro is officially a permanent Ngacir Express courier, and Kedai Chill's rent is paid. Trobos Ajalah!"
+Tabungan masih kurang %s. Pemilik Lahan masih memberi waktu: ulangi hari mana pun untuk memperbaiki upah. Upah terbaik tiap hari yang dihitung.,Savings are still %s short. The landlord is giving you more time: replay any day to improve your pay. Your best pay for each day counts.
+Shift Malam: Kedai Chill tetap butuh biaya operasional. Main lagi hari mana pun untuk mengumpulkan koin; upah terbaik tiap hari tetap tersimpan.,Night Shift: Kedai Chill still has running costs. Replay any day to collect coins; your best pay for each day is kept.
+"Masa percobaan berakhir, tapi tabungan Masbro belum cukup untuk sewa Kedai Chill. Kedai disegel sampai sisa sewanya lunas.","The probation is over, but Masbro's savings aren't enough for Kedai Chill's rent. The kedai is sealed until the rest is paid."
+Sewa Kedai Chill,Kedai Chill rent
+Tabungan sewa: %s / %s,Rent savings: %s / %s
+BOS KOKO (earpiece),BOSS KOKO (earpiece)
+Bos Koko,Boss Koko
+Pemilik Lahan,Landlord
+Pak Wali Kota,Mr. Mayor
+Pak Buldog,Mr. Bulldog
+%s teliti: denda kerusakan 2x. Paket sempurna dan tepat waktu dapat tip %s.,"%s is meticulous: damage fines 2x. A perfect, on-time package earns a %s tip."
+%s tidak sabaran: potongan telat 2x. Paket sempurna dan tepat waktu dapat tip %s.,"%s is impatient: late cuts 2x. A perfect, on-time package earns a %s tip."
+"Kuro, kurir rival, suka ngebut tiba-tiba dan membuang kulit pisang. Hati-hati!","Kuro, the rival courier, speeds by out of nowhere and throws banana peels. Careful!"
+"Kuro, kurir rival, suka ngebut tiba-tiba. Hati-hati!","Kuro, the rival courier, speeds by out of nowhere. Careful!"
+"Pak Buldog menjaga komplek. Lewat dekat dia, Masbro panik dan gampang tergelincir!",Mr. Bulldog guards the neighborhood. Pass close to him and Masbro panics and slips easily!
+"Mukanya santai, tapi paketnya mulus tanpa lecet. Mantap!","Chill face, flawless package. Awesome!"
+"Lain kali lebih hati-hati, Masbro.","Be more careful next time, Masbro."
+"Paketnya agak hancur, tapi isinya masih bisa dipakai.","The package is a bit wrecked, but what's inside still works."
+Ini paket atau hasil bongkar muatan kapal karam?!,Is this a package or cargo from a shipwreck?!
+"ASTAGA, MASBRO! Itu barang kiriman, bukan onde-onde yang boleh diremukin!","GOOD GRIEF, MASBRO! That's a delivery, not a sesame ball you can squash!"
+Sempurna. Ini layak dipajang di Balai Kota.,Perfect. This deserves a place in City Hall.
+"Utuh, tapi upacaranya hampir dimulai.","Intact, but the ceremony is about to start."
+Ada goresan. Saya catat.,There's a scratch. I'm noting it.
+"Ini jauh dari standar Balai Kota, Masbro.","This is far below City Hall standards, Masbro."
+T-tepat waktu? Gak lecet sedikit pun? Oke... bintang lima terpaksa saya kasih!,O-on time? Not a single scratch? Fine... I guess you get five stars!
+"Lumayan. Tapi detiknya tetap saya hitung, ya.",Not bad. But I'm still counting the seconds.
+Lama! Saya tulis di ulasan.,Slow! I'm putting that in my review.
+"Sudah telat, penyok pula!",Late AND dented!
+Bintang satu! Plus ulasan dua paragraf!,One star! Plus a two-paragraph review!
+WOI MASBRO! Isinya remuk tuh! Pelan-pelan dikit!,HEY MASBRO! It's getting crushed! Ease up a little!
+"Waktu tipis, Masbro! Jangan ngelamun!","Time's running out, Masbro! No daydreaming!"
+"Minggir, kapibara!","Move it, capybara!"
+Kulit pisang!,Banana peel!
+GRRR!,GRRR!
+Panik! Ngacir!,Panic! Run!
+GUK! GUK!,WOOF! WOOF!
+Tuh dia datang! Awas aja kalau lecet!,There he is! It better not be scratched!
+"Itu Kuro, kurir rival! Dia ngebut, jangan berdiri di lane-nya.","That's Kuro, the rival courier! He's fast, don't stand in his lane."
+Kulit pisang dari Kuro! Menginjaknya bikin Masbro tergelincir satu petak.,A banana peel from Kuro! Stepping on it makes Masbro slide one tile.
+"Pak Buldog menggonggong! Masbro panik: langkah lebih cepat, tapi gampang tergelincir di aspal.","Mr. Bulldog is barking! Masbro panics: faster steps, but he slips easily on asphalt."
+Jeruk Kepala,Head Orange
+Gorengan Pantang Melempem,Fritters Must Stay Crispy
+"Jangan Goyah, Barang Pecah Belah","Steady Now, It's Fragile"
+Labirin Gang Sempit,The Alley Maze
+Badai di Jam Sibuk,Storm at Rush Hour
+Ujian Akhir: Kristal Jeruk,Final Test: The Crystal Orange
+Gorengan saya harus masih garing! Saya hitung dari sekarang.,My fritters better still be crispy! I'm timing you from now.
+Mana gorengan saya?! Bintang satu sudah menanti!,Where are my fritters?! A one-star review is waiting!
+Telat! Pasti udah melempem!,Late! They're definitely soggy now!
+Gorengan Pak Kumis,Mr. Kumis's Fritters
+"Masih panas, Mas! Cepat sebelum melempem.",Still hot! Hurry before they go soggy.
+"Kuenya buat ulang tahun cucu saya. Hati-hati, ya!",The cake is for my grandchild's birthday. Be careful!
+"Lilinnya sudah siap, Masbro...","The candles are ready, Masbro..."
+Tamunya sudah datang semua...,All the guests are already here...
+Toko Kue Mentul,Wobbly Cake Shop
+Kue sama akuarium cupangnya satu paket. Dua-duanya rapuh!,The cake and the betta tank are one package. Both are fragile!
+Es krimnya buat anak-anak. Jangan sampai cair!,The ice cream is for the kids. Don't let it melt!
+"Es krimnya keburu cair, Mas...",The ice cream is about to melt...
+Yah... pasti sudah cair.,Aww... it's definitely melted.
+Es Krim Bang Jali,Bang Jali's Ice Cream
+"Beku sekarang, Mas. Jangan mampir-mampir!",It's frozen now. No detours!
+Laptop saya buat rapat! Awas kalau basah!,My laptop is for a meeting! It better not get wet!
+Rapat saya mulai sebentar lagi!!,My meeting starts any minute!!
+Saya telat rapat gara-gara kamu!,I'm late for my meeting because of you!
+Servis Laptop Jaya,Jaya Laptop Repair
+Laptopnya sudah dibungkus plastik. Tetap jangan tercebur!,"The laptop is wrapped in plastic. Still, don't fall in the water!"
+Patungnya untuk upacara hari ini. Saya tunggu di Balai Kota.,The statue is for today's ceremony. I'll be waiting at City Hall.
+Upacaranya hampir mulai...,The ceremony is about to start...
+"Para tamu sudah menunggu, Masbro.","The guests are already waiting, Masbro."
+Galeri Kristal Kota,City Crystal Gallery
+Ini satu-satunya di dunia. Jangan sampai tergores!,It's one of a kind. Don't let it get scratched!
+Gorengan Hangat,Hot Fritters
+"Pesanan Nana. Kuat dibenturkan, tapi harus sampai sebelum dingin dan melempem.","Nana's order. They can take a few bumps, but they have to arrive before they go cold and soggy."
+Kue Ultah & Akuarium Cupang,Birthday Cake & Betta Tank
+Kue tiga tingkat plus akuarium berisi air. Berat: langkah Masbro jadi lebih lambat.,A three-tier cake plus a tank full of water. Heavy: Masbro walks slower.
+Es Krim,Ice Cream
+"Cepat cair. Target waktu paling ketat; telat sedikit, potongannya lebih besar.",Melts fast. The tightest time target; a little late means a bigger pay cut.
+Laptop VIP,VIP Laptop
+"Laptop Nana untuk rapat. Jangan sampai basah, apalagi tercebur.","Nana's laptop for her meeting. Don't let it get wet, let alone fall in the water."
+Patung Kristal Jeruk,Crystal Orange Statue
+Pesanan Pak Wali Kota. Sangat rapuh: dua benturan dan patungnya pecah.,The Mayor's order. Very fragile: two bumps and it shatters.

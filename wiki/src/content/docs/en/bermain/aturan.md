@@ -27,7 +27,7 @@ Masbro has no lives. What you protect is the **package**. Every collision damage
 | <img class="sprite" src="/img/sprites/vehicle_truk.svg" alt="" /> Truck | Slow, long | 2 |
 | <img class="sprite" src="/img/sprites/vehicle_bus.svg" alt="" /> City bus | Slowest, 4 tiles | 2 |
 
-Fragile packages like eggs take double damage.
+Each package has its own durability: the fritters survive 4 damage, the Crystal Orange Statue only 2.
 
 ## Game screen
 
@@ -50,15 +50,17 @@ Pay = Base pay + On-time bonus (+ Tip) (+ Coin bonus)
       − Damage fines − Late deduction
 ```
 
-Each day's pay is added to the **treatment savings**. If you replay a day, your **best** pay for that day counts. Savings target: **Rp350,000**.
+Each day's pay is added to the Kedai Chill **rent savings**. If you replay a day, your **best** pay for that day counts. Savings target: **Rp350,000**. The maximum pay over five days is Rp530,000 (including tips, excluding coins).
 
 | Day | Base pay | On-time bonus | Fine per damage | Late deduction per second |
 | --- | --- | --- | --- | --- |
-| 1 | Rp50,000 | Rp20,000 | Rp10,000 | Rp500 |
+| 1 | Rp50,000 | Rp20,000 | Rp10,000 | Rp500 (2x for Nana) |
 | 2 | Rp60,000 | Rp20,000 | Rp15,000 | Rp750 |
-| 3 | Rp70,000 | Rp25,000 | Rp20,000 (2x for Pak Ojan) | Rp1,000 |
-| 4 | Rp80,000 | Rp25,000 | Rp20,000 | Rp1,000 |
-| 5 | Rp100,000 | Rp30,000 | Rp30,000 | Rp1,500 |
+| 3 | Rp70,000 | Rp25,000 | Rp20,000 | Rp1,500 |
+| 4 | Rp80,000 | Rp25,000 | Rp20,000 | Rp1,000 (2x for Nana) |
+| 5 | Rp100,000 | Rp30,000 | Rp30,000 (2x for Mr. Mayor) | Rp1,500 |
+
+Special customers give a **tip** if the package is intact and on time: Nana Rp10,000 (Day 1) and Rp15,000 (Day 4), Mr. Mayor Rp25,000 (Day 5).
 
 ## Customer ratings
 
@@ -66,11 +68,13 @@ Once the package arrives, the customer gives 1–5 stars and a comment based on 
 
 | Stars | Sample comment |
 | --- | --- |
-| ★★★★★ | "Package in one piece, courier totally chill. Recommended!" |
-| ★★★★ | "Package is a bit dented, but still fine." |
-| ★★★ | "Be careful when you deliver, Masbro." |
-| ★★ | "Masbro... the package is damaged, but I'll take it." |
-| ★ | "Dude... did this package just come back from a war?" |
+| ★★★★★ | "Chill face, flawless package. Awesome!" |
+| ★★★★ | "The package is a bit dented, but still fine." |
+| ★★★ | "Be more careful next time, Masbro." |
+| ★★ | "The package is a bit wrecked, but what's inside still works." |
+| ★ | "Is this a package or cargo from a shipwreck?!" |
+
+Nana and Mr. Mayor have their own comments, and if the package is destroyed, Boss Koko chimes in too.
 
 ## Winning and losing
 

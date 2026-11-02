@@ -10,6 +10,9 @@ extends Resource
 @export var customer_id: StringName = &"bu_sri"
 ## Sapaan pelanggan saat pengiriman dimulai (balon ucapan di depan rumah).
 @export_multiline var customer_greeting: String = "Ditunggu ya, Masbro!"
+## Kalimat pelanggan saat sisa ETA tinggal 10 detik, dan saat Masbro sudah telat.
+@export var customer_hurry_line: String = "Cepetan, Masbro..."
+@export var customer_late_line: String = "Kok lama, ya..."
 ## Target waktu antar (Timer ETA) dalam detik.
 @export var eta_seconds: float = 30.0
 
@@ -42,17 +45,25 @@ extends Resource
 @export_range(0, 5) var cat_count: int = 0
 ## Jumlah maksimal pejalan kaki di median yang muncul bersamaan.
 @export_range(0, 5) var pedestrian_count: int = 0
-## Bang Kilat (kurir rival) melesat setiap sekian detik (0 = tidak muncul).
+## Kuro (kurir rival) melesat setiap sekian detik (0 = tidak muncul).
 @export_range(0.0, 60.0, 1.0) var rival_interval: float = 0.0
+## Peluang Kuro membuang kulit pisang di lane yang ia lewati. Menginjaknya membuat Masbro
+## tergelincir satu petak.
+@export_range(0.0, 1.0, 0.05) var peel_chance: float = 0.0
+## Jumlah Pak Buldog di median. Kalau Masbro lewat dekat, ia menggonggong dan Masbro panik:
+## langkah lebih cepat sebentar, tapi bisa tergelincir di aspal.
+@export_range(0, 3) var buldog_count: int = 0
 ## Hujan: jarak pandang terbatas dan jalan aspal licin.
 @export var rainy: bool = false
 ## Peluang Masbro tergelincir satu petak tambahan saat melangkah di aspal basah.
 @export_range(0.0, 1.0, 0.05) var slip_chance: float = 0.25
 ## Jari-jari jarak pandang saat hujan, dalam petak.
 @export_range(2.0, 10.0, 0.5) var visibility_tiles: float = 4.5
-## Pelanggan perfeksionis (Pak Ojan): denda kerusakan 2x, rating maksimal 3 bintang bila paket rusak.
+## Pelanggan teliti (Pak Wali Kota): denda kerusakan 2x, rating maksimal 3 bintang bila paket rusak.
 @export var strict_customer: bool = false
-## Tip dari pelanggan perfeksionis bila paket utuh dan tepat waktu.
+## Pelanggan tidak sabaran (Nana): potongan telat 2x, rating maksimal 3 bintang bila telat.
+@export var impatient_customer: bool = false
+## Tip dari pelanggan teliti / tidak sabaran bila paket utuh dan tepat waktu.
 @export var perfect_tip: int = 0
 
 @export_group("Cerita")

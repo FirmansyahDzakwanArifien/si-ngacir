@@ -5,6 +5,20 @@ description: Catatan perubahan Si Ngacir dari versi pertama yang bisa dimainkan 
 
 Semua versi bisa diunduh di [itch.io](https://cyphera-game.itch.io/si-ngacir).
 
+## v0.15.0 — 2 November 2026
+
+- **Cerita baru: Kedai Chill.** Diadaptasi dari dokumen cerita tim Writer Story. Masbro kini pemilik Kedai Chill yang harus melunasi tunggakan sewa Rp350.000 dalam lima hari sebagai kurir jalan kaki masa percobaan di Ngacir Express. Malam setelah tiap hari berlangsung di Kedai Chill; ending lulus menjadikan kedainya tempat istirahat para kurir kota.
+- **Tokoh dan potret baru:** Bos Koko (kakatua kepala kurir), Nana (bebek pelanggan VIP), Kuro "El Gato" (kurir rival CepatKilat Corp), Pak Buldog (satpam komplek), Pemilik Lahan, dan Pak Wali Kota.
+- **Paket baru:** Gorengan Hangat, Kue Ultah & Akuarium Cupang, Es Krim, Laptop VIP, dan Patung Kristal Jeruk, dengan judul hari baru.
+- **Nana, pelanggan tidak sabaran** (Hari 1 dan 4): potongan telat 2x, maks 3 bintang bila telat, tip bila sempurna.
+- **Kuro dan kulit pisang** (mulai Hari 2): kadang membuang kulit pisang yang membuat Masbro tergelincir satu petak.
+- **Pak Buldog** (Hari 3–5): menggonggong bila Masbro lewat dekat, membuat **mode panik** (langkah lebih cepat, tapi gampang tergelincir).
+- **Earpiece Bos Koko:** teriakan di bawah bar atas saat paket hampir hancur atau waktu tipis.
+- **Jeruk Kepala:** aksesori topi bawaan yang gratis dan langsung dipakai.
+- Musik cutscene diganti nama: `music/sedih` dan `music/tegang` (plus `sfx/sting_tegang` dan gonggongan `sfx/bark`).
+- Digabung dari PR #69: suara NPC saat Masbro mendekat, *ducking* musik, musik gameplay ceria, dan tombol **M** untuk membisukan suara.
+- CI lebih ramping: build hanya untuk Pull Request dan tag rilis, perubahan dokumen tidak memicu build, dan run lama dibatalkan otomatis.
+
 ## v0.14.0 — 11 Oktober 2026
 
 - **Rakit digambar ulang:** satu panel kayu per petak, dipisah ikatan tali, setinggi hampir satu petak. Panjang rakit langsung terbaca dan tepinya pas dengan area pijakan (penanda lingkaran dihapus).

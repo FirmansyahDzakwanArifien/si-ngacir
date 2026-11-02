@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/data/day_data.gd" id="1_day"]
 [ext_resource type="Script" path="res://scripts/data/map_params.gd" id="2_map"]
-[ext_resource type="Resource" path="res://resources/packages/galon.tres" id="3_pkg"]
-[ext_resource type="Resource" path="res://resources/cities/pasar.tres" id="5_city"]
+[ext_resource type="Resource" path="res://resources/packages/kue_ultah.tres" id="3_pkg"]
+[ext_resource type="Resource" path="res://resources/cities/sekolah.tres" id="5_city"]
 [ext_resource type="Resource" path="res://resources/story/day_02.tres" id="4_story"]
 [ext_resource type="Resource" path="res://resources/story/evening_02_good.tres" id="6_good"]
 [ext_resource type="Resource" path="res://resources/story/evening_02_rough.tres" id="7_rough"]
@@ -34,13 +34,13 @@ vendor_chance = 0.25
 [resource]
 script = ExtResource("1_day")
 day = 2
-title = "Pengiriman Berat"
+title = "Jangan Goyah, Barang Pecah Belah"
 package = ExtResource("3_pkg")
-customer_name = "Pak Budi"
-customer_id = &"pak_budi"
-customer_greeting = "Air di rumah habis, galonnya ditunggu!"
-sender_name = "Depot Air Segar"
-sender_line = "Galonnya berat, jalan pelan-pelan saja."
+customer_name = "Bu Sri"
+customer_id = &"bu_sri"
+customer_greeting = "Kuenya buat ulang tahun cucu saya. Hati-hati, ya!"
+sender_name = "Toko Kue Mentul"
+sender_line = "Kue sama akuarium cupangnya satu paket. Dua-duanya rapuh!"
 eta_seconds = 30.0
 base_wage = 60000
 eta_bonus = 20000
@@ -50,11 +50,14 @@ map = SubResource("Resource_map")
 city = ExtResource("5_city")
 cat_count = 1
 pedestrian_count = 1
-rival_interval = 0.0
+rival_interval = 16.0
 rainy = false
 slip_chance = 0.25
 visibility_tiles = 4.5
 strict_customer = false
+customer_hurry_line = "Lilinnya sudah siap, Masbro..."
+customer_late_line = "Tamunya sudah datang semua..."
+peel_chance = 0.5
 perfect_tip = 0
 story = ExtResource("4_story")
 evening_good = ExtResource("6_good")

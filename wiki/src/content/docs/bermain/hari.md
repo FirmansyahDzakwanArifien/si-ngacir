@@ -7,31 +7,33 @@ Level dirancang dengan prinsip **progressive difficulty**: tingkat kesulitan nai
 
 | Hari | Lokasi | Paket | Pelanggan | Tantangan |
 | --- | --- | --- | --- | --- |
-| 1 | Kompleks Perumahan | <img class="sprite" src="/img/sprites/package_bantal.svg" alt="" /> Bantal | Bu Sri | Pengenalan. Paket tahan 4 benturan, lalu lintas ringan |
-| 2 | Pasar Ngacir | <img class="sprite" src="/img/sprites/package_galon.svg" alt="" /> Galon Air | Pak Budi | Paket berat: langkah Masbro lebih lambat. Sungai dan kucing jalanan mulai muncul |
-| 3 | Sekitar Sekolah | <img class="sprite" src="/img/sprites/package_telur.svg" alt="" /> Telur | Pak Ojan | Paket rapuh (kerusakan 2x lipat) dan pelanggan perfeksionis. Bang Kilat mulai muncul |
-| 4 | Pusat Kota | <img class="sprite" src="/img/sprites/package_sensitif.svg" alt="" /> Barang Sensitif | Pak Joko | Hujan deras di jam sibuk: pandangan terbatas, jalan licin |
-| 5 | Kawasan Bisnis | <img class="sprite" src="/img/sprites/package_vip.svg" alt="" /> Paket VIP | Bu Direktur | Semua tantangan sekaligus. Paket hancur hanya dengan 2 kerusakan |
+| 1 | Pasar | <img class="sprite" src="/img/sprites/package_gorengan.svg" alt="" /> Gorengan Hangat | Nana (tidak sabaran) | Pengenalan. Paket tahan 4 benturan; kejar ETA supaya gorengan masih garing |
+| 2 | Sekolah | <img class="sprite" src="/img/sprites/package_kue_ultah.svg" alt="" /> Kue Ultah & Akuarium Cupang | Bu Sri | Paket berat: langkah Masbro lebih lambat. Sungai pertama, kucing jalanan, Kuro dan kulit pisang |
+| 3 | Perumahan (Gang Tiga) | <img class="sprite" src="/img/sprites/package_es_krim.svg" alt="" /> Es Krim | Pak Budi | ETA paling ketat, galian pipa (lubang) lebih banyak, Pak Buldog, pejalan kaki |
+| 4 | Pusat Kota | <img class="sprite" src="/img/sprites/package_laptop.svg" alt="" /> Laptop VIP | Nana (tidak sabaran) | Hujan badai di jam sibuk: pandangan terbatas, jalan licin, sungai lebih sering |
+| 5 | Kawasan Bisnis (Balai Kota) | <img class="sprite" src="/img/sprites/package_kristal.svg" alt="" /> Patung Kristal Jeruk | Pak Wali Kota (teliti) | Semua tantangan sekaligus. Paket hancur hanya dengan 2 kerusakan |
 
-## Hari 1 — Pengenalan
+## Hari 1 — Gorengan Pantang Melempem
 
-Paket **bantal** empuk dan pemaaf: tahan 4 kali benturan. Hari ini dipakai untuk mengenal gerak, menyeberang, tabrakan, dan alur ambil-antar.
+**Gorengan hangat** pesanan **Nana** kuat dibenturkan (tahan 4 kali benturan), tapi harus sampai sebelum dingin dan melempem. Hari ini dipakai untuk mengenal gerak, menyeberang, tabrakan, dan alur ambil-antar.
 
-## Hari 2 — Paket berat
+Nana adalah **pelanggan tidak sabaran**: potongan telat 2x lipat dan rating maksimal 3 bintang bila telat. Bila paket utuh dan tepat waktu, Nana memberi **tip Rp10.000**.
 
-**Galon air** membuat langkah Masbro hampir dua kali lebih lambat. Mulai menyeberang lebih awal. Hari 2 selalu punya **sungai** dengan rakit, dan kucing jalanan mulai berkeliaran.
+## Hari 2 — Jangan Goyah, Barang Pecah Belah
 
-## Hari 3 — Paket rapuh
+**Kue ulang tahun & akuarium cupang** untuk cucu **Bu Sri**: paket berat yang membuat langkah Masbro hampir dua kali lebih lambat. Mulai menyeberang lebih awal. Hari 2 selalu punya **sungai** pertama dengan rakit, kucing jalanan mulai berkeliaran, dan **Kuro** mulai melesat di lane jalan sambil membuang **kulit pisang**.
 
-**Telur** menerima kerusakan dua kali lipat: satu tabrakan motor sudah menghapus 2 kotak. Pelanggannya **Pak Ojan** yang perfeksionis: denda kerusakan 2x lipat dan rating maksimal 3 bintang bila paket lecet sedikit pun. Bila paket sempurna dan tepat waktu, Pak Ojan memberi **tip Rp25.000**.
+## Hari 3 — Labirin Gang Sempit
 
-## Hari 4 — Hujan di jam sibuk
+Jalan utama ditutup galian pipa, jadi **es krim** untuk **Pak Budi** harus lewat gang perumahan. ETA paling ketat dan potongan telat terbesar (Rp1.500 per detik), aspal penuh **galian (lubang)**, dan **Pak Buldog** mulai berjaga di median.
 
-**Barang sensitif** di tengah hujan deras. Hanya area di sekitar Masbro yang terlihat jelas, kendaraan menyalakan lampu, dan aspal basah membuat Masbro bisa **tergelincir** satu langkah tambahan.
+## Hari 4 — Badai di Jam Sibuk
 
-## Hari 5 — Paket VIP
+**Laptop VIP** milik **Nana** untuk rapat, di tengah hujan badai. Hanya area di sekitar Masbro yang terlihat jelas, kendaraan menyalakan lampu, aspal basah membuat Masbro bisa **tergelincir** satu langkah tambahan, dan sungai (banjir) lebih sering muncul. Jangan sampai laptopnya tercebur. Nana tetap tidak sabaran; tip-nya **Rp15.000** bila sempurna.
 
-Hari terakhir masa percobaan menggabungkan semuanya: lalu lintas tercepat, sungai, kucing, dan hujan ringan. **Paket VIP** hancur hanya dengan 2 kerusakan. Pilih rute dan waktu menyeberang dengan cermat.
+## Hari 5 — Ujian Akhir: Kristal Jeruk
+
+Hari terakhir masa percobaan menggabungkan semuanya: rute terpanjang, lalu lintas tercepat, sungai, dua kucing, Pak Buldog, Kuro paling sering, dan sisa hujan. **Patung Kristal Jeruk** hancur hanya dengan 2 kerusakan. Pelanggannya **Pak Wali Kota** yang teliti: denda kerusakan 2x lipat dan rating maksimal 3 bintang bila paket lecet sedikit pun. Bila sempurna dan tepat waktu, ia memberi **tip Rp25.000**.
 
 ## Panjang rute
 

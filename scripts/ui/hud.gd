@@ -16,6 +16,8 @@ signal pause_pressed
 signal tip_finished
 
 const TIP_TIME := 4.5
+## Lama pesan earpiece Bos Koko tampil.
+const RADIO_TIME := 2.6
 
 const BAR_HEIGHT := 48.0
 # Alias lama, dipakai beberapa layar lain.
@@ -38,6 +40,10 @@ var _objective: Label
 ## Hari ini paket diambil dulu di titik jemput.
 var _has_pickup := false
 var _tip: PanelContainer
+## Pesan earpiece Bos Koko (di bawah bar atas, terpisah dari antrean tips).
+var _radio: PanelContainer
+var _radio_label: Label
+var _radio_tween: Tween
 var _tip_label: Label
 var _tip_tween: Tween
 var _overlay: ColorRect
@@ -55,6 +61,7 @@ func setup(day: DayData) -> void:
 	_day = day
 	_build_top_bar()
 	_build_tip()
+	_build_radio()
 	_build_overlay()
 	update_timer(day.eta_seconds)
 
@@ -102,6 +109,63 @@ func show_tip(text: String) -> void:
 	_tip_tween.chain().tween_callback(func() -> void:
 		_tip.visible = false
 		tip_finished.emit())
+
+
+## Teriakan Bos Koko lewat earpiece: muncul sebentar di bawah bar atas.
+func show_radio(text: String) -> void:
+	_radio_label.text = text
+	_radio.visible = true
+	_radio.modulate.a = 0.0
+	_radio.reset_size()
+	_place_radio.call_deferred()
+	if _radio_tween:
+		_radio_tween.kill()
+	_radio_tween = _radio.create_tween()
+	_radio_tween.tween_property(_radio, "modulate:a", 1.0, 0.15)
+	_radio_tween.tween_interval(RADIO_TIME)
+	_radio_tween.tween_property(_radio, "modulate:a", 0.0, 0.3)
+	_radio_tween.tween_callback(_radio.hide)
+
+
+func _build_radio() -> void:
+	_radio = PanelContainer.new()
+	var style := UiTheme.card(Palette.WHITE, Palette.YELLOW)
+	style.set_content_margin_all(10)
+	style.set_corner_radius_all(16)
+	_radio.add_theme_stylebox_override("panel", style)
+	_radio.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_radio.visible = false
+	UiTheme.attach(_radio)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	_radio.add_child(row)
+	var portrait := Speakers.portrait("koko", "marah")
+	if portrait:
+		var icon := TextureRect.new()
+		icon.texture = portrait
+		icon.custom_minimum_size = Vector2(40, 40)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		row.add_child(icon)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 0)
+	row.add_child(column)
+	column.add_child(_label(tr("BOS KOKO (earpiece)"), 12, Palette.TEXT_SOFT, false, 600))
+	_radio_label = _label("", 16, Palette.TEXT, true, 600)
+	_radio_label.custom_minimum_size = Vector2(Screen.card_width(380, 100), 0)
+	column.add_child(_radio_label)
+	add_child(_radio)
+	_radio.resized.connect(_place_radio)
+	get_viewport().size_changed.connect(_place_radio)
+
+
+## Di bawah bar atas (area Masbro ada di tengah-bawah layar); turun lagi bila tips sedang tampil.
+func _place_radio() -> void:
+	var view := get_viewport().get_visible_rect().size
+	var y := BAR_HEIGHT + 8.0
+	if _tip.visible:
+		y = _tip.position.y + _tip.size.y + 8.0
+	_radio.position = Vector2((view.x - _radio.size.x) / 2.0, y)
 
 
 func _build_tip() -> void:
@@ -190,14 +254,20 @@ func show_intro() -> void:
 func _day_warnings() -> PackedStringArray:
 	var warnings := PackedStringArray()
 	if _day.strict_customer:
-		warnings.append(tr("%s perfeksionis: denda kerusakan 2x. Paket sempurna dan tepat waktu dapat tip %s.") % [
+		warnings.append(tr("%s teliti: denda kerusakan 2x. Paket sempurna dan tepat waktu dapat tip %s.") % [
+				_day.customer_name, GameState.rupiah(_day.perfect_tip)])
+	if _day.impatient_customer:
+		warnings.append(tr("%s tidak sabaran: potongan telat 2x. Paket sempurna dan tepat waktu dapat tip %s.") % [
 				_day.customer_name, GameState.rupiah(_day.perfect_tip)])
 	if _day.rainy:
 		warnings.append(tr("Hujan deras: jarak pandang terbatas dan aspal licin."))
 	if _day.cat_count > 0:
 		warnings.append(tr("Kucing jalanan suka menghalangi jalan. Cari jalur lain!"))
 	if _day.rival_interval > 0.0:
-		warnings.append(tr("Bang Kilat, kurir rival, suka ngebut tiba-tiba. Hati-hati!"))
+		warnings.append(tr("Kuro, kurir rival, suka ngebut tiba-tiba dan membuang kulit pisang. Hati-hati!")
+				if _day.peel_chance > 0.0 else tr("Kuro, kurir rival, suka ngebut tiba-tiba. Hati-hati!"))
+	if _day.buldog_count > 0:
+		warnings.append(tr("Pak Buldog menjaga komplek. Lewat dekat dia, Masbro panik dan gampang tergelincir!"))
 	return warnings
 
 
@@ -226,16 +296,16 @@ func show_result(report: DeliveryReport, next_text: String) -> void:
 		HSeparator.new(),
 		_money_row("Upah dasar", report.base_wage),
 		_money_row("Bonus tepat waktu", report.eta_bonus),
-		_money_row("Tip pelanggan", report.tip) if report.strict else null,
+		_money_row("Tip pelanggan", report.tip) if report.strict or report.impatient else null,
 		_money_row(tr("Bonus koin (%d, sudah masuk dompet)") % report.coins, report.coin_bonus) if report.coins > 0 else null,
 		_money_row(tr("Denda kerusakan") + (" (2x)" if report.strict else ""), -report.damage_penalty),
-		_money_row("Potongan telat", -report.late_penalty),
+		_money_row(tr("Potongan telat") + (" (2x)" if report.impatient else ""), -report.late_penalty),
 		_money_row(tr("Ganti paket di Pos (%dx)") % report.checkpoint_uses, -report.checkpoint_penalty)
 				if report.checkpoint_uses > 0 else null,
 		HSeparator.new(),
 		_counting_money_row("UPAH HARI INI", report.wage),
-		_label(tr("Tabungan pengobatan: %s / %s") % [
-				GameState.rupiah(GameState.total_savings()), GameState.rupiah(GameState.MEDICAL_COST)],
+		_label(tr("Tabungan sewa: %s / %s") % [
+				GameState.rupiah(GameState.total_savings()), GameState.rupiah(GameState.RENT_DUE)],
 				14, Palette.TEXT_SOFT),
 	]
 	_open("PAKET SAMPAI!", Palette.TEAL, rows, [
@@ -252,6 +322,7 @@ func show_failed(is_replay: bool, checkpoint_penalty := 0) -> void:
 	var rows: Array[Control] = [
 		_package_picture(true),
 		_quote(DeliveryReport.FAILED_COMMENT, _day.customer_name),
+		_quote(DeliveryReport.KOKO_FAILED_COMMENT, tr("Bos Koko")),
 	]
 	if checkpoint_penalty > 0:
 		rows.append(_label("Kamu sudah sampai di Pos. Ambil paket pengganti dan lanjutkan perjalanan?", 16))

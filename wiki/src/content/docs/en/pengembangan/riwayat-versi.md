@@ -5,6 +5,20 @@ description: Si Ngacir's change notes, from the first playable version to the la
 
 All versions can be downloaded on [itch.io](https://cyphera-game.itch.io/si-ngacir).
 
+## v0.15.0 — November 2, 2026
+
+- **New story: Kedai Chill.** Adapted from the Story Writer team's document. Masbro now owns Kedai Chill and must pay Rp350,000 of overdue rent within five days as a probationary on-foot courier at Ngacir Express. The nights after each day take place at Kedai Chill; the passing ending turns the stall into the city couriers' rest stop.
+- **New cast and portraits:** Boss Koko (cockatoo head courier), Nana (VIP duck customer), Kuro "El Gato" (rival courier from CepatKilat Corp), Pak Buldog (neighborhood guard), the Landlord, and Mr. Mayor.
+- **New packages:** Hot Fritters, Birthday Cake & Betta Tank, Ice Cream, VIP Laptop, and the Crystal Orange Statue, with new day titles.
+- **Nana, the impatient customer** (Days 1 and 4): double late deductions, 3-star cap if late, a tip if perfect.
+- **Kuro and banana peels** (from Day 2): he sometimes drops banana peels that make Masbro slide one tile.
+- **Pak Buldog** (Days 3–5): barks when Masbro passes close, triggering **panic mode** (faster steps, but easy to slip).
+- **Boss Koko's earpiece:** shouts just below the top bar when the package is nearly ruined or time is running out.
+- **Head Orange:** a free starter hat accessory, worn from the start.
+- Cutscene music renamed: `music/sedih` and `music/tegang` (plus `sfx/sting_tegang` and the `sfx/bark` bark).
+- Merged from PR #69: NPC voices when Masbro gets close, music ducking, cheerful gameplay music, and the **M** key to mute all sound.
+- Leaner CI: builds only for Pull Requests and release tags, docs changes don't trigger builds, and older runs are cancelled automatically.
+
 ## v0.14.0 — October 11, 2026
 
 - **Rafts redrawn:** one wooden panel per tile, split by rope lashings, almost a full tile tall. A raft's length reads at a glance and its edges match where you can stand (the ring marker was removed).

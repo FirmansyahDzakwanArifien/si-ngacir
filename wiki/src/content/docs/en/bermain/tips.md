@@ -9,12 +9,14 @@ description: Tips for surviving the roads of Ngacir City and fixes for common pr
 2. **Trucks are slow but long** and deal 2 boxes of package damage. Don't cut right in front of them.
 3. **Watch the lane direction.** Adjacent lanes travel in opposite directions.
 4. **A horn is a warning.** If you hear "Tin tin!", get out of the way.
-5. **Day 2 (water jug):** your steps are slower, so start crossing earlier.
-6. **Day 3 (eggs):** a single motorbike hit already costs 2 boxes. Better a little late than broken eggs.
-7. **In the rain:** stepping on wet asphalt can make you slip. Don't stop right in front of a dangerous lane.
-8. **A cat in the way?** Step one tile left or right, then keep going.
-9. **Grab a helmet before the river.** The helmet also absorbs one fall into the water.
-10. **ETA bonus vs. safety:** damage fines usually cost more than the on-time bonus.
+5. **Days 1 and 4 (Nana):** late deductions are doubled. Chase the ETA, but don't gamble against a truck.
+6. **Day 2 (cake & fish tank):** your steps are slower, so start crossing earlier. Watch for banana peels in the lane Kuro just rode through.
+7. **Day 3 (ice cream):** the tightest ETA. Check for potholes before you step, and don't pass close to Pak Buldog when the lane ahead is busy: panic mode makes you slip easily.
+8. **In the rain:** stepping on wet asphalt can make you slip. Don't stop right in front of a dangerous lane.
+9. **Day 5 (Mr. Mayor):** the crystal statue breaks after 2 hits and fines are doubled. Better a little late than a broken statue.
+10. **A cat in the way?** Step one tile left or right, then keep going.
+11. **Grab a helmet before the river.** The helmet also absorbs one fall into the water.
+12. **ETA bonus vs. safety:** damage fines usually cost more than the on-time bonus. Once Boss Koko starts yelling in your earpiece, it's time to be more careful.
 
 ## Common problems
 
