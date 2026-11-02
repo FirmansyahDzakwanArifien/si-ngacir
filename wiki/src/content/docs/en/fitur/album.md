@@ -5,7 +5,7 @@ description: Dialogue cutscenes with character portraits, the Skip and Auto cont
 
 ## Cutscenes
 
-Si Ngacir's story is told through **dialogue cutscenes** with character portraits and illustrations. The music follows the mood: a sad theme with Nana at the hospital, a tense theme when Bang Kilat shows off, and relaxed music for everything else.
+Si Ngacir's story is told through **dialogue cutscenes** with character portraits and illustrations. The music follows the mood: a sad theme when Masbro is down or at the sunset ending, a tense theme when Kuro shows off, the Landlord gets angry, or Pak Buldog barks, and relaxed music for everything else. Every night after Days 1–4 takes place at Kedai Chill.
 
 | Control | What it does |
 | --- | --- |

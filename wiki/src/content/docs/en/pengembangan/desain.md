@@ -60,7 +60,7 @@ The package replaces the concept of health. Collisions don't kill the character;
 | 2 | Moderate damage | Damaged |
 | 3 | Package destroyed | Failed Delivery |
 
-Sources of damage: hitting vehicles, falling into potholes, falling into the river, and other hazards in the level. Final values were tuned through playtesting: the pillow survives 4 damage, the VIP Package only 2, and eggs take double damage.
+Sources of damage: hitting vehicles, falling into potholes, falling into the river, and other hazards in the level. Final values were tuned through playtesting: the fritters survive 4 damage, the Crystal Orange Statue only 2, and the heavy birthday cake & betta tank slows your steps.
 
 ## Rating system
 
@@ -68,22 +68,24 @@ On arrival, players don't just see a *LEVEL COMPLETED* message; they receive a *
 
 | Rating | Condition | Sample comment |
 | --- | --- | --- |
-| ★★★★★ | Intact and fast | "Package in one piece, courier totally chill. Recommended!" |
-| ★★★★ | Slightly damaged | "Package is a bit dented, but still fine." |
-| ★★★ | Some damage | "Be careful when you deliver, Masbro." |
-| ★★ | Fairly bad | "Masbro... the package is damaged, but I'll take it." |
-| ★ | Almost totally ruined | "Dude... did this package just come back from a war?" |
+| ★★★★★ | Intact and fast | "Chill face, flawless package. Awesome!" |
+| ★★★★ | Slightly damaged | "The package is a bit dented, but still fine." |
+| ★★★ | Some damage | "Be more careful next time, Masbro." |
+| ★★ | Fairly bad | "The package is a bit wrecked, but what's inside still works." |
+| ★ | Almost totally ruined | "Is this a package or cargo from a shipwreck?!" |
 | 💥 | Destroyed | "Masbro... where's my package?" |
 
 ## Level design
 
 | Level | Name | Package | Focus |
 | --- | --- | --- | --- |
-| 1 | Introduction | Pillow | Introduces moving, crossing, collisions, and delivery |
-| 2 | Heavy Delivery | Water Jug | Adjusting timing to slower steps |
-| 3 | Fragile Delivery | Eggs | Protecting the package becomes the top priority |
-| 4 | Traffic Challenge | Sensitive Goods | More and faster vehicles, combined hazards |
-| 5 | Final Delivery | VIP Package | Combines movement, timing, dodging, package management, and route choice |
+| 1 | Introduction | Hot Fritters | Introduces moving, crossing, collisions, and delivery; an impatient customer |
+| 2 | Heavy Delivery | Birthday Cake & Betta Tank | Adjusting timing to slower steps |
+| 3 | Time Pressure | Ice Cream | The tightest ETA through alleys full of potholes |
+| 4 | Traffic Challenge | VIP Laptop | More and faster vehicles in a storm, combined hazards |
+| 5 | Final Delivery | Crystal Orange Statue | Combines movement, timing, dodging, package management, and route choice |
+
+The packages and day titles follow the Story Writer team's Kedai Chill script (see [The Five Days](/en/bermain/hari/)).
 
 ## Audio & visuals
 
@@ -97,7 +99,7 @@ Some GDD ideas that have been realized and expanded on:
 
 | Idea in the GDD | In the game |
 | --- | --- |
-| Capybara customization if scope allows | [Masbro's Shop](/en/fitur/toko/) with 11 accessories |
-| Side characters besides Masbro | Nana, Bang Kilat, Bu Direktur, Bu Dokter, Pak Ojan, and the street folk |
-| Enemies and hazards | Bang Kilat, street cats, rain, potholes, rivers |
+| Capybara customization if scope allows | [Masbro's Shop](/en/fitur/toko/) with 12 accessories, including the free Head Orange |
+| Side characters besides Masbro | Boss Koko, Nana, Kuro, Pak Buldog, the Landlord, Mr. Mayor, and the street folk |
+| Enemies and hazards | Kuro and his banana peels, Pak Buldog, street cats, rain, potholes, rivers |
 | Retry / Return to Menu options | Plus **Continue from Checkpoint** |

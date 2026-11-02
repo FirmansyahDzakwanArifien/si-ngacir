@@ -66,8 +66,9 @@ feat/<name> ──PR──▶ dev ──PR──▶ main ──tag v*──▶ G
                             GitHub Release + itch.io
 ```
 
-- Every Pull Request is tested: the project is imported and re-exported.
+- Every Pull Request to `dev` / `main` is tested: the project is imported, re-exported, and the build contents are checked (artifacts kept for 5 days). A new push to the same PR cancels the older run.
+- Pushing to `main` doesn't rebuild (it's the same tree as the PR that already passed), and changes that only touch docs or the wiki don't trigger a build. Every job has a time limit.
 - Before merging, the team runs the Godot **automated test** suite (23 scenarios: movement, collisions, pickup and delivery, rivers, checkpoints, cutscenes, album, effects, 3D View, and more).
 - After export, CI opens the resulting build and fails if any cutscene is empty, a portrait is missing, or music wasn't included.
 - The web build uses a **slim Godot template**: unused modules are stripped to keep the download small (±8 MB compressed), but the 3D core stays in for 3D View.
-- Pushing a `v*` tag automatically creates a **GitHub Release** and uploads to **itch.io** (web, Windows, and Android channels).
+- Pushing a `v*` tag automatically creates a **GitHub Release** and uploads to **itch.io** (web, Windows, and Android channels). The **Run workflow** button with the `itch` input can re-upload a chosen tag to itch.io.

@@ -1,6 +1,6 @@
 ---
 title: Rintangan & Item
-description: Rintangan di jalan, sungai dan rakit, Pos checkpoint, koin, power-up, serta tantangan khusus seperti kucing, hujan, dan pelanggan perfeksionis.
+description: Rintangan di jalan, sungai dan rakit, Pos checkpoint, koin, power-up, serta tantangan khusus seperti kucing, hujan, Kuro, Pak Buldog, dan pelanggan khusus.
 ---
 
 ## Rintangan di jalan
@@ -31,7 +31,7 @@ Mulai Hari 2, rute panjang punya **Pos** setiap beberapa blok: median bersih ber
 
 Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos**: paket pengganti diambil dan perjalanan dilanjutkan dari Pos. Konsekuensinya:
 
-- Denda ganti paket Rp15.000 (Rp20.000 untuk Paket VIP) dipotong dari upah.
+- Denda ganti paket Rp15.000 (Rp20.000 untuk Patung Kristal Jeruk) dipotong dari upah.
 - Rating maksimal 3 bintang.
 - Waktu tetap berjalan.
 
@@ -49,8 +49,20 @@ Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos*
 | --- | --- | --- |
 | <img class="sprite" src="/img/sprites/cat_sit.svg" alt="" /> **Kucing jalanan** | 2–5 | Tidak merusak paket, tetapi menghalangi langkah. Kucing yang menyentuh Masbro duduk sebentar karena penasaran dengan tas kurirnya |
 | **Hujan** | 4–5 | Hanya area sekitar Masbro yang terlihat jelas. Di aspal basah, Masbro bisa tergelincir satu langkah tambahan ("Licin!"). Median dan trotoar tidak licin |
-| **Pelanggan perfeksionis** | 3 | Pak Ojan: denda kerusakan 2x lipat dan rating maksimal 3 bintang bila paket lecet, tetapi memberi tip bila paket sempurna dan tepat waktu |
-| **Bang Kilat** | 3–5 | Kurir rival yang tiba-tiba melesat sangat cepat di satu lane ("Minggir, Masbro!") |
+| <img class="sprite" src="/img/sprites/vehicle_kuro.svg" alt="" /> **Kuro** | 2–5 | Kurir rival yang tiba-tiba melesat sangat cepat di satu lane ("Minggir, kapibara!"). Menabraknya tetap merusak paket |
+| <img class="sprite" src="/img/sprites/item_kulit_pisang.svg" alt="" /> **Kulit pisang** | 2–5 | Kadang dibuang Kuro di lane yang ia lewati. Menginjaknya membuat Masbro tergelincir satu petak ("Kulit pisang!") |
+| <img class="sprite" src="/img/sprites/buldog_sit.svg" alt="" /> **Pak Buldog** | 3–5 | Duduk di median. Bila Masbro lewat dalam jarak 1 petak, ia menggonggong ("GUK! GUK!"): layar bergetar dan Masbro **panik**, langkah lebih cepat selama 3 detik tetapi 30% peluang tergelincir di aspal |
+| **Pelanggan tidak sabaran** | 1, 4 | Nana: potongan telat 2x lipat dan rating maksimal 3 bintang bila telat, tetapi memberi tip bila paket sempurna dan tepat waktu |
+| **Pelanggan teliti** | 5 | Pak Wali Kota: denda kerusakan 2x lipat dan rating maksimal 3 bintang bila paket lecet, tetapi memberi tip bila paket sempurna dan tepat waktu |
+
+## Earpiece Bos Koko
+
+Selama pengiriman, Bos Koko memantau lewat **earpiece**. Teriakannya muncul sebagai banner di bawah bar atas, masing-masing sekali per hari:
+
+| Pemicu | Teriakan |
+| --- | --- |
+| Kondisi paket ≤ 34% | "WOI MASBRO! Isinya remuk tuh! Pelan-pelan dikit!" |
+| Sisa ETA ≤ 15 detik | "Waktu tipis, Masbro! Jangan ngelamun!" |
 
 ## Efek benturan
 
