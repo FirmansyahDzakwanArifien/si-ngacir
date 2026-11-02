@@ -31,9 +31,11 @@ on:
         type: boolean
         default: false
 
+# Run PR membatalkan run lama di PR yang sama; run lain (tag, main, manual) punya grup unik
+# sehingga tidak pernah dibatalkan atau mengantre.
 concurrency:
-  group: build-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: build-${{ github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || github.run_id }}
+  cancel-in-progress: true
 
 env:
   GODOT_VERSION: "4.3"
