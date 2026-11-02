@@ -106,7 +106,7 @@ Arah gaya: **stylized**, bukan realistis. Bulu, cahaya hangat, dan pose dinamis 
 | Bulu | Tekstur hand-painted dengan arah bulu; shell fur hanya untuk cutscene close-up, tidak di gameplay |
 | Cahaya | Satu matahari dari kanan atas, ambient biru langit; bayangan bulat (blob) di bawah karakter dan kendaraan |
 | Warna | Palet poster: langit biru pekat, matahari keemasan, aspal ungu-abu, aksen teal Ngacir Express |
-| Efek | Debu dan kerikil saat melompat, garis kecepatan Bang Kilat, lampu kendaraan saat hujan |
+| Efek | Debu dan kerikil saat melompat, garis kecepatan Kuro, lampu kendaraan saat hujan |
 | Masbro | Topi kurir kuning, ransel hitam bergaris teal, kacamata piksel (bisa dilepas), **tanpa rokok** |
 | Lingkungan | Tiang listrik dan kabel, papan hijau "LEVEL NEXT", billboard "Dari Jalan Untuk Hidup" |
 
@@ -117,7 +117,7 @@ Efek pasca-proses di renderer Compatibility terbatas. Gunakan pendekatan seperti
 | Aset | Segitiga | Tekstur | Rig / animasi |
 | --- | --- | --- | --- |
 | Masbro | 3.000–5.000 | 1 × 1024 (512 untuk HP) | ±25 tulang: idle, hop, hit, celebrate, slide, tercebur |
-| NPC (Nana, Kilat, pelanggan) | 2.000–4.000 | 1 × 512 | Pakai ulang rig Masbro bila proporsi sama |
+| NPC (Bos Koko, Nana, Kuro, Pak Buldog, pelanggan) | 2.000–4.000 | 1 × 512 | Pakai ulang rig Masbro bila proporsi sama |
 | Kendaraan | 1.000–3.000 | Atlas bersama 1024 | Tanpa rig; roda berputar lewat kode |
 | Tile lane | 100–800 | Atlas lingkungan 1024 | – |
 | Dekorasi | 100–600 | Atlas lingkungan | – |

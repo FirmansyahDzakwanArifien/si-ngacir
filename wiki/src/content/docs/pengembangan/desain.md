@@ -60,7 +60,7 @@ Paket menggantikan konsep health. Tabrakan tidak membunuh karakter; dampak utama
 | 2 | Kerusakan sedang | Damaged |
 | 3 | Paket hancur | Failed Delivery |
 
-Sumber kerusakan: menabrak kendaraan, masuk lubang, tercebur sungai, dan hazard lain di level. Nilai akhirnya disesuaikan lewat playtesting: bantal tahan 4 kerusakan, Paket VIP hanya 2, telur menerima kerusakan dua kali lipat.
+Sumber kerusakan: menabrak kendaraan, masuk lubang, tercebur sungai, dan hazard lain di level. Nilai akhirnya disesuaikan lewat playtesting: gorengan tahan 4 kerusakan, Patung Kristal Jeruk hanya 2, dan kue ultah & akuarium cupang yang berat memperlambat langkah.
 
 ## Sistem rating
 
@@ -68,22 +68,24 @@ Setelah sampai, pemain tidak sekadar melihat tulisan *LEVEL COMPLETED*, tetapi m
 
 | Rating | Kondisi | Contoh komentar |
 | --- | --- | --- |
-| ★★★★★ | Utuh dan cepat | "Paketnya utuh, kurirnya santai. Recommended!" |
+| ★★★★★ | Utuh dan cepat | "Mukanya santai, tapi paketnya mulus tanpa lecet. Mantap!" |
 | ★★★★ | Sedikit rusak | "Paket agak penyok, tapi masih aman." |
-| ★★★ | Beberapa kerusakan | "Hati-hati kalau antar paket, Masbro." |
-| ★★ | Cukup parah | "Masbro... paketnya rusak, tapi masih bisa diterima." |
-| ★ | Hampir rusak total | "Mas... ini paket apa habis perang?" |
+| ★★★ | Beberapa kerusakan | "Lain kali lebih hati-hati, Masbro." |
+| ★★ | Cukup parah | "Paketnya agak hancur, tapi isinya masih bisa dipakai." |
+| ★ | Hampir rusak total | "Ini paket atau hasil bongkar muatan kapal karam?!" |
 | 💥 | Hancur | "Masbro... paket saya mana?" |
 
 ## Desain level
 
 | Level | Nama | Paket | Fokus |
 | --- | --- | --- | --- |
-| 1 | Introduction | Bantal | Mengenalkan gerak, menyeberang, tabrakan, dan pengantaran |
-| 2 | Heavy Delivery | Galon Air | Menyesuaikan timing dengan langkah yang lebih lambat |
-| 3 | Fragile Delivery | Telur | Menjaga paket menjadi prioritas utama |
-| 4 | Traffic Challenge | Barang Sensitif | Kendaraan lebih banyak dan cepat, rintangan dikombinasikan |
-| 5 | Final Delivery | Paket VIP | Menggabungkan gerak, timing, menghindar, manajemen paket, dan pemilihan rute |
+| 1 | Introduction | Gorengan Hangat | Mengenalkan gerak, menyeberang, tabrakan, dan pengantaran; pelanggan tidak sabaran |
+| 2 | Heavy Delivery | Kue Ultah & Akuarium Cupang | Menyesuaikan timing dengan langkah yang lebih lambat |
+| 3 | Time Pressure | Es Krim | ETA paling ketat di gang penuh galian |
+| 4 | Traffic Challenge | Laptop VIP | Kendaraan lebih banyak dan cepat di tengah badai, rintangan dikombinasikan |
+| 5 | Final Delivery | Patung Kristal Jeruk | Menggabungkan gerak, timing, menghindar, manajemen paket, dan pemilihan rute |
+
+Paket dan judul hari mengikuti naskah cerita Kedai Chill dari tim Writer Story (lihat [Lima Hari](/bermain/hari/)).
 
 ## Audio & visual
 
@@ -97,7 +99,7 @@ Beberapa ide GDD yang sudah diwujudkan dan dikembangkan lebih jauh:
 
 | Ide di GDD | Di dalam game |
 | --- | --- |
-| Customization capybara bila scope memungkinkan | [Toko Masbro](/fitur/toko/) dengan 11 aksesori |
-| Side character selain Masbro | Nana, Bang Kilat, Bu Direktur, Bu Dokter, Pak Ojan, dan warga jalanan |
-| Musuh dan hazard | Bang Kilat, kucing jalanan, hujan, lubang, sungai |
+| Customization capybara bila scope memungkinkan | [Toko Masbro](/fitur/toko/) dengan 12 aksesori, termasuk Jeruk Kepala bawaan |
+| Side character selain Masbro | Bos Koko, Nana, Kuro, Pak Buldog, Pemilik Lahan, Pak Wali Kota, dan warga jalanan |
+| Musuh dan hazard | Kuro dan kulit pisangnya, Pak Buldog, kucing jalanan, hujan, lubang, sungai |
 | Pilihan Retry / Return to Menu | Ditambah **Lanjut dari Pos** (checkpoint) |

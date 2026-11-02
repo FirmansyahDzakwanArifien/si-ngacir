@@ -8,12 +8,13 @@ Koin yang dipungut di jalan **langsung masuk dompet**. Angkanya terlihat di bar 
 - Klik barang untuk membeli; klik barang milikmu untuk memakai atau melepasnya.
 - Aksesori langsung terlihat saat mengantar paket, juga di [Tampilan 3D](/fitur/pengaturan/#tampilan-3d-beta).
 - Dompet dan koleksi **tidak hilang** saat memilih Mulai Baru.
-- Masbro sudah memakai **Kacamata Piksel** sejak awal. Lepas atau ganti kapan saja.
+- Masbro sudah memakai **Jeruk Kepala** (ciri khasnya) dan **Kacamata Piksel** sejak awal. Lepas atau ganti kapan saja.
 
 ## Daftar aksesori
 
 | | Barang | Slot | Harga (koin) |
 | --- | --- | --- | --- |
+| <img class="sprite" src="/img/acc/acc_jeruk.svg" alt="" /> | Jeruk Kepala | Topi | Gratis |
 | <img class="sprite" src="/img/acc/acc_caping.svg" alt="" /> | Caping | Topi | 15 |
 | <img class="sprite" src="/img/acc/acc_beanie.svg" alt="" /> | Beanie | Topi | 20 |
 | <img class="sprite" src="/img/acc/acc_koki.svg" alt="" /> | Topi Koki | Topi | 25 |

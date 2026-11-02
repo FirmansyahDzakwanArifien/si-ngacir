@@ -22,11 +22,13 @@ const BOB := {
 }
 
 const ITEMS := [
+	# Jeruk khas Masbro (docs/STORY.md): bawaan, dimiliki dan dipakai sejak awal.
+	{"id": &"jeruk", "slot": Slot.HAT, "name": "Jeruk Kepala", "price": 0},
 	{"id": &"caping", "slot": Slot.HAT, "name": "Caping", "price": 15},
 	{"id": &"beanie", "slot": Slot.HAT, "name": "Beanie", "price": 20},
 	{"id": &"koki", "slot": Slot.HAT, "name": "Topi Koki", "price": 25},
 	{"id": &"mahkota", "slot": Slot.HAT, "name": "Mahkota", "price": 60},
-	# Bawaan ala poster: dimiliki dan dipakai sejak awal (lihat GameState.STARTER_ITEM).
+	# Bawaan ala poster: dimiliki dan dipakai sejak awal (lihat GameState.STARTER_ITEMS).
 	{"id": &"kacamata_piksel", "slot": Slot.GLASSES, "name": "Kacamata Piksel", "price": 0},
 	{"id": &"kacamata_bulat", "slot": Slot.GLASSES, "name": "Kacamata Bulat", "price": 10},
 	{"id": &"kacamata_hitam", "slot": Slot.GLASSES, "name": "Kacamata Hitam", "price": 15},

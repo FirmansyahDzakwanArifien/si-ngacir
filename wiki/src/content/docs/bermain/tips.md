@@ -9,12 +9,14 @@ description: Tips bertahan di jalan raya Kota Ngacir dan solusi untuk masalah ya
 2. **Truk lambat tapi panjang** dan merusak paket 2 kotak. Jangan memotong tepat di depannya.
 3. **Perhatikan arah lane.** Lane yang bersebelahan melaju berlawanan arah.
 4. **Klakson adalah peringatan.** Bila terdengar "Tin tin!", segera menyingkir.
-5. **Hari 2 (galon):** langkah lebih lambat, jadi mulai menyeberang lebih awal.
-6. **Hari 3 (telur):** satu tabrakan motor sudah merusak 2 kotak. Lebih baik telat sedikit daripada telur pecah.
-7. **Saat hujan:** melangkah di aspal basah bisa tergelincir. Jangan berhenti tepat di depan lane berbahaya.
-8. **Kucing menghalangi?** Geser satu petak ke kiri atau kanan, lalu lanjut maju.
-9. **Ambil helm sebelum sungai.** Helm juga menahan satu kali tercebur.
-10. **Bonus ETA vs. keamanan:** denda kerusakan biasanya lebih mahal daripada bonus tepat waktu.
+5. **Hari 1 dan 4 (Nana):** telat dipotong dua kali lipat. Kejar ETA, tapi jangan nekat menerobos truk.
+6. **Hari 2 (kue & akuarium):** langkah lebih lambat, jadi mulai menyeberang lebih awal. Perhatikan kulit pisang di lane yang baru dilewati Kuro.
+7. **Hari 3 (es krim):** ETA paling ketat. Lihat galian di aspal sebelum melangkah, dan jangan lewat dekat Pak Buldog bila lane di depan ramai: mode panik bikin gampang tergelincir.
+8. **Saat hujan:** melangkah di aspal basah bisa tergelincir. Jangan berhenti tepat di depan lane berbahaya.
+9. **Hari 5 (Pak Wali Kota):** patung kristal hancur dengan 2 benturan dan dendanya 2x. Lebih baik telat sedikit daripada patung pecah.
+10. **Kucing menghalangi?** Geser satu petak ke kiri atau kanan, lalu lanjut maju.
+11. **Ambil helm sebelum sungai.** Helm juga menahan satu kali tercebur.
+12. **Bonus ETA vs. keamanan:** denda kerusakan biasanya lebih mahal daripada bonus tepat waktu. Kalau Bos Koko sudah berteriak lewat earpiece, saatnya lebih hati-hati.
 
 ## Masalah umum
 

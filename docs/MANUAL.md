@@ -6,19 +6,19 @@
 
 ## 1. Storyline
 
-> *Masbro, seekor capybara yang membutuhkan biaya pengobatan untuk adiknya, harus menyelesaikan masa percobaan lima hari sebagai kurir Ngacir Express. Namun, tekanan waktu, lalu lintas, rintangan, dan risiko kerusakan paket dapat mengurangi upahnya dan mengancam kesempatan Masbro untuk mengumpulkan biaya pengobatan adiknya.*
+> *Masbro, capybara paling santai sekota, harus melunasi tunggakan sewa Kedai Chill sebesar Rp350.000 dalam lima hari. Satu-satunya kerja yang dibayar harian adalah kurir masa percobaan di Ngacir Express. Namun, tekanan waktu, lalu lintas, rintangan, dan risiko kerusakan paket dapat memotong upahnya dan mengancam kedai kesayangannya.*
 
-**Suatu hari**, hiduplah Masbro, seekor capybara santai yang tinggal berdua bersama adiknya di Kota Ngacir.
+**Suatu hari**, di tengah Kota Ngacir yang padat dan serba buru-buru, hiduplah Masbro, capybara pemilik **Kedai Chill**: kedai minum dan kolam air hangat tempat warga kota melepas penat. Ke mana-mana ia selalu membawa jeruk di kepala.
 
-**Setiap hari**, Masbro mencari rezeki dengan mengandalkan ketenangannya, demi memenuhi kebutuhan mereka berdua.
+**Setiap hari**, Masbro menjaga kedainya dengan santai, tanpa pernah terburu-buru.
 
-**Suatu ketika**, adiknya jatuh sakit parah dan membutuhkan biaya pengobatan rumah sakit yang sangat besar dalam waktu lima hari.
+**Suatu ketika**, Pemilik Lahan datang membawa SP3: tunggakan sewa Kedai Chill harus lunas dalam lima hari, atau kedai disegel.
 
-**Karena itu**, Masbro terdesak melamar di ekspedisi Ngacir Express. Ia harus lolos masa percobaan lima hari dengan mengantar rentetan paket berisiko: dari galon air yang berat, telur yang rapuh, hingga barang sensitif di tengah lalu lintas kota yang liar.
+**Karena itu**, Masbro mendaftar sebagai kurir jalan kaki masa percobaan di Ngacir Express, ekspedisi dengan moto *"Kalo gak kilat, gak selamat!"*. Kepala kurirnya, Bos Koko, memberinya rentetan paket berisiko: gorengan yang harus tetap garing, kue ulang tahun berikut akuarium cupang, es krim yang cepat cair, laptop VIP di tengah badai, sampai patung kristal untuk Pak Wali Kota.
 
-**Karena itu**, dengan memegang prinsip *"Trobos Ajalah!"*, Masbro harus bermanuver cerdas di antara kendaraan demi mengejar Timer ETA, sambil menjaga paket dari benturan agar upah hariannya tidak terpotong denda ganti rugi.
+**Karena itu**, dengan memegang prinsip *"Trobos Ajalah!"*, Masbro harus bermanuver cerdas di antara kendaraan demi mengejar Timer ETA, menjaga paket dari benturan, sambil menghadapi Kuro si kurir rival yang suka membuang kulit pisang dan Pak Buldog yang galak.
 
-**Sampai akhirnya**, kalau semua berjalan lancar, Masbro menyelesaikan pengiriman Paket VIP di hari kelima, resmi diangkat menjadi kurir tetap, dan berhasil mengumpulkan biaya untuk menyembuhkan adiknya.
+**Sampai akhirnya**, kalau semua berjalan lancar, Masbro mengantar Patung Kristal Jeruk di hari kelima, resmi diangkat menjadi kurir tetap, melunasi sewa, dan Kedai Chill menjadi tempat istirahat para kurir kota.
 
 Nasib Masbro ada di tanganmu.
 
@@ -26,14 +26,15 @@ Nasib Masbro ada di tanganmu.
 
 | Tokoh | Siapa |
 | --- | --- |
-| **Masbro** | Capybara paling santai sekampung. Prinsipnya: cepat boleh, asal paket selamat |
-| **Nana** | Adik Masbro yang sedang dirawat. Selalu menunggu Masbro pulang |
-| **Bang Kilat** | Kurir rival yang suka ngebut demi rating. Lambat laun belajar bahwa cepat tidak selalu menang |
-| **Bu Direktur** | Pemilik Ngacir Express yang menilai masa percobaan Masbro |
-| **Bu Dokter** | Dokter yang merawat Nana |
-| **Pak Ojan** | Pelanggan paling teliti sekota |
+| **Masbro** | Capybara pemilik Kedai Chill. Ultra santai, ekspresi datar, selalu membawa jeruk di kepala |
+| **Bos Koko** | Kakatua, kepala kurir Ngacir Express. Memberi briefing pagi, menilai di malam hari, dan berteriak lewat **earpiece** saat paket hampir hancur atau waktu tipis |
+| **Nana** | Bebek pelanggan VIP yang tidak sabaran, selalu membawa stopwatch (Hari 1 dan 4) |
+| **Kuro "El Gato"** | Kucing hitam, kurir senior CepatKilat Corp yang naik motor bebek balap. Rival Masbro mulai Hari 2 |
+| **Pak Buldog** | Buldog satpam komplek. Tidak suka orang lari-lari di komplek (Hari 3–5) |
+| **Pemilik Lahan** | Kambing berjas, pemilik tanah Kedai Chill yang menagih sewa |
+| **Pak Wali Kota** | Singa berbatik, pelanggan paling teliti sekota (Hari 5) |
 
-Setelah tiap pengiriman, cerita berlanjut dengan **malam di rumah** bersama Nana. Kalau paket terjaga dengan baik, malamnya lebih ceria.
+Setelah tiap pengiriman, cerita berlanjut dengan **malam di Kedai Chill**. Kalau paket terjaga dengan baik, malamnya lebih ceria.
 
 ---
 
@@ -65,6 +66,7 @@ Kebutuhan minimal: Windows 10 64-bit, kartu grafis yang mendukung OpenGL 3.3.
 | Mundur | S / ↓ | Swipe ke bawah |
 | Kiri / kanan | A / ← , D / → | Swipe ke kiri/kanan |
 | Pause | Esc / P | Tombol **II** di pojok kanan atas |
+| Bisukan / nyalakan suara | M | Pengaturan → **Bisukan semua suara** |
 | Pilih tombol menu | Enter / klik | Tap |
 | Lanjut cutscene | Enter / klik | Tap |
 | Lewati cutscene | Esc | Tombol **Lewati** |
@@ -85,13 +87,13 @@ Masbro berangkat dari **Gudang Ngacir Express** (bawah) **tanpa paket**:
 1. **Ambil paket** di **kios penjemputan** milik pengirim, kira-kira di tengah rute (cari ikon paket melayang bertuliskan **AMBIL**). Injak petak kiosnya.
 2. **Antar paket** ke **rumah pelanggan** (atas).
 
-Sebelum paket diambil, tabrakan dan tercebur hanya membuat Masbro terpental, paket belum bisa rusak. Setelah diambil, paket bisa rusak dan paket berat (galon) membuat langkah lebih lambat. Sampai di rumah pelanggan tanpa paket belum dihitung selesai.
+Sebelum paket diambil, tabrakan dan tercebur hanya membuat Masbro terpental, paket belum bisa rusak. Setelah diambil, paket bisa rusak dan paket berat (kue ultah & akuarium cupang) membuat langkah lebih lambat. Sampai di rumah pelanggan tanpa paket belum dihitung selesai.
 
 Rute bisa jauh lebih panjang dari satu layar; layar ikut bergerak naik mengikuti Masbro. ETA sudah menghitung waktu mampir ke kios.
 
 Setiap kali hari dimulai, **susunan jalan dibuat ulang secara acak**, jadi tidak ada dua pengiriman yang persis sama. Makin dekat ke rumah pelanggan, kendaraan makin cepat.
 
-Kumpulkan upah dari 5 hari masa percobaan. Jika total tabungan mencukupi biaya pengobatan, Masbro lulus dan adiknya bisa berobat.
+Kumpulkan upah dari 5 hari masa percobaan. Jika total tabungan mencukupi tunggakan sewa (Rp350.000), Masbro lulus dan Kedai Chill selamat.
 
 ---
 
@@ -99,7 +101,7 @@ Kumpulkan upah dari 5 hari masa percobaan. Jika total tabungan mencukupi biaya p
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│ HARI 1   BANTAL ■■■■            ETA 00:24   ANTAR KE: ... │  ← bar informasi
+│ HARI 1   GORENGAN ■■■■          ETA 00:24   ANTAR KE: ... │  ← bar informasi
 ├──────────────────────────────────────────────────────────┤
 │ Rumah pelanggan (tujuan)                                 │
 │ ════ jalan ════  🚗      🛵                               │
@@ -144,7 +146,7 @@ Sampai sebelum ETA habis untuk mendapat **bonus tepat waktu**. Terlambat tidak m
 Upah = Upah dasar + Bonus tepat waktu (+ Tip) (+ Bonus koin) − Denda kerusakan − Potongan telat
 ```
 
-Upah setiap hari ditambahkan ke **tabungan pengobatan**. Jika mengulang hari, yang dihitung adalah upah **terbaik** hari itu.
+Upah setiap hari ditambahkan ke **tabungan sewa**. Jika mengulang hari, yang dihitung adalah upah **terbaik** hari itu.
 
 ### Pelanggan menunggu
 
@@ -156,11 +158,13 @@ Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan 
 
 | Bintang | Contoh komentar |
 | --- | --- |
-| ★★★★★ | "Paketnya utuh, kurirnya santai. Recommended!" |
+| ★★★★★ | "Mukanya santai, tapi paketnya mulus tanpa lecet. Mantap!" |
 | ★★★★ | "Paket agak penyok, tapi masih aman." |
-| ★★★ | "Hati-hati kalau antar paket, Masbro." |
-| ★★ | "Masbro... paketnya rusak, tapi masih bisa diterima." |
-| ★ | "Mas... ini paket apa habis perang?" |
+| ★★★ | "Lain kali lebih hati-hati, Masbro." |
+| ★★ | "Paketnya agak hancur, tapi isinya masih bisa dipakai." |
+| ★ | "Ini paket atau hasil bongkar muatan kapal karam?!" |
+
+Nana dan Pak Wali Kota punya komentar sendiri. Jika paket hancur, Bos Koko ikut mengomel.
 
 ---
 
@@ -168,11 +172,11 @@ Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar, berdasarkan 
 
 | Hari | Paket | Pelanggan | Tantangan |
 | --- | --- | --- | --- |
-| 1 (Kompleks Perumahan) | Bantal | Bu Sri | Pengenalan. Paket tahan beberapa benturan, lalu lintas ringan |
-| 2 (Pasar Ngacir) | Galon Air | Pak Budi | Paket berat: langkah Masbro lebih lambat. Kucing jalanan mulai muncul |
-| 3 (Sekitar Sekolah) | Telur | Pak Ojan | Paket rapuh (kerusakan 2x lipat) dan pelanggan perfeksionis |
-| 4 (Pusat Kota) | Barang Sensitif | Pak Joko | Hujan deras di jam sibuk: pandangan terbatas, jalan licin |
-| 5 (Kawasan Bisnis) | Paket VIP | Bu Direktur | Semua tantangan sekaligus. Paket hancur hanya dengan 2 kerusakan |
+| 1 "Gorengan Pantang Melempem" (Pasar) | Gorengan Hangat | Nana (tidak sabaran) | Pengenalan. Paket tahan 4 benturan; kejar ETA supaya gorengan masih garing |
+| 2 "Jangan Goyah, Barang Pecah Belah" (Sekolah) | Kue Ultah & Akuarium Cupang | Bu Sri | Paket berat: langkah Masbro lebih lambat. Sungai pertama, kucing jalanan, Kuro dan kulit pisang |
+| 3 "Labirin Gang Sempit" (Perumahan) | Es Krim | Pak Budi | ETA paling ketat (potongan telat Rp1.500/detik), lebih banyak galian pipa (lubang), Pak Buldog |
+| 4 "Badai di Jam Sibuk" (Pusat Kota) | Laptop VIP | Nana (tidak sabaran) | Hujan badai: pandangan terbatas, jalan licin, sungai lebih sering |
+| 5 "Ujian Akhir: Kristal Jeruk" (Kawasan Bisnis) | Patung Kristal Jeruk | Pak Wali Kota (teliti) | Semua tantangan sekaligus. Paket hancur hanya dengan 2 kerusakan |
 
 ### Rintangan di jalan
 
@@ -198,7 +202,8 @@ Mulai Hari 2, sebagian blok jalan bisa berupa **sungai**. Lompat ke atas **rakit
 | **Pengemudi** | Membunyikan klakson "Tin tin!" bila Masbro berdiri tepat di depan kendaraannya. Tanda untuk segera menyingkir! |
 | **Pejalan kaki** | Ibu-ibu belanja dan anak berbalon berjalan pelan di median. Tidak merusak paket, tapi menghalangi ("Permisi, Mas!") |
 | **Pedagang bakso** | Gerobak diam di median, menghalangi langkah dan berteriak "Bakso! Bakso!" |
-| **Bang Kilat** | Kurir rival yang tiba-tiba melesat sangat cepat di salah satu lane ("Minggir, Masbro!"), mulai Hari 3. Menabraknya tetap merusak paket |
+| **Kuro** | Kurir rival yang tiba-tiba melesat sangat cepat dengan motor balapnya di salah satu lane ("Minggir, kapibara!"), mulai Hari 2. Menabraknya tetap merusak paket, dan kadang ia membuang **kulit pisang** di lane yang ia lewati |
+| **Pak Buldog** | Duduk di median mulai Hari 3. Bila Masbro lewat dalam jarak 1 petak, ia menggonggong ("GUK! GUK!") |
 
 ### Pos (checkpoint)
 
@@ -206,7 +211,7 @@ Mulai Hari 2, rute panjang punya **Pos** setiap beberapa blok: median bersih ber
 
 Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos**: paket pengganti diambil dan perjalanan dilanjutkan dari Pos. Konsekuensinya:
 
-* Denda ganti paket (Rp15.000; Rp20.000 untuk Paket VIP) dipotong dari upah.
+* Denda ganti paket (Rp15.000; Rp20.000 untuk Patung Kristal Jeruk) dipotong dari upah.
 * Rating maksimal 3 bintang.
 * Waktu tetap berjalan.
 
@@ -224,7 +229,15 @@ Jika paket hancur **setelah** melewati Pos, kamu bisa memilih **Lanjut dari Pos*
 
 **Hujan** — hanya area di sekitar Masbro yang terlihat jelas. Di aspal basah, Masbro bisa **tergelincir** satu langkah tambahan ("Licin!"). Median dan trotoar tidak licin.
 
-**Pak Ojan, pelanggan perfeksionis** — denda kerusakan 2x lipat dan rating maksimal 3 bintang bila paket lecet sedikit pun. Tetapi jika paket sempurna dan tepat waktu, Pak Ojan memberi **tip**.
+**Kulit pisang** — dibuang Kuro di lane yang ia lewati. Menginjaknya membuat Masbro tergelincir satu petak ("Kulit pisang!").
+
+**Pak Buldog, mode panik** — gonggongannya membuat layar bergetar dan Masbro panik: langkah lebih cepat selama 3 detik, tetapi bisa tergelincir di aspal. Jangan lewat terlalu dekat kalau di depan ada lane ramai.
+
+**Earpiece Bos Koko** — saat kondisi paket tinggal sedikit atau sisa ETA ≤ 15 detik, Bos Koko berteriak lewat banner di bawah bar atas (masing-masing sekali per hari). Tanda untuk lebih hati-hati atau bergegas.
+
+**Nana, pelanggan tidak sabaran** (Hari 1 dan 4) — potongan telat 2x lipat dan rating maksimal 3 bintang bila telat. Jika paket sempurna dan tepat waktu, Nana memberi **tip**.
+
+**Pak Wali Kota, pelanggan teliti** (Hari 5) — denda kerusakan 2x lipat dan rating maksimal 3 bintang bila paket lecet sedikit pun. Jika paket sempurna dan tepat waktu, Pak Wali Kota memberi **tip**.
 
 ---
 
@@ -234,20 +247,20 @@ Koin yang dipungut di jalan **langsung masuk dompet** (angkanya terlihat di bar 
 
 | Slot | Pilihan |
 | --- | --- |
-| Topi | Caping, Beanie, Topi Koki, Mahkota |
-| Kacamata | Bulat, Hitam, Bintang |
+| Topi | Jeruk Kepala (gratis), Caping, Beanie, Topi Koki, Mahkota |
+| Kacamata | Piksel (gratis), Bulat, Hitam, Bintang |
 | Tas | Pink, Oranye, Kucing |
 
 Klik barang untuk membeli; klik barang milikmu untuk memakai atau melepasnya. Aksesori langsung terlihat saat mengantar paket. Dompet dan koleksi **tidak hilang** saat memilih Mulai Baru.
 
 ## 9. Akhir Cerita
 
-Setelah Hari 5, total tabungan dibandingkan dengan biaya pengobatan.
+Setelah Hari 5, total tabungan dibandingkan dengan tunggakan sewa Kedai Chill.
 
-* **Tabungan cukup** — Masbro lulus masa percobaan dan diangkat menjadi kurir tetap.
-* **Tabungan kurang** — layar rekap menampilkan upah tiap hari. Pilih hari mana pun untuk diulang dan perbaiki upahnya.
+* **Tabungan cukup** — Masbro lulus masa percobaan, diangkat menjadi kurir tetap, dan sewa lunas. Kedai Chill menjadi tempat istirahat para kurir kota.
+* **Tabungan kurang** — Pemilik Lahan masih memberi waktu. Layar rekap menampilkan upah tiap hari; pilih hari mana pun untuk diulang dan perbaiki upahnya.
 
-Setelah lulus, layar rekap (menu utama → **Lanjutkan**) tetap menyediakan tombol **Main Lagi** untuk setiap hari. Mainkan lagi untuk mengumpulkan koin tanpa Mulai Baru; upah terbaik tiap hari tetap tersimpan.
+Setelah lulus, layar rekap (menu utama → **Lanjutkan**) membuka **Shift Malam**: tombol **Main Lagi** untuk setiap hari. Kedai Chill tetap butuh biaya operasional, jadi mainkan lagi untuk mengumpulkan koin tanpa Mulai Baru; upah terbaik tiap hari tetap tersimpan.
 
 ---
 
@@ -259,7 +272,7 @@ Setelah lulus, layar rekap (menu utama → **Lanjutkan**) tetap menyediakan tomb
 | **Mulai Baru** | Memulai dari awal (tekan dua kali; progres lama terhapus) |
 | **Toko Masbro** | Belanja aksesori dengan koin dari dompet |
 | **Album Cerita** | Menonton ulang cutscene yang sudah pernah diputar. Cerita yang belum terbuka tampil **???**; tetap terbuka walau memilih Mulai Baru |
-| **Pengaturan** | Volume musik, volume efek suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama), aksesibilitas |
+| **Pengaturan** | Volume musik, volume efek suara, volume suara NPC, bisukan semua suara, layar penuh (desktop), tips tutorial, bahasa (Indonesia / English, dari menu utama), aksesibilitas |
 | **Keluar** | Menutup game (desktop) |
 
 Game **otomatis pause** saat tab browser ditinggal, jendela kehilangan fokus, atau aplikasi HP diminimalkan. Di HP, layar bergetar saat menabrak atau paket rusak (bisa dimatikan di **Pengaturan → Getar saat menabrak**).
@@ -280,7 +293,7 @@ Di **Pengaturan → Aksesibilitas**:
 | **Tampilan 3D (beta)** | (Pengaturan → Lainnya; browser, Windows, dan Android) Jalanan digambar dalam 3D dengan kamera menyerong. Aturan main sama persis. Lebih berat, jadi matikan bila HP terasa lambat. Berlaku saat hari dimulai |
 | **Efek cahaya** | Filter warna hangat, sinar matahari, dan sudut layar gelap di jalanan. Matikan bila HP terasa lambat atau gambar kurang jelas |
 
-Masbro memakai **Kacamata Piksel** sejak awal. Lepas atau ganti di **Toko Masbro → Kacamata**.
+Masbro memakai **Jeruk Kepala** dan **Kacamata Piksel** sejak awal. Lepas atau ganti di **Toko Masbro** (slot Topi dan Kacamata).
 
 ---
 
@@ -289,11 +302,13 @@ Masbro memakai **Kacamata Piksel** sejak awal. Lepas atau ganti di **Toko Masbro
 1. **Median hijau adalah zona aman.** Berhenti di sana untuk membaca pola lalu lintas berikutnya.
 2. **Truk lambat tapi panjang** dan merusak paket 2x. Jangan memotong tepat di depannya.
 3. **Perhatikan arah lane.** Setiap lane bisa melaju ke arah berbeda.
-4. **Hari 2 (galon):** langkah lebih lambat, jadi mulai menyeberang lebih awal.
-5. **Hari 3 (telur):** satu tabrakan motor sudah merusak 2 kotak. Lebih baik telat sedikit daripada telur pecah.
-6. **Saat hujan:** melangkah di aspal basah bisa tergelincir. Hindari berhenti tepat di depan lane berbahaya.
-7. **Kucing menghalangi?** Geser ke kiri/kanan satu petak lalu lanjut maju.
-8. **Bonus ETA vs. keamanan:** denda kerusakan biasanya lebih mahal daripada bonus tepat waktu.
+4. **Hari 1 dan 4 (Nana):** telat dipotong dua kali lipat. Kejar ETA, tapi jangan nekat menerobos truk.
+5. **Hari 2 (kue & akuarium):** langkah lebih lambat, jadi mulai menyeberang lebih awal. Perhatikan kulit pisang di lane yang baru dilewati Kuro.
+6. **Hari 3 (es krim):** ETA paling ketat. Lihat galian di aspal sebelum melangkah, dan jaga jarak dari Pak Buldog bila lane di depan ramai.
+7. **Saat hujan:** melangkah di aspal basah bisa tergelincir. Hindari berhenti tepat di depan lane berbahaya.
+8. **Hari 5 (Pak Wali Kota):** patung kristal hancur dengan 2 benturan dan dendanya 2x. Lebih baik telat sedikit daripada patung pecah.
+9. **Kucing menghalangi?** Geser ke kiri/kanan satu petak lalu lanjut maju.
+10. **Bonus ETA vs. keamanan:** denda kerusakan biasanya lebih mahal daripada bonus tepat waktu.
 
 ---
 

@@ -66,8 +66,9 @@ feat/<nama> ──PR──▶ dev ──PR──▶ main ──tag v*──▶ G
                             GitHub Release + itch.io
 ```
 
-- Setiap Pull Request diuji: proyek diimpor dan diekspor ulang.
+- Setiap Pull Request ke `dev` / `main` diuji: proyek diimpor, diekspor ulang, dan isi build dicek (artifact disimpan 5 hari). Push baru ke PR yang sama membatalkan run yang lama.
+- Push ke `main` tidak membangun ulang (isinya sama dengan PR yang sudah lolos); hanya job *warm-cache* yang mengisi cache Godot dan template web supaya PR dan tag tidak perlu membangunnya ulang. Perubahan yang hanya menyentuh dokumen atau wiki tidak memicu build. Setiap job punya batas waktu.
 - Sebelum merge, tim menjalankan rangkaian **tes otomatis** Godot (23 skenario: gerak, tabrakan, ambil-antar, sungai, Pos, cutscene, album, efek, Tampilan 3D, dan lainnya).
 - Setelah export, CI membuka build hasilnya dan gagal bila ada cutscene kosong, potret hilang, atau musik tidak ikut.
 - Build web memakai **template Godot ramping**: modul yang tidak dipakai dibuang supaya unduhan kecil (±8 MB terkompresi), tetapi inti 3D tetap ada untuk Tampilan 3D.
-- Push tag `v*` otomatis membuat **GitHub Release** dan mengunggah ke **itch.io** (channel web, Windows, Android).
+- Push tag `v*` otomatis membuat **GitHub Release** dan mengunggah ke **itch.io** (channel web, Windows, Android). Tombol **Run workflow** dengan input `itch` bisa mengunggah ulang tag pilihan ke itch.io.

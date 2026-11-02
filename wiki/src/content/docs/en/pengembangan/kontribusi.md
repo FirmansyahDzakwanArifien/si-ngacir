@@ -39,12 +39,12 @@ Files are in `assets/audio/music/` and `assets/audio/sfx/`, in **WAV** format. R
 | Name | When it plays |
 | --- | --- |
 | `music/menu` | Main menu, recap, and relaxed cutscenes |
-| `music/nana` | Sad cutscenes (Nana is sick, the hospital) |
-| `music/kilat` | Tense cutscenes (Bang Kilat) |
+| `music/sedih` | Sad cutscenes (Masbro is down, the sunset ending) |
+| `music/tegang` | Tense cutscenes (Kuro showing off, the Landlord angry, Pak Buldog angry) |
 | `music/gameplay` | During delivery days |
 | `sfx/step`, `sfx/pickup`, `sfx/hit`, `sfx/package_damage`, `sfx/fail`, `sfx/delivery`, `sfx/star` | Footsteps, package pickup, collision, package damage, package destroyed, arrival, rating star |
-| `sfx/meow`, `sfx/slip`, `sfx/splash`, `sfx/horn`, `sfx/click` | Cat, slipping, falling into water, horn, button |
-| `sfx/chime_sad`, `sfx/sting_kilat` | Accents when the cutscene music changes mood |
+| `sfx/meow`, `sfx/bark`, `sfx/slip`, `sfx/splash`, `sfx/horn`, `sfx/click` | Cat, Pak Buldog's bark, slipping, falling into water, horn, button |
+| `sfx/chime_sad`, `sfx/sting_tegang` | Accents when the cutscene music changes mood |
 
 ## Story Writer: scripts
 
@@ -52,11 +52,11 @@ Cutscene scripts are in `resources/story/` and can be edited in Godot's Inspecto
 
 | Property | Contents |
 | --- | --- |
-| `pages` | Page text. The tokens `{saved}`, `{target}`, `{left}` are replaced with the savings, the treatment cost, and the shortfall |
-| `speakers` | `character:expression` (e.g. `nana:senang`), or empty for narration |
+| `pages` | Page text. The tokens `{saved}`, `{target}`, `{left}` are replaced with the savings, the Kedai Chill rent due, and the shortfall |
+| `speakers` | `character:expression` (e.g. `koko:marah`), or empty for narration. Characters: `masbro`, `koko`, `nana`, `kuro`, `buldog`, `pemilik`, `walikota` |
 | `images` | An illustration from `assets/story/`. Empty = keep the previous image |
 
-Whenever you change script text, update its key in `translations/strings.csv` too.
+Whenever you change script text, update its key in `translations/strings.csv` too. The story summary, cast, and adaptations from the Story Writer document are in `docs/STORY.md`.
 
 ## Translations
 

@@ -8,12 +8,13 @@ Coins picked up on the road go **straight into your wallet**. The count shows in
 - Click an item to buy it; click an item you own to equip or remove it.
 - Accessories show up right away while you deliver, and in [3D View](/en/fitur/pengaturan/#3d-view-beta) too.
 - Your wallet and collection are **not lost** when you choose New Game.
-- Masbro starts out wearing the **Pixel Shades**. Remove or swap them any time.
+- Masbro starts out wearing the **Head Orange** (his trademark) and the **Pixel Shades**. Remove or swap them any time.
 
 ## Accessory list
 
 | | Item | Slot | Price (coins) |
 | --- | --- | --- | --- |
+| <img class="sprite" src="/img/acc/acc_jeruk.svg" alt="" /> | Head Orange | Hat | Free |
 | <img class="sprite" src="/img/acc/acc_caping.svg" alt="" /> | Rice Hat (caping) | Hat | 15 |
 | <img class="sprite" src="/img/acc/acc_beanie.svg" alt="" /> | Beanie | Hat | 20 |
 | <img class="sprite" src="/img/acc/acc_koki.svg" alt="" /> | Chef Hat | Hat | 25 |

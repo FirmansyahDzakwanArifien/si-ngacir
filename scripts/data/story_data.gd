@@ -3,7 +3,7 @@ extends Resource
 ## Satu cutscene: beberapa halaman teks, masing-masing boleh punya gambar dan pembicara.
 ##
 ## Teks boleh memuat token {saved}, {target}, dan {left} (tabungan saat ini, biaya
-## pengobatan, dan kekurangannya); token diganti saat cutscene diputar.
+## sewa Kedai Chill, dan kekurangannya); token diganti saat cutscene diputar.
 
 ## Teks per halaman. Ditampilkan berurutan dengan efek mesin ketik.
 @export_multiline var pages: PackedStringArray = []

@@ -5,7 +5,7 @@ description: Cutscene dialog dengan potret tokoh, kontrol Lewati dan Auto, ringk
 
 ## Cutscene
 
-Cerita Si Ngacir disampaikan lewat **cutscene dialog** dengan potret tokoh dan ilustrasi. Musik mengikuti suasana: tema sedih saat bersama Nana di rumah sakit, tema tegang saat Bang Kilat menyombong, dan musik santai untuk momen lainnya.
+Cerita Si Ngacir disampaikan lewat **cutscene dialog** dengan potret tokoh dan ilustrasi. Musik mengikuti suasana: tema sedih saat Masbro sedih atau di senja ending, tema tegang saat Kuro menyombong, Pemilik Lahan marah, atau Pak Buldog menggonggong, dan musik santai untuk momen lainnya. Setiap malam setelah Hari 1–4 berlangsung di Kedai Chill.
 
 | Kontrol | Fungsi |
 | --- | --- |

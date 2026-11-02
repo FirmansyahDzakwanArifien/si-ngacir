@@ -39,12 +39,12 @@ File di `assets/audio/music/` dan `assets/audio/sfx/`, format **WAV**. Ganti fil
 | Nama | Kapan diputar |
 | --- | --- |
 | `music/menu` | Menu utama, rekap, dan cutscene santai |
-| `music/nana` | Cutscene sedih (Nana sakit, rumah sakit) |
-| `music/kilat` | Cutscene tegang (Bang Kilat) |
+| `music/sedih` | Cutscene sedih (Masbro sedih, senja di ending) |
+| `music/tegang` | Cutscene tegang (Kuro menyombong, Pemilik Lahan marah, Pak Buldog marah) |
 | `music/gameplay` | Selama hari pengiriman |
 | `sfx/step`, `sfx/pickup`, `sfx/hit`, `sfx/package_damage`, `sfx/fail`, `sfx/delivery`, `sfx/star` | Langkah, ambil paket, tabrakan, paket rusak, paket hancur, sampai, bintang rating |
-| `sfx/meow`, `sfx/slip`, `sfx/splash`, `sfx/horn`, `sfx/click` | Kucing, tergelincir, tercebur, klakson, tombol |
-| `sfx/chime_sad`, `sfx/sting_kilat` | Aksen saat musik cutscene berganti suasana |
+| `sfx/meow`, `sfx/bark`, `sfx/slip`, `sfx/splash`, `sfx/horn`, `sfx/click` | Kucing, gonggongan Pak Buldog, tergelincir, tercebur, klakson, tombol |
+| `sfx/chime_sad`, `sfx/sting_tegang` | Aksen saat musik cutscene berganti suasana |
 
 ## Writer Story: naskah
 
@@ -52,11 +52,11 @@ Naskah cutscene ada di `resources/story/` dan bisa diedit di Inspector Godot. Se
 
 | Properti | Isi |
 | --- | --- |
-| `pages` | Teks halaman. Token `{saved}`, `{target}`, `{left}` diganti tabungan, biaya pengobatan, dan kekurangannya |
-| `speakers` | `tokoh:ekspresi` (misalnya `nana:senang`), atau kosong untuk narasi |
+| `pages` | Teks halaman. Token `{saved}`, `{target}`, `{left}` diganti tabungan, tunggakan sewa Kedai Chill, dan kekurangannya |
+| `speakers` | `tokoh:ekspresi` (misalnya `koko:marah`), atau kosong untuk narasi. Tokoh: `masbro`, `koko`, `nana`, `kuro`, `buldog`, `pemilik`, `walikota` |
 | `images` | Ilustrasi dari `assets/story/`. Kosong = tetap memakai gambar sebelumnya |
 
-Setiap mengubah teks naskah, perbarui juga kuncinya di `translations/strings.csv`.
+Setiap mengubah teks naskah, perbarui juga kuncinya di `translations/strings.csv`. Ringkasan cerita, tokoh, dan penyesuaian dari dokumen Writer Story ada di `docs/STORY.md`.
 
 ## Terjemahan
 

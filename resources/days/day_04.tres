@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/data/day_data.gd" id="1_day"]
 [ext_resource type="Script" path="res://scripts/data/map_params.gd" id="2_map"]
-[ext_resource type="Resource" path="res://resources/packages/sensitif.tres" id="3_pkg"]
+[ext_resource type="Resource" path="res://resources/packages/laptop.tres" id="3_pkg"]
 [ext_resource type="Resource" path="res://resources/cities/kota.tres" id="5_city"]
 [ext_resource type="Resource" path="res://resources/story/day_04.tres" id="4_story"]
 [ext_resource type="Resource" path="res://resources/story/evening_04_good.tres" id="6_good"]
@@ -23,7 +23,7 @@ blockers_per_safe_row = Vector2i(1, 2)
 hole_chance = 0.2
 coin_chance = 0.3
 powerup_chance = 0.35
-river_chance = 0.3
+river_chance = 0.4
 min_rivers = 0
 river_lanes = Vector2i(2, 3)
 raft_speed = Vector2(35, 60)
@@ -34,13 +34,13 @@ vendor_chance = 0.2
 [resource]
 script = ExtResource("1_day")
 day = 4
-title = "Hujan di Jam Sibuk"
+title = "Badai di Jam Sibuk"
 package = ExtResource("3_pkg")
-customer_name = "Pak Joko"
-customer_id = &"pak_joko"
-customer_greeting = "Hujan begini... barangnya jangan sampai basah!"
-sender_name = "Toko Elektronik Jaya"
-sender_line = "Barangnya sensitif. Jangan sampai kena air!"
+customer_name = "Nana"
+customer_id = &"nana"
+customer_greeting = "Laptop saya buat rapat! Awas kalau basah!"
+sender_name = "Servis Laptop Jaya"
+sender_line = "Laptopnya sudah dibungkus plastik. Tetap jangan tercebur!"
 eta_seconds = 30.0
 base_wage = 80000
 eta_bonus = 25000
@@ -55,7 +55,12 @@ rainy = true
 slip_chance = 0.25
 visibility_tiles = 4.5
 strict_customer = false
-perfect_tip = 0
+customer_hurry_line = "Rapat saya mulai sebentar lagi!!"
+customer_late_line = "Saya telat rapat gara-gara kamu!"
+impatient_customer = true
+peel_chance = 0.4
+buldog_count = 1
+perfect_tip = 15000
 story = ExtResource("4_story")
 evening_good = ExtResource("6_good")
 evening_rough = ExtResource("7_rough")

@@ -1,6 +1,6 @@
 ---
 title: Hazards & Items
-description: Road hazards, rivers and rafts, checkpoints, coins, power-ups, and special challenges like cats, rain, and a perfectionist customer.
+description: Road hazards, rivers and rafts, checkpoints, coins, power-ups, and special challenges like cats, rain, Kuro, Pak Buldog, and special customers.
 ---
 
 ## Road hazards
@@ -31,7 +31,7 @@ From Day 2, long routes have a **checkpoint** (Pos) every few blocks: a clear me
 
 If the package is destroyed **after** passing a checkpoint, you can choose **Continue from Checkpoint**: a replacement package is picked up and the trip resumes from the checkpoint. The trade-offs:
 
-- A replacement fine of Rp15,000 (Rp20,000 for the VIP Package) is deducted from your pay.
+- A replacement fine of Rp15,000 (Rp20,000 for the Crystal Orange Statue) is deducted from your pay.
 - Rating is capped at 3 stars.
 - The clock keeps running.
 
@@ -49,8 +49,20 @@ If the package is destroyed **after** passing a checkpoint, you can choose **Con
 | --- | --- | --- |
 | <img class="sprite" src="/img/sprites/cat_sit.svg" alt="" /> **Street cats** | 2–5 | Don't damage the package, but block your path. A cat that touches Masbro sits down for a moment, curious about his courier bag |
 | **Rain** | 4–5 | Only the area around Masbro is clearly visible. On wet asphalt, Masbro can slip one extra step ("Slippery!"). Medians and sidewalks aren't slippery |
-| **Perfectionist customer** | 3 | Pak Ojan: double damage fines and a 3-star cap if the package is scratched, but he tips if the package is perfect and on time |
-| **Bang Kilat** | 3–5 | A rival courier who suddenly zooms through one lane at high speed ("Move it, Masbro!") |
+| <img class="sprite" src="/img/sprites/vehicle_kuro.svg" alt="" /> **Kuro** | 2–5 | A rival courier who suddenly zooms through one lane at high speed ("Move it, capybara!"). Hitting him still damages the package |
+| <img class="sprite" src="/img/sprites/item_kulit_pisang.svg" alt="" /> **Banana peels** | 2–5 | Sometimes dropped by Kuro in the lane he rides through. Stepping on one makes Masbro slide one tile ("Banana peel!") |
+| <img class="sprite" src="/img/sprites/buldog_sit.svg" alt="" /> **Pak Buldog** | 3–5 | Sits on a median. If Masbro passes within 1 tile, he barks ("GUK! GUK!"): the screen shakes and Masbro **panics**, stepping faster for 3 seconds but with a 30% chance to slip on asphalt |
+| **Impatient customer** | 1, 4 | Nana: double late deductions and a 3-star cap if you're late, but she tips if the package is perfect and on time |
+| **Meticulous customer** | 5 | Mr. Mayor: double damage fines and a 3-star cap if the package is scratched, but he tips if the package is perfect and on time |
+
+## Boss Koko's earpiece
+
+During deliveries, Boss Koko keeps an eye on you through your **earpiece**. His shouts appear as a banner just below the top bar, each once per day:
+
+| Trigger | Shout |
+| --- | --- |
+| Package condition ≤ 34% | "HEY MASBRO! It's getting crushed! Ease up a little!" |
+| ETA ≤ 15 seconds left | "Time's running out, Masbro! No daydreaming!" |
 
 ## Impact effects
 

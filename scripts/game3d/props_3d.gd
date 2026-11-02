@@ -210,6 +210,23 @@ static func cat() -> Node3D:
 	return root
 
 
+## Pak Buldog: badan gempal, sarung di leher, topi ronda.
+static func buldog() -> Node3D:
+	var root := Node3D.new()
+	root.add_child(capsule(0.22, 0.5, Color("c8955c"), Vector3(0, 0.3, 0)))
+	root.add_child(sphere(0.2, Color("c8955c"), Vector3(0.05, 0.62, 0)))
+	root.add_child(box(Vector3(0.36, 0.08, 0.3), Color("3d6ab0"), Vector3(0, 0.46, 0)))
+	root.add_child(cylinder(0.14, 0.14, 0.1, Color("2b2d42"), Vector3(0.05, 0.82, 0)))
+	return root
+
+
+## Kulit pisang yang dibuang Kuro.
+static func peel() -> Node3D:
+	var root := Node3D.new()
+	root.add_child(box(Vector3(0.36, 0.05, 0.24), Color("ffd166"), Vector3(0, 0.03, 0)))
+	return root
+
+
 static func pedestrian() -> Node3D:
 	var root := capybara(Color("e2b07e"), Color("b9834f"), Color("ffd6e0"))
 	root.scale = Vector3.ONE * 0.85
@@ -222,7 +239,7 @@ static func pedestrian() -> Node3D:
 const VEHICLE_COLORS := {
 	"vehicle_mobil": Color("2ec4b6"), "vehicle_mobil_2": Color("b39dff"), "vehicle_mobil_3": Color("ffd166"),
 	"vehicle_motor": Color("ff6b6b"), "vehicle_motor_2": Color("2ec4b6"), "vehicle_truk": Color("ff9f1c"),
-	"vehicle_kilat": Color("06d6a0"),
+	"vehicle_kuro": Color("2b2d42"),
 	"vehicle_bajaj": Color("ff9f1c"), "vehicle_bajaj_2": Color("3d9970"),
 	"vehicle_angkot": Color("3bb273"), "vehicle_angkot_2": Color("4f8fe0"),
 	"vehicle_bus": Color("ff6b6b"), "vehicle_bus_2": Color("b39dff"),
@@ -258,13 +275,13 @@ static func vehicle(type: StringName, length: float, color: Color) -> Node3D:
 			root.add_child(box(Vector3(0.3, 0.26, 0.6), Color("a8e3fa"), Vector3(0.74, 0.72, 0.5), false))
 			wheels.append(_wheel(Vector3(0.2, 0.17, 0.5), 0.16))
 			wheels.append(_wheel(Vector3(0.8, 0.17, 0.5), 0.16))
-		&"motor", &"kilat":
+		&"motor", &"kuro":
 			root.add_child(box(Vector3(0.75, 0.3, 0.3), color, Vector3(0.5, 0.38, 0.5)))
 			wheels.append(_wheel(Vector3(0.2, 0.18, 0.5), 0.17))
 			wheels.append(_wheel(Vector3(0.8, 0.18, 0.5), 0.17))
 			var rider := capsule(0.15, 0.5, Color("ff9f1c") if type == &"motor" else Color("2b2d42"), Vector3(0.45, 0.75, 0.5))
 			root.add_child(rider)
-			root.add_child(sphere(0.15, CAP if type == &"motor" else Color("06d6a0"), Vector3(0.48, 1.08, 0.5)))
+			root.add_child(sphere(0.15, CAP if type == &"motor" else Color("111111"), Vector3(0.48, 1.08, 0.5)))
 		_:
 			root.add_child(box(Vector3(length * 0.94, 0.42, 0.8), color, Vector3(length / 2.0, 0.4, 0.5)))
 			root.add_child(box(Vector3(length * 0.5, 0.34, 0.68), color.lightened(0.1), Vector3(length * 0.55, 0.78, 0.5)))

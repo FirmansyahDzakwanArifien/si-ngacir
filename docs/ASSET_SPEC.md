@@ -40,11 +40,10 @@ Tampak depan, 48 × 48, berdiri di samping rumah tujuan.
 
 | File | Tokoh |
 | --- | --- |
-| `customer_bu_sri.png` | Bu Sri (Hari 1) |
-| `customer_pak_budi.png` | Pak Budi (Hari 2) |
-| `customer_pak_ojan.png` | Pak Ojan (Hari 3) |
-| `customer_pak_joko.png` | Pak Joko (Hari 4) |
-| `customer_bu_direktur.png` | Bu Direktur Ngacir (Hari 5) |
+| `customer_nana.png` | Nana, bebek pelanggan VIP (Hari 1 dan 4) |
+| `customer_bu_sri.png` | Bu Sri (Hari 2) |
+| `customer_pak_budi.png` | Pak Budi (Hari 3) |
+| `customer_walikota.png` | Pak Wali Kota, singa berbatik (Hari 5) |
 
 ## Kucing jalanan
 
@@ -52,6 +51,15 @@ Tampak depan, 48 × 48, berdiri di samping rumah tujuan.
 | --- | --- | --- | --- |
 | `cat_walk.png` | 48 × 48 | 4 | Berjalan menyeberang, menghadap kanan |
 | `cat_sit.png` | 48 × 48 | 2 | Duduk penasaran (saat menyentuh Masbro) |
+
+## Pak Buldog
+
+Buldog satpam komplek yang duduk di median (Hari 3–5). Strip 2 frame seperti `cat_sit`.
+
+| File | Ukuran frame | Frame | Keterangan |
+| --- | --- | --- | --- |
+| `buldog_sit.png` | 48 × 48 | 2 | Duduk berjaga (sarung di leher, topi ronda) |
+| `buldog_bark.png` | 48 × 48 | 2 | Menggonggong saat Masbro lewat dekat |
 
 ## Lokasi (tema kota)
 
@@ -92,6 +100,7 @@ Semua 48 × 48 (1 petak), tampak samping/depan, berdiri di tengah petak.
 | `item_coin.png` | Koin bonus |
 | `item_helmet.png` | Power-up helm |
 | `item_shoes.png` | Power-up sepatu |
+| `item_kulit_pisang.png` | Kulit pisang yang dibuang Kuro di aspal (menginjaknya = tergelincir 1 petak) |
 
 ## NPC jalanan
 
@@ -100,7 +109,7 @@ Semua 48 × 48 (1 petak), tampak samping/depan, berdiri di tengah petak.
 | `pejalan_ibu_walk.png` / `_idle.png` | 48 × 48 | 4 / 1 | Ibu-ibu membawa belanjaan |
 | `pejalan_anak_walk.png` / `_idle.png` | 48 × 48 | 4 / 1 | Anak membawa balon |
 | `obstacle_gerobak.png` | 48 × 48 | 1 | Gerobak bakso + pedagang |
-| `vehicle_kilat.png` | 48 × 48 | 1 | Bang Kilat, kurir rival bermotor |
+| `vehicle_kuro.png` | 48 × 48 | 1 | Kuro "El Gato", kurir rival CepatKilat Corp di motor bebek balap |
 
 Pengemudi mobil/truk digambar di jendela depan sprite kendaraan.
 
@@ -110,7 +119,7 @@ Frame **48 × 48 sejajar sprite Masbro** (menghadap kanan): gambar hanya aksesor
 
 | File | Slot |
 | --- | --- |
-| `acc_caping.png`, `acc_beanie.png`, `acc_koki.png`, `acc_mahkota.png` | Topi |
+| `acc_jeruk.png`, `acc_caping.png`, `acc_beanie.png`, `acc_koki.png`, `acc_mahkota.png` | Topi (`jeruk` = Jeruk Kepala, ciri khas Masbro: bawaan, gratis dan langsung dipakai) |
 | `acc_kacamata_piksel.png`, `acc_kacamata_bulat.png`, `acc_kacamata_hitam.png`, `acc_kacamata_bintang.png` | Kacamata (`kacamata_piksel` bawaan ala poster, gratis dan langsung dipakai) |
 | `acc_tas_pink.png`, `acc_tas_oranye.png`, `acc_tas_kucing.png` | Tas |
 | `icon_coin.png` (20 × 20) | Ikon koin di toko |
@@ -123,11 +132,11 @@ Ikon paket di punggung Masbro, **20 × 15 px**.
 
 | File | Paket |
 | --- | --- |
-| `package_bantal.png` | Bantal (Hari 1) |
-| `package_galon.png` | Galon Air (Hari 2) |
-| `package_telur.png` | Telur (Hari 3) |
-| `package_sensitif.png` | Barang Sensitif (Hari 4) |
-| `package_vip.png` | Paket VIP (Hari 5) |
+| `package_gorengan.png` | Gorengan Hangat (Hari 1) |
+| `package_kue_ultah.png` | Kue Ultah & Akuarium Cupang (Hari 2) |
+| `package_es_krim.png` | Es Krim (Hari 3) |
+| `package_laptop.png` | Laptop VIP (Hari 4) |
+| `package_kristal.png` | Patung Kristal Jeruk (Hari 5) |
 
 ## Kendaraan
 
@@ -171,19 +180,20 @@ Lokasi: `assets/story/`. Ukuran **480 × 270 px** (PNG) atau 960 × 540 (SVG baw
 
 | File | Adegan |
 | --- | --- |
-| `home` | Masbro dan adiknya di rumah |
-| `sick` | Adik sakit di tempat tidur |
-| `office` | Masbro melamar di Ngacir Express |
+| `kedai` | Kedai Chill siang hari: kedai minum dan kolam air hangat Masbro |
+| `kedai_night` | Malam di Kedai Chill (setelah Hari 1–4) |
+| `sp3` | Pemilik Lahan menyerahkan SP3 tunggakan sewa |
+| `office` | Masbro mendaftar di Ngacir Express, Bos Koko menjelaskan aturan |
+| `depot` | Gudang Ngacir Express pagi hari, Kuro dengan motor balapnya |
 | `road` | Jalan raya Kota Ngacir |
-| `galon` | Galon untuk Pak Budi (Hari 2) |
-| `eggs` | Pak Ojan memeriksa telur (Hari 3) |
-| `rain` | Hujan di jam sibuk (Hari 4) |
-| `vip` | Paket VIP (Hari 5) |
-| `celebrate` | Lulus, adik sembuh |
-| `sunset` | Ending gagal |
-| `home_night` | Malam di rumah, toples tabungan (setelah Hari 1–4) |
-| `hospital` | Nana dirawat, Bu Dokter memeriksa |
-| `depot` | Gudang Ngacir Express pagi hari, Bang Kilat dengan motornya |
+| `gorengan` | Gorengan hangat untuk Nana (Hari 1) |
+| `kue` | Kue ulang tahun dan akuarium cupang (Hari 2) |
+| `gang` | Gang sempit dan galian pipa (Hari 3) |
+| `rain` | Badai di jam sibuk (Hari 4) |
+| `vip` | Laptop VIP Nana (Hari 4) |
+| `kristal` | Patung Kristal Jeruk untuk Pak Wali Kota (Hari 5) |
+| `celebrate` | Lulus, sewa Kedai Chill lunas |
+| `sunset` | Ending gagal (Kedai Chill disegel) |
 
 ## Potret dialog
 
@@ -191,18 +201,19 @@ Lokasi: `assets/portraits/`. Nama file `<tokoh>_<ekspresi>`, ukuran **96 × 96 p
 
 | Tokoh | Ekspresi yang dipakai naskah |
 | --- | --- |
-| `masbro` | `normal`, `senang`, `sedih`, `kaget`, `mantap` |
-| `nana` (adik) | `normal`, `senang`, `sedih`, `sakit` |
-| `kilat` (Bang Kilat) | `sombong`, `kaget`, `sedih`, `senang` |
-| `dokter` | `normal`, `senang` |
-| `direktur` | `normal`, `senang` |
-| `ojan` | `normal`, `senang`, `kaget` |
+| `masbro` (capybara, jeruk di kepala) | `normal`, `senang`, `sedih`, `kaget`, `mantap` |
+| `koko` (Bos Koko, kakatua kepala kurir) | `normal`, `senang`, `marah` |
+| `nana` (bebek pelanggan VIP) | `normal`, `kesal`, `senang`, `kaget` |
+| `kuro` (Kuro "El Gato", kucing hitam rival) | `sombong`, `kaget`, `sedih`, `senang` |
+| `buldog` (Pak Buldog, satpam komplek) | `normal`, `marah` |
+| `pemilik` (Pemilik Lahan, kambing berjas) | `normal`, `marah`, `senang` |
+| `walikota` (Pak Wali Kota, singa berbatik) | `normal`, `senang` |
 
 Ekspresi yang belum ada otomatis memakai `normal`. Nama tampilan dan warna papan nama diatur di `scripts/data/speakers.gd`.
 
 ## Audio
 
-Lokasi: `assets/audio/music/` dan `assets/audio/sfx/`. Format **`.wav`** (16-bit, mono atau stereo); musik dikompres otomatis saat import. Jangan pakai `.ogg` / `.mp3`: build web tidak bisa memutarnya. Daftar nama file ada di README bagian **Audio**. Musik otomatis di-loop, jadi buat ujung dan awal lagu menyambung.
+Lokasi: `assets/audio/music/`, `assets/audio/sfx/`, dan `assets/audio/voice/` (suara NPC saat Masbro mendekat; daftar nama di README bagian **Suara NPC**). Format **`.wav`** (16-bit, mono atau stereo); musik dikompres otomatis saat import. Jangan pakai `.ogg` / `.mp3`: build web tidak bisa memutarnya. Daftar nama file ada di README bagian **Audio**. Musik otomatis di-loop, jadi buat ujung dan awal lagu menyambung. Jaga level: musik sekitar −18 dBFS (RMS) dan suara NPC sekitar −15 dBFS supaya dialog tetap jelas di atas musik.
 
 ## Checklist sebelum push aset
 

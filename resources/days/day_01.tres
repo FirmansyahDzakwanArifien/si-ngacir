@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/data/day_data.gd" id="1_day"]
 [ext_resource type="Script" path="res://scripts/data/map_params.gd" id="2_map"]
-[ext_resource type="Resource" path="res://resources/packages/bantal.tres" id="3_pkg"]
-[ext_resource type="Resource" path="res://resources/cities/perumahan.tres" id="5_city"]
+[ext_resource type="Resource" path="res://resources/packages/gorengan.tres" id="3_pkg"]
+[ext_resource type="Resource" path="res://resources/cities/pasar.tres" id="5_city"]
 [ext_resource type="Resource" path="res://resources/story/evening_01_good.tres" id="6_good"]
 [ext_resource type="Resource" path="res://resources/story/evening_01_rough.tres" id="7_rough"]
 
@@ -33,13 +33,13 @@ vendor_chance = 0.2
 [resource]
 script = ExtResource("1_day")
 day = 1
-title = "Pengiriman Pertama"
+title = "Gorengan Pantang Melempem"
 package = ExtResource("3_pkg")
-customer_name = "Bu Sri"
-customer_id = &"bu_sri"
-customer_greeting = "Bantalnya buat cucu saya. Hati-hati, Masbro!"
-sender_name = "Toko Kasur Empuk"
-sender_line = "Bantalnya titip, ya. Jangan sampai kotor!"
+customer_name = "Nana"
+customer_id = &"nana"
+customer_greeting = "Gorengan saya harus masih garing! Saya hitung dari sekarang."
+sender_name = "Gorengan Pak Kumis"
+sender_line = "Masih panas, Mas! Cepat sebelum melempem."
 eta_seconds = 30.0
 base_wage = 50000
 eta_bonus = 20000
@@ -54,6 +54,9 @@ rainy = false
 slip_chance = 0.25
 visibility_tiles = 4.5
 strict_customer = false
-perfect_tip = 0
+customer_hurry_line = "Mana gorengan saya?! Bintang satu sudah menanti!"
+customer_late_line = "Telat! Pasti udah melempem!"
+impatient_customer = true
+perfect_tip = 10000
 evening_good = ExtResource("6_good")
 evening_rough = ExtResource("7_rough")

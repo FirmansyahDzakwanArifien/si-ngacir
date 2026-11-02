@@ -27,7 +27,7 @@ Masbro tidak punya nyawa. Yang dijaga adalah **paket**. Setiap tabrakan merusak 
 | <img class="sprite" src="/img/sprites/vehicle_truk.svg" alt="" /> Truk | Lambat, panjang | 2 |
 | <img class="sprite" src="/img/sprites/vehicle_bus.svg" alt="" /> Bus kota | Paling lambat, 4 petak | 2 |
 
-Paket rapuh seperti telur menerima kerusakan dua kali lipat.
+Daya tahan tiap paket berbeda: gorengan tahan 4 kerusakan, Patung Kristal Jeruk hanya 2.
 
 ## Layar permainan
 
@@ -50,15 +50,17 @@ Upah = Upah dasar + Bonus tepat waktu (+ Tip) (+ Bonus koin)
        − Denda kerusakan − Potongan telat
 ```
 
-Upah setiap hari ditambahkan ke **tabungan pengobatan**. Bila mengulang hari, yang dihitung adalah upah **terbaik** hari itu. Target tabungan: **Rp350.000**.
+Upah setiap hari ditambahkan ke **tabungan sewa** Kedai Chill. Bila mengulang hari, yang dihitung adalah upah **terbaik** hari itu. Target tabungan: **Rp350.000**. Upah maksimal lima hari Rp530.000 (termasuk tip, belum termasuk koin).
 
 | Hari | Upah dasar | Bonus tepat waktu | Denda per kerusakan | Potongan telat per detik |
 | --- | --- | --- | --- | --- |
-| 1 | Rp50.000 | Rp20.000 | Rp10.000 | Rp500 |
+| 1 | Rp50.000 | Rp20.000 | Rp10.000 | Rp500 (2x untuk Nana) |
 | 2 | Rp60.000 | Rp20.000 | Rp15.000 | Rp750 |
-| 3 | Rp70.000 | Rp25.000 | Rp20.000 (2x untuk Pak Ojan) | Rp1.000 |
-| 4 | Rp80.000 | Rp25.000 | Rp20.000 | Rp1.000 |
-| 5 | Rp100.000 | Rp30.000 | Rp30.000 | Rp1.500 |
+| 3 | Rp70.000 | Rp25.000 | Rp20.000 | Rp1.500 |
+| 4 | Rp80.000 | Rp25.000 | Rp20.000 | Rp1.000 (2x untuk Nana) |
+| 5 | Rp100.000 | Rp30.000 | Rp30.000 (2x untuk Pak Wali Kota) | Rp1.500 |
+
+**Tip** diberikan pelanggan khusus bila paket utuh dan tepat waktu: Nana Rp10.000 (Hari 1) dan Rp15.000 (Hari 4), Pak Wali Kota Rp25.000 (Hari 5).
 
 ## Rating pelanggan
 
@@ -66,11 +68,13 @@ Setelah paket sampai, pelanggan memberi 1–5 bintang dan komentar berdasarkan k
 
 | Bintang | Contoh komentar |
 | --- | --- |
-| ★★★★★ | "Paketnya utuh, kurirnya santai. Recommended!" |
+| ★★★★★ | "Mukanya santai, tapi paketnya mulus tanpa lecet. Mantap!" |
 | ★★★★ | "Paket agak penyok, tapi masih aman." |
-| ★★★ | "Hati-hati kalau antar paket, Masbro." |
-| ★★ | "Masbro... paketnya rusak, tapi masih bisa diterima." |
-| ★ | "Mas... ini paket apa habis perang?" |
+| ★★★ | "Lain kali lebih hati-hati, Masbro." |
+| ★★ | "Paketnya agak hancur, tapi isinya masih bisa dipakai." |
+| ★ | "Ini paket atau hasil bongkar muatan kapal karam?!" |
+
+Nana dan Pak Wali Kota punya komentar sendiri, dan bila paket hancur Bos Koko ikut mengomel.
 
 ## Menang dan kalah
 

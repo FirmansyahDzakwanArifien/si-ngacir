@@ -9,7 +9,8 @@ Buka **Pengaturan** dari menu utama atau dari menu pause.
 
 | Opsi | Fungsi |
 | --- | --- |
-| **Volume musik / efek suara** | Atur keras suara masing-masing |
+| **Volume musik / efek suara / suara NPC** | Atur keras suara masing-masing. Saat NPC bicara, musik turun sebentar supaya suaranya jelas |
+| **Bisukan semua suara** | Membisukan semuanya sekaligus. Di keyboard cukup tekan **M** |
 | **Layar penuh** | Khusus desktop |
 | **Bahasa** | Bahasa Indonesia atau English (dari menu utama). Bawaannya mengikuti bahasa perangkat |
 | **Tips tutorial** | Matikan, atau nyalakan lagi untuk mengulang semua tips |

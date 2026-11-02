@@ -7,29 +7,30 @@ const PORTRAIT_DIR := "res://assets/portraits/"
 
 const CAST := {
 	"masbro": {"name": "Masbro", "color": Color("2ec4b6")},
-	"nana": {"name": "Nana", "color": Color("ff8fa3")},
-	"kilat": {"name": "Bang Kilat", "color": Color("06d6a0")},
-	"dokter": {"name": "Bu Dokter", "color": Color("6cb4e8")},
-	"direktur": {"name": "Bu Direktur", "color": Color("8c74e0")},
-	"ojan": {"name": "Pak Ojan", "color": Color("5e9b82")},
+	"koko": {"name": "Bos Koko", "color": Color("e8b923")},
+	"nana": {"name": "Nana", "color": Color("ff6b6b")},
+	"kuro": {"name": "Kuro", "color": Color("5b5f7a")},
+	"buldog": {"name": "Pak Buldog", "color": Color("b07d48")},
+	"pemilik": {"name": "Pemilik Lahan", "color": Color("8c74e0")},
+	"walikota": {"name": "Pak Wali Kota", "color": Color("d4a017")},
 }
 
-## Musik cutscene: tema sedih Nana, tema tegang Bang Kilat, dan musik santai bawaan.
-const SAD_MUSIC := &"nana"
-const TENSE_MUSIC := &"kilat"
+## Musik cutscene: tema sedih, tema tegang (Kuro, Pemilik Lahan, Pak Buldog), dan musik santai bawaan.
+const SAD_MUSIC := &"sedih"
+const TENSE_MUSIC := &"tegang"
 const CALM_MUSIC := &"menu"
 ## Suasana per "tokoh:ekspresi". Tokoh yang tidak ada di sini memakai CALM_MUSIC,
 ## kecuali Masbro dan narasi yang meneruskan musik sebelumnya.
 const MOOD_MUSIC := {
-	"nana:sakit": SAD_MUSIC,
-	"nana:sedih": SAD_MUSIC,
 	"masbro:sedih": SAD_MUSIC,
-	"kilat:sombong": TENSE_MUSIC,
-	"kilat:kaget": TENSE_MUSIC,
-	"kilat:sedih": &"",
+	"kuro:sombong": TENSE_MUSIC,
+	"kuro:kaget": TENSE_MUSIC,
+	"kuro:sedih": &"",
+	"pemilik:marah": TENSE_MUSIC,
+	"buldog:marah": TENSE_MUSIC,
 }
-## Latar yang otomatis bernuansa sedih (Nana sakit), kecuali suasananya ditentukan MOOD_MUSIC.
-const SAD_IMAGES: Array[String] = ["sick", "hospital"]
+## Latar yang otomatis bernuansa sedih, kecuali suasananya ditentukan MOOD_MUSIC.
+const SAD_IMAGES: Array[String] = ["sunset"]
 
 
 ## Pecah "tokoh:ekspresi" menjadi [tokoh, ekspresi]. Ekspresi bawaan "normal".
