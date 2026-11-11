@@ -14,7 +14,7 @@ const BAD_ENDING_TEXT := "Masa percobaan berakhir, tapi tabungan Masbro belum cu
 func _ready() -> void:
 	get_tree().paused = false
 	GameState.is_replay = false
-	AudioManager.play_music(&"menu")
+	AudioManager.play_music(&"ending", &"menu")
 
 	add_child(MenuBackdrop.new())
 

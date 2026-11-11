@@ -47,6 +47,7 @@ const PANIC_SLIP_CHANCE := 0.3
 ## Teriakan Bos Koko lewat earpiece (docs/STORY.md bagian 5).
 const KOKO_CARGO_CRITICAL := "WOI MASBRO! Isinya remuk tuh! Pelan-pelan dikit!"
 const KOKO_TIME_LOW := "Waktu tipis, Masbro! Jangan ngelamun!"
+const KOKO_PICKUP_FIRST := "Eh Masbro! Ambil paketnya dulu di kios samping sebelum lanjut ke atas!"
 ## Kondisi paket yang memicu teriakan "isinya remuk".
 const CARGO_CRITICAL_INTEGRITY := 0.34
 ## Sisa ETA yang memicu teriakan "waktu tipis".
@@ -203,7 +204,16 @@ func _ready() -> void:
 	touch.player = _player
 	add_child(touch)
 	_hud.pause_pressed.connect(_on_pause_pressed)
-	AudioManager.play_music(&"gameplay_ceria", &"gameplay")
+	_play_level_music()
+
+
+func _play_level_music() -> void:
+	if GameState.is_replay and GameState.probation_done:
+		AudioManager.play_music(&"endless", &"gameplay_malam")
+	elif day.rainy:
+		AudioManager.play_music(&"gameplay_malam", &"gameplay_ceria")
+	else:
+		AudioManager.play_music(&"gameplay_ceria", &"gameplay")
 
 
 ## Rakit map prosedural untuk hari ini. DayData diduplikasi supaya resource asli tidak berubah.
@@ -431,7 +441,7 @@ func _spawn_cat(kind: StringName = &"cat") -> void:
 	for row in range(maxi(1, view.x), mini(_rows - 1, view.y + 1)):
 		var lane_kind := day.lanes[row].kind
 		var allowed := lane_kind == LaneData.Kind.MEDIAN or (kind == &"cat" and lane_kind == LaneData.Kind.ROAD)
-		if row != _player.cell.y and allowed:
+		if row != _player.cell.y and row != pickup_cell.y and allowed:
 			rows.append(row)
 	if rows.is_empty():
 		return
@@ -455,6 +465,8 @@ func _spawn_cat(kind: StringName = &"cat") -> void:
 
 
 func _is_cell_free(cell: Vector2i) -> bool:
+	if not has_package and pickup_cell.x >= 0 and cell.y < pickup_cell.y:
+		return false
 	if day.lanes[cell.y].obstacles.get(cell.x, &"") in BLOCKERS:
 		return false
 	var area := Rect2(Vector2(cell) * TILE + Vector2(6, 6), Vector2(TILE - 12, TILE - 12))
@@ -465,6 +477,13 @@ func _is_cell_free(cell: Vector2i) -> bool:
 
 
 func _on_player_blocked(cell: Vector2i) -> void:
+	if not has_package and pickup_cell.x >= 0 and cell.y < pickup_cell.y:
+		if _popup_cooldown <= 0.0:
+			var arrow := "<- " if pickup_cell.x < _player.cell.x else "-> "
+			_popup(arrow + tr("Ambil paket di kios dulu!"), Palette.YELLOW, _player.position)
+			AudioManager.play_sfx(&"horn", 0.08)
+		_koko_say(&"pickup_first", KOKO_PICKUP_FIRST)
+		return
 	if _popup_cooldown > 0.0:
 		return
 	var obstacle: StringName = day.lanes[cell.y].obstacles.get(cell.x, &"")
@@ -480,7 +499,7 @@ func _on_player_blocked(cell: Vector2i) -> void:
 		_popup("GRRR!", Palette.ORANGE, _player.position)
 	else:
 		_popup("Meong!", Color("f4a259"), _player.position)
-		AudioManager.play_sfx(&"meow", 0.1)
+		AudioManager.play_sfx(&"meow_2", 0.1)
 
 
 func _walker_at(cell: Vector2i) -> StreetCat:
@@ -507,7 +526,12 @@ func _update_street_npcs(delta: float) -> void:
 			if gap >= 0.0 and gap <= HONK_DISTANCE:
 				_honk_cooldown = HONK_COOLDOWN
 				_npc_say(vehicle, "Tin tin!", Vector2(vehicle.length_px / 2.0, 6))
-				AudioManager.play_sfx(&"horn", 0.08)
+				var horn_sfx := &"horn"
+				if vehicle.type in [&"truk", &"bus"]:
+					horn_sfx = &"horn_truck"
+				elif vehicle.type in [&"mobil", &"angkot"]:
+					horn_sfx = &"horn_car"
+				AudioManager.play_sfx(horn_sfx, 0.08)
 				break
 
 	if day.rival_interval > 0.0:
@@ -780,6 +804,9 @@ func _on_player_moved(cell: Vector2i) -> void:
 	_last_safe_cell = cell
 	if not has_package and cell == pickup_cell:
 		_pick_up()
+	elif not has_package and cell.y == pickup_cell.y and _popup_cooldown <= 0.0:
+		var dir_hint := tr("<- Kios paket di kiri!") if pickup_cell.x < cell.x else tr("Kios paket di kanan! ->")
+		_popup(dir_hint, Palette.YELLOW, _player.position)
 	if day.lanes[cell.y].checkpoint and cell.y != _checkpoint_cell.y:
 		_reach_checkpoint(cell)
 	_collect_item(cell)
@@ -819,9 +846,9 @@ func _collect_item(cell: Vector2i) -> void:
 		tween.tween_property(node, "position:y", node.position.y - 30.0, 0.3)
 		tween.tween_property(node, "modulate:a", 0.0, 0.3)
 		tween.chain().tween_callback(node.queue_free)
-	AudioManager.play_sfx(&"star", 0.15)
 	match type:
 		&"coin":
+			AudioManager.play_sfx(&"coin", 0.12)
 			coins += 1
 			# Koin langsung masuk dompet, jadi angka di bar atas sama dengan di Toko Masbro
 			# dan tidak hilang walau paket hancur atau hari diulang.
@@ -829,9 +856,11 @@ func _collect_item(cell: Vector2i) -> void:
 			_hud.update_coins(GameState.wallet)
 			_popup(tr("+1 koin"), Palette.YELLOW, _player.position)
 		&"helmet":
+			AudioManager.play_sfx(&"powerup", 0.08)
 			_player.shielded = true
 			_popup("Helm! Kebal 1x", Palette.TEAL, _player.position)
 		&"shoes":
+			AudioManager.play_sfx(&"powerup", 0.08)
 			_boost_left = SHOES_TIME
 			_player.speed_multiplier = SHOES_SPEED
 			_popup("Sepatu kilat!", Palette.CORAL, _player.position)
@@ -919,19 +948,19 @@ func _spawn_pickup() -> void:
 		icon.position = -icon.texture.get_size() * icon.scale / 2.0
 		_pickup_marker.add_child(icon)
 	var arrow := Polygon2D.new()
-	arrow.polygon = PackedVector2Array([Vector2(-8, 15), Vector2(8, 15), Vector2(0, 24)])
+	arrow.polygon = PackedVector2Array([Vector2(-10, 14), Vector2(10, 14), Vector2(0, 25)])
 	arrow.color = Palette.CORAL
 	_pickup_marker.add_child(arrow)
 	var label := Label.new()
-	label.text = "AMBIL"
+	label.text = tr("AMBIL PAKET!")
 	label.add_theme_font_override("font", UiTheme.font(700))
-	label.add_theme_font_size_override("font_size", 11)
-	label.add_theme_color_override("font_color", Palette.WHITE)
-	label.add_theme_color_override("font_outline_color", Palette.CORAL)
-	label.add_theme_constant_override("outline_size", 5)
+	label.add_theme_font_size_override("font_size", 12)
+	label.add_theme_color_override("font_color", Palette.YELLOW)
+	label.add_theme_color_override("font_outline_color", Palette.OUTLINE)
+	label.add_theme_constant_override("outline_size", 6)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.size = Vector2(60, 16)
-	label.position = Vector2(-30, -30)
+	label.size = Vector2(110, 18)
+	label.position = Vector2(-55, -32)
 	_pickup_marker.add_child(label)
 	_board.add_child(_pickup_marker)
 	if not Accessibility.reduce_motion:
@@ -958,6 +987,7 @@ func _pick_up() -> void:
 		_stall_say(day.sender_line)
 	_hud.set_objective_delivery()
 	_customer.set_mood(CustomerNpc.Mood.WAITING)
+	_board.queue_redraw()
 
 
 func _on_hit(vehicle: Vehicle) -> void:
@@ -1262,6 +1292,7 @@ func _draw_board() -> void:
 
 	_draw_river_banks()
 	_draw_checkpoints()
+	_draw_pickup_guide()
 	_draw_obstacles()
 	_draw_building("house", 0)
 	_draw_building("warehouse", _rows - 1)
@@ -1325,6 +1356,40 @@ func _draw_checkpoints() -> void:
 				_board.draw_rect(rect.grow(-10), Palette.TEAL)
 		_board.draw_string(font, Vector2(TILE + 6, row * TILE + 30), tr("POS"),
 				HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Palette.OUTLINE)
+
+
+## Penanda baris titik jemput selama paket belum diambil: pita pembatas di tepi atas baris,
+## sorotan di sekitar kios, dan panah penunjuk arah ke kios supaya pemain tidak kelewatan.
+func _draw_pickup_guide() -> void:
+	if has_package or pickup_cell.x < 0:
+		return
+	var y := pickup_cell.y * TILE
+	var width := COLUMNS * TILE
+	# Sorot lembut sepanjang baris titik jemput.
+	_board.draw_rect(Rect2(0, y, width, TILE), Color(Palette.YELLOW, 0.18))
+	# Pita garis putus-putus kuning-merah di tepi atas baris (batas sebelum paket diambil).
+	var stripe_x := 0.0
+	var toggle := false
+	while stripe_x < width:
+		var seg := minf(24.0, width - stripe_x)
+		_board.draw_rect(Rect2(stripe_x, y - 3.0, seg, 6.0), Palette.CORAL if toggle else Palette.YELLOW)
+		stripe_x += 24.0
+		toggle = not toggle
+	_board.draw_line(Vector2(0, y - 3.0), Vector2(width, y - 3.0), Palette.OUTLINE, 1.5)
+	_board.draw_line(Vector2(0, y + 3.0), Vector2(width, y + 3.0), Palette.OUTLINE, 1.5)
+	# Lingkaran target di bawah kios paket.
+	var stall_center := Vector2(pickup_cell) * TILE + Vector2(TILE / 2.0, TILE / 2.0)
+	_board.draw_circle(stall_center, TILE * 0.56, Color(Palette.YELLOW, 0.38))
+	_board.draw_arc(stall_center, TILE * 0.56, 0.0, TAU, 32, Palette.CORAL, 3.0, true)
+	# Panah penunjuk arah di sepanjang baris menuju kolom kios.
+	var font := UiTheme.font(700)
+	for col in COLUMNS:
+		if absi(col - pickup_cell.x) <= 1 or col % 3 != 1:
+			continue
+		var arrow_text := "AMBIL PAKET >>>" if col < pickup_cell.x else "<<< AMBIL PAKET"
+		var pos := Vector2(col * TILE, y + 30.0)
+		_board.draw_string_outline(font, pos, arrow_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, 4, Palette.OUTLINE)
+		_board.draw_string(font, pos, arrow_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Palette.YELLOW)
 
 
 ## Garis tepian di atas dan bawah setiap blok sungai.

@@ -23,9 +23,9 @@ const DUCK_DB := -8.0
 const DUCK_ATTACK := 0.12
 const DUCK_RELEASE := 0.6
 
-var music_volume := 0.7
-var sfx_volume := 0.8
-var voice_volume := 0.9
+var music_volume := 0.5
+var sfx_volume := 0.65
+var voice_volume := 0.8
 ## Semua suara dibisukan. Terpisah dari volume supaya pengaturan volume tidak hilang.
 var muted := false
 var fullscreen := false
@@ -140,7 +140,10 @@ func play_music(music_name: StringName, fallback := &"") -> void:
 	if _music_tween:
 		_music_tween.kill()
 	if not _music_player.playing:
-		_start_music(stream)
+		_start_music(stream, -24.0)
+		if stream != null:
+			_music_tween = create_tween()
+			_music_tween.tween_property(_music_player, "volume_db", 0.0, MUSIC_FADE)
 		return
 	_music_tween = create_tween()
 	_music_tween.tween_property(_music_player, "volume_db", -40.0, MUSIC_FADE)

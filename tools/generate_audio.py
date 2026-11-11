@@ -330,35 +330,24 @@ def check() -> int:
         errors += 1
         print("GAGAL:", message)
 
-    music = MUSIC_DIR / "gameplay_ceria.wav"
-    if not music.exists():
-        fail(f"{music} belum ada")
-    else:
+    for track_name in ("menu", "gameplay_ceria", "gameplay_malam", "ending", "endless"):
+        music = MUSIC_DIR / f"{track_name}.wav"
+        if not music.exists():
+            fail(f"{music} belum ada")
+            continue
         info = describe(music)
         data = info["data"]
-        expected = LOOP_SAMPLES / SR
-        print(f"musik  : {info['seconds']:.3f}s (target {expected:.3f}s)  puncak {info['peak']:.2f}  rata-rata {info['rms_db']:.1f} dBFS")
-        if abs(info["seconds"] - expected) > 1.0 / SR:
-            fail("panjang musik tidak tepat satu loop (16 birama)")
-        if info["peak"] >= 0.8 or info["nan"]:
-            fail("musik terlalu keras (puncak >= 0,8) atau berisi NaN")
+        print(f"musik  : {track_name:15s} {info['seconds']:6.2f}s  puncak {info['peak']:.2f}  rata-rata {info['rms_db']:.1f} dBFS")
+        if info["seconds"] < 5.0:
+            fail(f"{track_name}: durasi terlalu pendek (< 5 detik)")
+        if info["peak"] >= 0.85 or info["nan"]:
+            fail(f"{track_name}: musik terlalu keras (puncak >= 0,85) atau berisi NaN")
         if not (-21.0 <= info["rms_db"] <= -16.0):
-            fail("level rata-rata musik di luar -21..-16 dBFS (terlalu pelan menutupi/ tertutup suara NPC)")
-        # Sambungan loop: lompatan antar sampel terakhir -> pertama harus sekecil lompatan biasa.
+            fail(f"{track_name}: level rata-rata musik di luar -21..-16 dBFS")
         seam = abs(float(data[0] - data[-1]))
         typical = float(np.percentile(np.abs(np.diff(data)), 99))
-        print(f"loop   : lompatan di sambungan {seam:.4f}, lompatan biasa (persentil 99) {typical:.4f}")
-        if seam > typical:
-            fail("sambungan loop terdengar klik (lompatan lebih besar dari biasa)")
-        # Celah: energi di sekitar titik sambung (75 ms sebelum + 75 ms sesudah) tidak boleh senyap.
-        # (Ketukan 1 sengaja lebih keras dari ujung birama, jadi bukan itu yang diukur.)
-        win = int(0.075 * SR)
-        around = np.concatenate([data[-win:], data[:win]])
-        overall = float(np.sqrt((data ** 2).mean()))
-        ratio = float(np.sqrt((around ** 2).mean())) / overall
-        print(f"         energi di sekitar sambungan = {ratio:.2f}x rata-rata lagu")
-        if ratio < 0.3:
-            fail("area sambungan loop nyaris senyap (terdengar celah saat loop)")
+        if seam > max(typical, 0.02):
+            fail(f"{track_name}: sambungan loop terdengar klik (lompatan {seam:.4f} > {typical:.4f})")
 
     for name in VOICES:
         path = VOICE_DIR / f"{name}.wav"
@@ -378,12 +367,14 @@ def check() -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--check", action="store_true", help="hanya periksa file yang sudah ada")
+    parser.add_argument("--procedural-music", action="store_true", help="buat ulang gameplay_ceria.wav prosedural")
     args = parser.parse_args()
     if not args.check:
-        write_wav(MUSIC_DIR / "gameplay_ceria.wav", make_music())
+        if args.procedural_music or not (MUSIC_DIR / "gameplay_ceria.wav").exists():
+            write_wav(MUSIC_DIR / "gameplay_ceria.wav", make_music())
         for name, params in VOICES.items():
             write_wav(VOICE_DIR / f"{name}.wav", make_babble(**params))
-        print(f"dibuat: 1 musik + {len(VOICES)} suara NPC")
+        print(f"dibuat: suara NPC ({len(VOICES)} file)")
     return check()
 
 

@@ -118,17 +118,22 @@ Pakai format **`.wav`**. Musik dikompres QOA saat import (`compress/mode=2` di f
 
 | Nama | Kapan diputar |
 | --- | --- |
-| `music/menu` | Menu utama, rekap, dan cutscene yang santai |
+| `music/menu` | Menu utama, Toko Masbro, Album Cerita, dan cutscene santai |
+| `music/gameplay_ceria` | Selama hari pengiriman siang (Hari 1–3). Bila file ini tidak ada, game memakai `music/gameplay` |
+| `music/gameplay_malam` | Selama pengiriman hujan/malam (Hari 4–5) dan cutscene malam di Kedai Chill (`kedai_night`) |
+| `music/ending` | Layar Rekap / Ending dan adegan perayaan di `ending_success` |
+| `music/endless` | Saat bermain ulang di mode Shift Malam (Main Lagi setelah lulus masa percobaan) |
 | `music/sedih` | Cutscene sedih: Masbro sedih, latar senja (`sunset`) di ending |
 | `music/tegang` | Cutscene tegang: Kuro menyombong atau kaget, Pemilik Lahan marah, Pak Buldog marah |
-| `music/gameplay_ceria` | Selama hari pengiriman (arcade ceria, 120 BPM, 32 detik, loop mulus). Bila file ini tidak ada, game memakai `music/gameplay` |
 | `music/gameplay` | Cadangan musik hari pengiriman bila `gameplay_ceria` tidak ada |
 | `sfx/step` | Masbro melangkah |
 | `sfx/pickup` | Mulai hari (ambil paket) |
 | `sfx/hit` | Tertabrak |
 | `sfx/package_damage` | Paket rusak (boleh lebay/lucu) |
 | `sfx/fail` | Paket hancur |
-| `sfx/delivery` | Paket sampai |
+| `sfx/delivery` | Paket diambil di kios & paket sampai ke pelanggan |
+| `sfx/coin` | Memungut koin di jalan |
+| `sfx/powerup` | Memungut power-up helm atau sepatu |
 | `sfx/star` | Tiap bintang rating muncul |
 | `sfx/meow` | Jalan terhalang kucing |
 | `sfx/slip` | Masbro tergelincir (aspal basah, mode panik, atau kulit pisang) |

@@ -271,9 +271,9 @@ func _build_props() -> void:
 		_pickup_marker = Node3D.new()
 		var box := Props.box(Vector3(0.4, 0.3, 0.32), level.day.package.color, Vector3.ZERO)
 		_pickup_marker.add_child(box)
-		var text := Props.label(tr("AMBIL"), Color.WHITE, 0.01)
-		text.outline_modulate = Palette.CORAL
-		text.position = Vector3(0, 0.45, 0)
+		var text := Props.label(tr("AMBIL PAKET!"), Palette.YELLOW, 0.011)
+		text.outline_modulate = Palette.OUTLINE
+		text.position = Vector3(0, 0.48, 0)
 		_pickup_marker.add_child(text)
 		_pickup_marker.position = Vector3(level.pickup_cell.x + 0.5, 2.0, level.pickup_cell.y + 0.5)
 		add_child(_pickup_marker)

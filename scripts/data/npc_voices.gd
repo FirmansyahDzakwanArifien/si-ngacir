@@ -77,7 +77,7 @@ const PROFILES := {
 		"pitch": 0.12,
 		"lines": [
 			["Meong~", &"meow"],
-			["Miaw!", &"meow"],
+			["Miaw!", &"meow_2"],
 			["Prrr...", &"meow"],
 		],
 	},
