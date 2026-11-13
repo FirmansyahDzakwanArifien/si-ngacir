@@ -69,7 +69,7 @@ Paket: %s,Package: %s
 Lokasi: %s,Location: %s
 Antar ke: %s,Deliver to: %s
 Target ETA: %s   Upah dasar: %s,Target ETA: %s   Base pay: %s
-Gerak: WASD / panah / swipe   Pause: Esc / P,Move: WASD / arrows / swipe   Pause: Esc / P
+Gerak: WASD / panah / swipe   Pause: P / tombol II,Move: WASD / arrows / swipe   Pause: P / II button
 Hujan deras: jarak pandang terbatas dan aspal licin.,Heavy rain: limited visibility and slippery asphalt.
 Kucing jalanan suka menghalangi jalan. Cari jalur lain!,Street cats like to block the way. Find another path!
 PAUSE,PAUSED
@@ -349,3 +349,11 @@ Laptop VIP,VIP Laptop
 "Laptop Nana untuk rapat. Jangan sampai basah, apalagi tercebur.","Nana's laptop for her meeting. Don't let it get wet, let alone fall in the water."
 Patung Kristal Jeruk,Crystal Orange Statue
 Pesanan Pak Wali Kota. Sangat rapuh: dua benturan dan patungnya pecah.,The Mayor's order. Very fragile: two bumps and it shatters.
+Pause (P),Pause (P)
+AMBIL PAKET!,PICK UP!
+Ambil paket di kios dulu!,Pick up the package at the stall first!
+<- Kios paket di kiri!,<- Package stall on the left!
+Kios paket di kanan! ->,Package stall on the right! ->
+Eh Masbro! Ambil paketnya dulu di kios samping sebelum lanjut ke atas!,Hey Masbro! Pick up the package at the side stall before heading up!
+<<< AMBIL PAKET,<<< PICK UP
+AMBIL PAKET >>>,PICK UP >>>

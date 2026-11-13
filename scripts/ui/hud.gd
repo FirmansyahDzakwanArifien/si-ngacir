@@ -247,7 +247,7 @@ func show_intro() -> void:
 	]
 	for warning in _day_warnings():
 		rows.append(_label("! " + warning, 15, Palette.TEAL_DARK, true, 600))
-	rows.append(_label("Gerak: WASD / panah / swipe   Pause: Esc / P", 14, Palette.TEXT_SOFT))
+	rows.append(_label("Gerak: WASD / panah / swipe   Pause: P / tombol II", 14, Palette.TEXT_SOFT))
 	_open(tr("Hari %d: %s") % [_day.day, tr(_day.title)], Palette.YELLOW, rows, [["Trobos Ajalah!", start_requested.emit]])
 
 
@@ -389,14 +389,16 @@ func _build_top_bar() -> void:
 	row.add_child(customer)
 	_objective = customer
 	_fit_objective()
-	if DisplayServer.is_touchscreen_available():
-		var pause := Button.new()
-		pause.text = "II"
-		pause.focus_mode = Control.FOCUS_NONE
-		pause.custom_minimum_size = Vector2(40, 0)
-		pause.add_theme_font_size_override("font_size", 16)
-		pause.pressed.connect(pause_pressed.emit)
-		row.add_child(pause)
+	# Tombol pause selalu tampil (desktop, web fullscreen, maupun layar sentuh) supaya pemain
+	# tidak perlu menekan Esc yang di browser mengecilkan layar penuh.
+	var pause := Button.new()
+	pause.text = "II"
+	pause.tooltip_text = tr("Pause (P)")
+	pause.focus_mode = Control.FOCUS_NONE
+	pause.custom_minimum_size = Vector2(40, 0)
+	pause.add_theme_font_size_override("font_size", 16)
+	pause.pressed.connect(pause_pressed.emit)
+	row.add_child(pause)
 
 
 func _coin_counter() -> PanelContainer:
