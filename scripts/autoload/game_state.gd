@@ -22,6 +22,7 @@ const RENT_DUE := 350000
 ## Tabungan kurang setelah Hari 5: Pemilik Lahan masih memberi waktu, jadi hari boleh diulang.
 const SHORTFALL_RULE := ShortfallRule.REPLAY_DAYS
 const LEVEL_SCENE := "res://scenes/game/level.tscn"
+const ENDLESS_SCENE := "res://scenes/game/endless_level.tscn"
 const ENDING_SCENE := "res://scenes/ending.tscn"
 const MENU_SCENE := "res://scenes/main.tscn"
 const CUTSCENE_SCENE := "res://scenes/cutscene.tscn"
@@ -124,7 +125,7 @@ func current_day() -> DayData:
 	return load(DAYS[current_day_index]) as DayData
 
 
-## Mulai sesi Mode Endless dari Order #1.
+## Mulai sesi Mode Endless dari Order #1 (jalanan terus menyambung ke atas).
 func start_endless() -> void:
 	is_endless = true
 	is_replay = false
@@ -135,7 +136,7 @@ func start_endless() -> void:
 	endless_last_package = &""
 	endless_last_city = &""
 	endless_new_record = false
-	Transition.change_scene(LEVEL_SCENE)
+	Transition.change_scene(ENDLESS_SCENE)
 
 
 ## Lanjut ke order Endless berikutnya dengan streak tetap berjalan.

@@ -408,3 +408,14 @@ Galeri Kota Ngacir,Ngacir City Gallery
 "Barang penting, jangan lecet!","Important item, don't scratch it!"
 Depot Ngacir Timur,East Ngacir Depot
 "Gas terus, Masbro!","Full speed ahead, Masbro!"
+MODE ENDLESS,ENDLESS MODE
+"Jalanan terus menyambung ke atas tanpa henti! Ambil paket di kios, antar ke pelanggan, dan dapatkan tambahan waktu ETA + koin!","The street keeps going north forever! Pick up packages at stalls, deliver to customers, and earn extra ETA time + coins!"
+Order pertama: %s → %s,First order: %s → %s
+"Paket yang makin sulit (Kue Ultah, Laptop, Kristal) memberi bonus skor ekstra!","Trickier packages (Birthday Cake, Laptop, Crystal) award extra bonus points!"
+Awas: paket hancur atau waktu ETA habis = Game Over!,Watch out: broken package or ETA running out = Game Over!
+Rekor tertinggi: %d pts (%d order),High score: %d pts (%d orders)
+ORDER #%d SELESAI!  +%d pts  ·  +%d dtk  ·  +%d koin,ORDER #%d COMPLETE!  +%d pts  ·  +%ds  ·  +%d coins
+Berikutnya: %s → %s,Next: %s → %s
+(Bonus paket +%d),(Package bonus +%d)
++%d pts · +%d dtk!,+%d pts · +%ds!
+%s! (+%d bonus),%s! (+%d bonus)

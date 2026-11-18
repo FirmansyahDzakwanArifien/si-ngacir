@@ -56,15 +56,28 @@ func _ready() -> void:
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(rect)
+	set_rainy(rainy)
+	if Accessibility.reduce_motion:
+		_material.set_shader_parameter("ray_speed", 0.0)
+	visible = Accessibility.lighting
+	Accessibility.lighting_changed.connect(_on_lighting_changed)
+
+
+## Ubah nuansa cahaya secara dinamis antara cerah dan hujan (dipakai Mode Endless).
+func set_rainy(value: bool) -> void:
+	rainy = value
+	if _material == null:
+		return
 	if rainy:
 		_material.set_shader_parameter("warmth", -0.03)
 		_material.set_shader_parameter("saturation", 0.95)
 		_material.set_shader_parameter("sun_strength", 0.0)
 		_material.set_shader_parameter("vignette", 0.4)
-	if Accessibility.reduce_motion:
-		_material.set_shader_parameter("ray_speed", 0.0)
-	visible = Accessibility.lighting
-	Accessibility.lighting_changed.connect(_on_lighting_changed)
+	else:
+		_material.set_shader_parameter("warmth", 0.07)
+		_material.set_shader_parameter("saturation", 1.15)
+		_material.set_shader_parameter("sun_strength", 0.5)
+		_material.set_shader_parameter("vignette", 0.38)
 
 
 ## Nilai parameter shader yang berlaku (nilai bawaan shader bila belum diubah).

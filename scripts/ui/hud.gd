@@ -28,6 +28,8 @@ const GREEN := Palette.TEAL
 
 var _day: DayData
 var _endless := false
+var _badge_label: Label
+var _icons_box: HBoxContainer
 var _time_label: Label
 var _time_pill: PanelContainer
 var _time_pulse: Tween
@@ -40,6 +42,11 @@ var _coin_pill: PanelContainer
 var _score_label: Label
 var _score_pill: PanelContainer
 var _shown_score := 0
+## Spanduk melayang tanpa pause (dipakai Mode Endless saat order selesai & lanjut ke order berikutnya).
+var _banner: PanelContainer
+var _banner_title: Label
+var _banner_sub: Label
+var _banner_tween: Tween
 ## Teks tujuan di bar atas: "ambil di <pengirim>" lalu "ke <pelanggan>".
 var _objective: Label
 ## Hari ini paket diambil dulu di titik jemput.
@@ -68,6 +75,8 @@ func setup(day: DayData, endless := false) -> void:
 	_build_top_bar()
 	_build_tip()
 	_build_radio()
+	if _endless:
+		_build_banner()
 	_build_overlay()
 	update_timer(day.eta_seconds)
 	if _endless:
@@ -119,6 +128,95 @@ func update_score(total: int) -> void:
 		_score_pill.pivot_offset = _score_pill.size / 2.0
 		_score_pill.scale = Vector2(1.18, 1.18)
 		_score_pill.create_tween().tween_property(_score_pill, "scale", Vector2.ONE, 0.2)
+
+
+## Ganti nomor order di bar atas secara langsung tanpa muat ulang scene (Mode Endless).
+func set_order_badge(order_num: int) -> void:
+	if _badge_label == null:
+		return
+	_badge_label.text = tr("ORDER #%d") % order_num
+
+
+## Ganti ikon kondisi paket di bar atas saat Masbro ganti paket di Mode Endless.
+func set_package_hud(pkg: PackageData, current_damage := 0) -> void:
+	_day.package = pkg
+	if _icons_box == null:
+		return
+	for child in _icons_box.get_children():
+		_icons_box.remove_child(child)
+		child.queue_free()
+	_package_icons.clear()
+	for i in pkg.max_damage:
+		var icon := _package_icon(Vector2(30, 22))
+		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		_icons_box.add_child(icon)
+		_package_icons.append(icon)
+	update_package(current_damage)
+
+
+## Perbarui target pengirim / pelanggan pada bar atas untuk order Endless baru.
+func set_endless_order(day: DayData, pickup_fraction := -1.0) -> void:
+	_day = day
+	set_order_badge(day.day)
+	set_package_hud(day.package, 0)
+	if pickup_fraction >= 0.0:
+		set_pickup(pickup_fraction)
+	else:
+		set_objective_delivery()
+	update_progress(0.0)
+
+
+## Spanduk melayang sebentar tanpa menghentikan permainan (perayaan selesai order di Mode Endless).
+func show_banner(title: String, subtitle: String, accent := Palette.TEAL) -> void:
+	if _banner == null:
+		return
+	var style := UiTheme.card(Palette.WHITE, accent)
+	style.set_content_margin_all(10)
+	style.set_corner_radius_all(16)
+	_banner.add_theme_stylebox_override("panel", style)
+	_banner_title.text = title
+	_banner_title.add_theme_color_override("font_color", accent)
+	_banner_sub.text = subtitle
+	_banner_sub.visible = subtitle != ""
+	_banner.visible = true
+	_banner.modulate.a = 0.0
+	_banner.reset_size()
+	_place_banner.call_deferred()
+	if _banner_tween:
+		_banner_tween.kill()
+	_banner_tween = _banner.create_tween()
+	_banner_tween.tween_property(_banner, "modulate:a", 1.0, 0.15)
+	_banner_tween.tween_interval(2.4)
+	_banner_tween.tween_property(_banner, "modulate:a", 0.0, 0.3)
+	_banner_tween.tween_callback(_banner.hide)
+
+
+func _build_banner() -> void:
+	_banner = PanelContainer.new()
+	_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_banner.visible = false
+	UiTheme.attach(_banner)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 2)
+	_banner.add_child(col)
+	_banner_title = _label("", 18, Palette.TEAL_DARK, false, 700)
+	_banner_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_banner_title.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	col.add_child(_banner_title)
+	_banner_sub = _label("", 14, Palette.TEXT, false, 600)
+	_banner_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_banner_sub.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	col.add_child(_banner_sub)
+	add_child(_banner)
+	_banner.resized.connect(_place_banner)
+	get_viewport().size_changed.connect(_place_banner)
+
+
+func _place_banner() -> void:
+	if _banner == null:
+		return
+	var view := get_viewport().get_visible_rect().size
+	_banner.position = Vector2((view.x - _banner.size.x) / 2.0, BAR_HEIGHT + 10.0)
 
 
 ## Kartu tip kecil di bawah bar atas; tidak menghentikan permainan.
@@ -311,25 +409,17 @@ func show_pause() -> void:
 
 func show_endless_intro(order_num: int, total_score: int, best_score: int) -> void:
 	var pkg := _day.package
-	var mult := 1.0 + (maxi(1, order_num) - 1) * 0.25
-	var stats := tr("Skor saat ini: %d pts   Pengali: x%.2f") % [total_score, mult]
-	if best_score > 0:
-		stats += "   " + tr("Rekor: %d pts") % best_score
 	var rows: Array[Control] = [
 		_package_picture(),
-		_label(tr("Paket: %s") % tr(pkg.display_name), 20, Palette.TEXT, true, 600),
-		_label(pkg.description, 15, Palette.TEXT_SOFT),
-		_label(tr("Lokasi: %s") % tr(_day.city.display_name if _day.city else "Kota Ngacir"), 15, Palette.TEXT_SOFT, true, 600),
-		_pickup_row(),
-		_customer_row(),
-		_label(tr("Batas Waktu ETA: %s (habis = kalah!)") % format_time(_day.eta_seconds), 16, Palette.CORAL_DARK, true, 600),
-		_label(stats, 15, Palette.TEAL_DARK, true, 600),
+		_label("Jalanan terus menyambung ke atas tanpa henti! Ambil paket di kios, antar ke pelanggan, dan dapatkan tambahan waktu ETA + koin!", 16, Palette.TEXT, true, 600),
+		_label(tr("Order pertama: %s → %s") % [tr(pkg.display_name), _day.customer_name], 16, Palette.TEAL_DARK, true, 600),
+		_label("Paket yang makin sulit (Kue Ultah, Laptop, Kristal) memberi bonus skor ekstra!", 15, Palette.TEXT_SOFT),
+		_label("Awas: paket hancur atau waktu ETA habis = Game Over!", 15, Palette.CORAL_DARK, true, 600),
 	]
-	for warning in _day_warnings():
-		rows.append(_label("! " + warning, 15, Palette.TEAL_DARK, true, 600))
-	if order_num == 1:
-		rows.append(_label("Gerak: WASD / panah / swipe   Pause: P / tombol II", 14, Palette.TEXT_SOFT))
-	_open(tr("ORDER #%d") % order_num, Palette.TEAL, rows, [["Trobos Ajalah!", start_requested.emit]])
+	if best_score > 0:
+		rows.append(_label(tr("Rekor tertinggi: %d pts (%d order)") % [best_score, GameState.endless_best_orders], 15, Palette.TEAL_DARK, true, 600))
+	rows.append(_label("Gerak: WASD / panah / swipe   Pause: P / tombol II", 14, Palette.TEXT_SOFT))
+	_open("MODE ENDLESS", Palette.TEAL, rows, [["Trobos Ajalah!", start_requested.emit]])
 
 
 func show_endless_result(order_num: int, score_data: Dictionary, total_score: int, is_new_record: bool) -> void:
@@ -460,23 +550,23 @@ func _build_top_bar() -> void:
 
 	var badge_text := tr("ORDER #%d") % _day.day if _endless else tr("HARI %d") % _day.day
 	var badge_color := Palette.TEAL if _endless else Palette.CORAL
-	var badge_label := _label(badge_text, 17, Palette.WHITE, false, 600)
-	badge_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	row.add_child(_pill(badge_label, badge_color))
+	_badge_label = _label(badge_text, 17, Palette.WHITE, false, 600)
+	_badge_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	row.add_child(_pill(_badge_label, badge_color))
 	if _endless:
 		_score_label = _label(tr("%d pts") % GameState.endless_score, 16, Palette.TEXT, false, 600)
 		_score_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 		_score_pill = _pill(_score_label, Palette.YELLOW)
 		_score_pill.visible = not Screen.is_compact()
 		row.add_child(_score_pill)
-	var icons := HBoxContainer.new()
-	icons.add_theme_constant_override("separation", 3)
+	_icons_box = HBoxContainer.new()
+	_icons_box.add_theme_constant_override("separation", 3)
 	for i in _day.package.max_damage:
 		var icon := _package_icon(Vector2(30, 22))
 		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		icons.add_child(icon)
+		_icons_box.add_child(icon)
 		_package_icons.append(icon)
-	row.add_child(icons)
+	row.add_child(_icons_box)
 
 	_route = RouteMeter.new()
 	_route.custom_minimum_size.x = 40.0 if Screen.is_compact() else 70.0
