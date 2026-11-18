@@ -83,6 +83,19 @@ var pending_scene := ""
 ## Kondisi paket pada pengiriman terakhir cukup baik (memilih cutscene malam).
 var last_day_good := true
 
+## Status Mode Endless (Shift Lembur): order beruntun tanpa batas.
+var is_endless := false
+var endless_order := 1
+var endless_score := 0
+var endless_delivered := 0
+var endless_coins := 0
+var endless_last_package := &""
+var endless_last_city := &""
+var endless_new_record := false
+## Rekor permanen Mode Endless (disimpan di profil, tidak terhapus oleh Mulai Baru).
+var endless_best_score := 0
+var endless_best_orders := 0
+
 
 func _ready() -> void:
 	_setup_input()
@@ -95,12 +108,70 @@ func _ready() -> void:
 func reset_run() -> void:
 	current_day_index = 0
 	is_replay = false
+	is_endless = false
 	probation_done = false
 	wages.clear()
 
 
 func current_day() -> DayData:
+	if is_endless:
+		var order := EndlessGenerator.generate(endless_order, endless_last_package, endless_last_city)
+		if order.package:
+			endless_last_package = order.package.id
+		if order.city:
+			endless_last_city = StringName(order.city.display_name)
+		return order
 	return load(DAYS[current_day_index]) as DayData
+
+
+## Mulai sesi Mode Endless dari Order #1.
+func start_endless() -> void:
+	is_endless = true
+	is_replay = false
+	endless_order = 1
+	endless_score = 0
+	endless_delivered = 0
+	endless_coins = 0
+	endless_last_package = &""
+	endless_last_city = &""
+	endless_new_record = false
+	Transition.change_scene(LEVEL_SCENE)
+
+
+## Lanjut ke order Endless berikutnya dengan streak tetap berjalan.
+func next_endless_order() -> void:
+	endless_order += 1
+	Transition.change_scene(LEVEL_SCENE)
+
+
+## Catat satu pengiriman Endless yang selesai; mengembalikan true bila mencetak rekor baru.
+func record_endless_delivery(points: int, order_coins: int, streak_coins: int) -> bool:
+	endless_delivered += 1
+	endless_score += points
+	endless_coins += order_coins + streak_coins
+	if streak_coins > 0:
+		add_coins(streak_coins, false)
+	var broke := false
+	if endless_score > endless_best_score:
+		endless_best_score = endless_score
+		broke = true
+	if endless_delivered > endless_best_orders:
+		endless_best_orders = endless_delivered
+		broke = true
+	if broke:
+		endless_new_record = true
+	save_profile()
+	return broke
+
+
+## Catat koin yang sempat diambil sebelum kalah di Endless, lalu simpan profil.
+func finish_endless_run(order_coins: int) -> void:
+	endless_coins += order_coins
+	save_profile()
+
+
+func exit_endless() -> void:
+	is_endless = false
 
 
 func has_next_day() -> bool:
@@ -298,6 +369,8 @@ func save_profile() -> void:
 	config.set_value("profile", "seen_stories", seen_stories)
 	config.set_value("profile", "story_auto", story_auto)
 	config.set_value("profile", "starters_given", starters_given)
+	config.set_value("profile", "endless_best_score", endless_best_score)
+	config.set_value("profile", "endless_best_orders", endless_best_orders)
 	config.save(PROFILE_PATH)
 
 
@@ -313,6 +386,8 @@ func load_profile() -> void:
 	seen_stories.assign(config.get_value("profile", "seen_stories", []))
 	story_auto = config.get_value("profile", "story_auto", false)
 	starters_given.assign(config.get_value("profile", "starters_given", []))
+	endless_best_score = int(config.get_value("profile", "endless_best_score", 0))
+	endless_best_orders = int(config.get_value("profile", "endless_best_orders", 0))
 	# Profil lama (sebelum jeruk) hanya mencatat kacamata bawaan sebagai bool.
 	if config.get_value("profile", "starter_given", false) and not STARTER_ITEMS[0] in starters_given:
 		starters_given.append(STARTER_ITEMS[0])
@@ -327,6 +402,8 @@ func reset_profile() -> void:
 	seen_stories.clear()
 	story_auto = false
 	starters_given.clear()
+	endless_best_score = 0
+	endless_best_orders = 0
 	if FileAccess.file_exists(PROFILE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILE_PATH))
 

@@ -357,3 +357,54 @@ Kios paket di kanan! ->,Package stall on the right! ->
 Eh Masbro! Ambil paketnya dulu di kios samping sebelum lanjut ke atas!,Hey Masbro! Pick up the package at the side stall before heading up!
 <<< AMBIL PAKET,<<< PICK UP
 AMBIL PAKET >>>,PICK UP >>>
+Mode Endless,Endless Mode
+Endless: %d pts,Endless: %d pts
+ORDER #%d,ORDER #%d
+%d pts,%d pts
+Ulangi Endless,Restart Endless
+"Skor saat ini: %d pts   Pengali: x%.2f","Current score: %d pts   Multiplier: x%.2f"
+Rekor: %d pts,Best: %d pts
+Batas Waktu ETA: %s (habis = kalah!),ETA Time Limit: %s (time out = game over!)
+REKOR BARU!,NEW RECORD!
+Skor dasar,Base score
+Bonus sisa waktu,Time left bonus
+Bonus kondisi paket,Package condition bonus
+Bonus koin,Coin bonus
+Pengali streak,Streak multiplier
+SKOR ORDER INI,ORDER SCORE
+Total skor,Total score
++%d koin bonus streak masuk ke dompet!,+%d streak bonus coins added to wallet!
+ORDER #%d SELESAI!,ORDER #%d COMPLETE!
+Lanjut Order #%d,Next Order #%d
+Waktu ETA habis! Pelanggan keburu membatalkan pesanan.,ETA ran out! The customer canceled the order.
+Paket hancur di jalan! Shift Lembur berakhir.,Package destroyed on the road! Overtime Shift ended.
+Order berhasil diantar,Orders delivered
+Skor akhir,Final score
+Rekor tertinggi,High score
+%d pts (%d order),%d pts (%d orders)
+Koin didapat,Coins earned
++%d koin,+%d coins
+WAKTU HABIS!,TIME'S UP!
+Main Lagi,Play Again
+"Yah, waktunya habis...","Oh no, time's up..."
+Shift Lembur,Overtime Shift
+"Cepetan ya, Masbro! Pesanan ekspres!","Hurry up, Masbro! Express order!"
+"Waktunya mepet, Masbro!","Time is tight, Masbro!"
+Telat! Bintang satu!,Late! One star!
+"Ditunggu ya, Masbro!","Waiting for you, Masbro!"
+"Hati-hati, waktunya sedikit lagi!","Careful, not much time left!"
+"Yah, kelamaan nih...","Oh, taking too long..."
+"Siap ditunggu di depan rumah, Masbro!","Waiting in front of the house, Masbro!"
+"Ayo sedikit lagi, Masbro!","Come on, almost there, Masbro!"
+"Wah, waktunya hampir habis...","Whoa, almost out of time..."
+Pengantaran VIP! Jangan sampai lecet.,VIP delivery! Don't let it get scratched.
+"Rapat hampir mulai, Masbro!","The meeting is about to start, Masbro!"
+"Sangat disayangkan, terlambat!","Most unfortunate, you're late!"
+Warung Mak Ijah,Mak Ijah's Stall
+"Hati-hati di jalan, Masbro!","Be careful on the road, Masbro!"
+Kedai Cepat Saji,Fast Bite Stall
+"Masih panas nih, langsung antar!","Still piping hot, deliver it right away!"
+Galeri Kota Ngacir,Ngacir City Gallery
+"Barang penting, jangan lecet!","Important item, don't scratch it!"
+Depot Ngacir Timur,East Ngacir Depot
+"Gas terus, Masbro!","Full speed ahead, Masbro!"

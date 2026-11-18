@@ -27,6 +27,7 @@ const RED := Palette.CORAL
 const GREEN := Palette.TEAL
 
 var _day: DayData
+var _endless := false
 var _time_label: Label
 var _time_pill: PanelContainer
 var _time_pulse: Tween
@@ -35,6 +36,10 @@ var _route: RouteMeter
 ## Isi dompet (sama dengan angka di Toko Masbro), bertambah saat koin dipungut.
 var _coin_label: Label
 var _coin_pill: PanelContainer
+## Skor berjalan khusus Mode Endless.
+var _score_label: Label
+var _score_pill: PanelContainer
+var _shown_score := 0
 ## Teks tujuan di bar atas: "ambil di <pengirim>" lalu "ke <pelanggan>".
 var _objective: Label
 ## Hari ini paket diambil dulu di titik jemput.
@@ -57,19 +62,30 @@ func _init() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 
-func setup(day: DayData) -> void:
+func setup(day: DayData, endless := false) -> void:
 	_day = day
+	_endless = endless
 	_build_top_bar()
 	_build_tip()
 	_build_radio()
 	_build_overlay()
 	update_timer(day.eta_seconds)
+	if _endless:
+		update_score(GameState.endless_score)
 
 
 func update_timer(seconds_left: float) -> void:
 	var fill := Palette.TEAL
 	var text_color := Palette.WHITE
-	if seconds_left < 0.0:
+	if _endless:
+		var clamped := maxf(0.0, seconds_left)
+		_time_label.text = tr("ETA %s") % format_time(clamped)
+		if clamped <= 5.0:
+			fill = Palette.CORAL
+		elif clamped <= 10.0:
+			fill = Palette.YELLOW
+			text_color = Palette.TEXT
+	elif seconds_left < 0.0:
 		_time_label.text = tr("TELAT +%s") % format_time(-seconds_left)
 		fill = Palette.CORAL
 	else:
@@ -80,7 +96,7 @@ func update_timer(seconds_left: float) -> void:
 	_time_pill.add_theme_stylebox_override("panel", UiTheme.pill(fill))
 	_time_label.add_theme_color_override("font_color", text_color)
 	# Pil ETA berdenyut saat waktu menipis.
-	var hurry := seconds_left <= 10.0 and seconds_left > -1.0 and not Accessibility.reduce_motion
+	var hurry := seconds_left <= 10.0 and seconds_left > (-1.0 if not _endless else 0.0) and not Accessibility.reduce_motion
 	if hurry and _time_pulse == null:
 		_time_pill.pivot_offset = _time_pill.size / 2.0
 		_time_pulse = _time_pill.create_tween().set_loops()
@@ -90,6 +106,19 @@ func update_timer(seconds_left: float) -> void:
 		_time_pulse.kill()
 		_time_pulse = null
 		_time_pill.scale = Vector2.ONE
+
+
+## Perbarui angka skor di bar atas (khusus Mode Endless).
+func update_score(total: int) -> void:
+	if _score_label == null:
+		return
+	var grew := total > _shown_score
+	_shown_score = total
+	_score_label.text = tr("%d pts") % total
+	if grew and not Accessibility.reduce_motion:
+		_score_pill.pivot_offset = _score_pill.size / 2.0
+		_score_pill.scale = Vector2(1.18, 1.18)
+		_score_pill.create_tween().tween_property(_score_pill, "scale", Vector2.ONE, 0.2)
 
 
 ## Kartu tip kecil di bawah bar atas; tidak menghentikan permainan.
@@ -274,8 +303,77 @@ func _day_warnings() -> PackedStringArray:
 func show_pause() -> void:
 	_open("PAUSE", Palette.YELLOW, [], [
 		["Lanjut", resume_requested.emit],
-		["Ulangi Hari", retry_requested.emit],
+		["Ulangi Endless" if _endless else "Ulangi Hari", retry_requested.emit],
 		["Pengaturan", _open_settings],
+		["Menu Utama", menu_requested.emit],
+	])
+
+
+func show_endless_intro(order_num: int, total_score: int, best_score: int) -> void:
+	var pkg := _day.package
+	var mult := 1.0 + (maxi(1, order_num) - 1) * 0.25
+	var stats := tr("Skor saat ini: %d pts   Pengali: x%.2f") % [total_score, mult]
+	if best_score > 0:
+		stats += "   " + tr("Rekor: %d pts") % best_score
+	var rows: Array[Control] = [
+		_package_picture(),
+		_label(tr("Paket: %s") % tr(pkg.display_name), 20, Palette.TEXT, true, 600),
+		_label(pkg.description, 15, Palette.TEXT_SOFT),
+		_label(tr("Lokasi: %s") % tr(_day.city.display_name if _day.city else "Kota Ngacir"), 15, Palette.TEXT_SOFT, true, 600),
+		_pickup_row(),
+		_customer_row(),
+		_label(tr("Batas Waktu ETA: %s (habis = kalah!)") % format_time(_day.eta_seconds), 16, Palette.CORAL_DARK, true, 600),
+		_label(stats, 15, Palette.TEAL_DARK, true, 600),
+	]
+	for warning in _day_warnings():
+		rows.append(_label("! " + warning, 15, Palette.TEAL_DARK, true, 600))
+	if order_num == 1:
+		rows.append(_label("Gerak: WASD / panah / swipe   Pause: P / tombol II", 14, Palette.TEXT_SOFT))
+	_open(tr("ORDER #%d") % order_num, Palette.TEAL, rows, [["Trobos Ajalah!", start_requested.emit]])
+
+
+func show_endless_result(order_num: int, score_data: Dictionary, total_score: int, is_new_record: bool) -> void:
+	var rows: Array[Control] = []
+	if is_new_record:
+		var badge := _pill(_label("REKOR BARU!", 16, Palette.TEXT, false, 700), Palette.YELLOW)
+		badge.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		rows.append(badge)
+	rows.append(_stat_row("Skor dasar", "+%d" % score_data["base"]))
+	rows.append(_stat_row("Bonus sisa waktu", "+%d" % score_data["time_bonus"]))
+	rows.append(_stat_row("Bonus kondisi paket", "+%d" % score_data["integrity_bonus"]))
+	if int(score_data["coin_bonus"]) > 0:
+		rows.append(_stat_row("Bonus koin", "+%d" % score_data["coin_bonus"]))
+	rows.append(_stat_row("Pengali streak", "x%.2f" % float(score_data["multiplier"]), Palette.TEAL_DARK, 600))
+	rows.append(HSeparator.new())
+	rows.append(_stat_row("SKOR ORDER INI", "+%d pts" % score_data["total"], Palette.TEAL_DARK, 700))
+	rows.append(_stat_row("Total skor", tr("%d pts") % total_score, Palette.TEXT, 600))
+	rows.append(_label(tr("+%d koin bonus streak masuk ke dompet!") % score_data["streak_coins"], 15, Palette.YELLOW_DARK, true, 600))
+	_open(tr("ORDER #%d SELESAI!") % order_num, Palette.TEAL, rows, [
+		[tr("Lanjut Order #%d") % (order_num + 1), next_requested.emit],
+		["Menu Utama", menu_requested.emit],
+	])
+
+
+func show_endless_game_over(timed_out: bool, delivered: int, final_score: int,
+		best_score: int, best_orders: int, run_coins: int, is_new_record: bool) -> void:
+	var rows: Array[Control] = [
+		_package_picture(not timed_out),
+	]
+	if is_new_record and final_score > 0:
+		var badge := _pill(_label("REKOR BARU!", 16, Palette.TEXT, false, 700), Palette.YELLOW)
+		badge.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		rows.append(badge)
+	var reason := tr("Waktu ETA habis! Pelanggan keburu membatalkan pesanan.") if timed_out \
+			else tr("Paket hancur di jalan! Shift Lembur berakhir.")
+	rows.append(_label(reason, 16, Palette.TEXT, true, 600))
+	rows.append(HSeparator.new())
+	rows.append(_stat_row("Order berhasil diantar", str(delivered), Palette.TEXT, 600))
+	rows.append(_stat_row("Skor akhir", tr("%d pts") % final_score, Palette.CORAL_DARK, 700))
+	rows.append(_stat_row("Rekor tertinggi", tr("%d pts (%d order)") % [best_score, best_orders], Palette.TEAL_DARK, 600))
+	rows.append(_stat_row("Koin didapat", tr("+%d koin") % run_coins, Palette.YELLOW_DARK, 600))
+	var heading := "WAKTU HABIS!" if timed_out else "PAKET HANCUR!"
+	_open(heading, Palette.CORAL, rows, [
+		["Main Lagi", retry_requested.emit],
 		["Menu Utama", menu_requested.emit],
 	])
 
@@ -360,7 +458,17 @@ func _build_top_bar() -> void:
 	row.add_theme_constant_override("separation", 10)
 	bar.add_child(row)
 
-	row.add_child(_pill(_label(tr("HARI %d") % _day.day, 17, Palette.WHITE, false, 600), Palette.CORAL))
+	var badge_text := tr("ORDER #%d") % _day.day if _endless else tr("HARI %d") % _day.day
+	var badge_color := Palette.TEAL if _endless else Palette.CORAL
+	var badge_label := _label(badge_text, 17, Palette.WHITE, false, 600)
+	badge_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	row.add_child(_pill(badge_label, badge_color))
+	if _endless:
+		_score_label = _label(tr("%d pts") % GameState.endless_score, 16, Palette.TEXT, false, 600)
+		_score_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		_score_pill = _pill(_score_label, Palette.YELLOW)
+		_score_pill.visible = not Screen.is_compact()
+		row.add_child(_score_pill)
 	var icons := HBoxContainer.new()
 	icons.add_theme_constant_override("separation", 3)
 	for i in _day.package.max_damage:
@@ -623,6 +731,17 @@ func _money_row(caption: String, amount: int, color := Palette.TEXT, weight := 5
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(left)
 	row.add_child(_label(GameState.rupiah(amount), 16, color, false, weight))
+	return row
+
+
+func _stat_row(caption: String, value_text: String, color := Palette.TEXT, weight := 500) -> Control:
+	var row := HBoxContainer.new()
+	var left := _label(caption, 16, color, false, weight)
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(left)
+	var right := _label(value_text, 16, color, false, weight)
+	right.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	row.add_child(right)
 	return row
 
 

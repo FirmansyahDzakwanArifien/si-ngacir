@@ -189,7 +189,7 @@ func _ready() -> void:
 
 	_hud = GameHud.new()
 	add_child(_hud)
-	_hud.setup(day)
+	_hud.setup(day, GameState.is_endless)
 	if not has_package:
 		_hud.set_pickup(1.0 - float(pickup_cell.y) / (_rows - 1))
 	_hud.start_requested.connect(_on_start_requested)
@@ -199,7 +199,10 @@ func _ready() -> void:
 	_hud.menu_requested.connect(_on_menu_requested)
 	_hud.checkpoint_requested.connect(_on_checkpoint_requested)
 	_tips = TutorialTips.new(_hud)
-	_hud.show_intro()
+	if GameState.is_endless:
+		_hud.show_endless_intro(GameState.endless_order, GameState.endless_score, GameState.endless_best_score)
+	else:
+		_hud.show_intro()
 	var touch := TouchControls.new()
 	touch.player = _player
 	add_child(touch)
@@ -208,7 +211,7 @@ func _ready() -> void:
 
 
 func _play_level_music() -> void:
-	if GameState.is_replay and GameState.probation_done:
+	if GameState.is_endless or (GameState.is_replay and GameState.probation_done):
 		AudioManager.play_music(&"endless", &"gameplay_malam")
 	elif day.rainy:
 		AudioManager.play_music(&"gameplay_malam", &"gameplay_ceria")
@@ -242,8 +245,12 @@ func _process(delta: float) -> void:
 	if state != State.PLAYING:
 		return
 	elapsed += delta
-	_hud.update_timer(day.eta_seconds - elapsed)
+	var time_left := day.eta_seconds - elapsed
+	_hud.update_timer(time_left)
 	_hud.update_progress(1.0 - _player.position.y / ((_rows - 1) * TILE))
+	if GameState.is_endless and time_left <= 0.0:
+		_fail(true)
+		return
 
 	_popup_cooldown = maxf(0.0, _popup_cooldown - delta)
 	_scan_tips(delta)
@@ -1101,31 +1108,49 @@ func _deliver() -> void:
 	state = State.FINISHED
 	_player.input_enabled = false
 	_hud.update_progress(1.0)
-	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins, checkpoint_uses)
-	GameState.record_delivery(day, report.wage)
-	GameState.last_day_good = report.integrity >= GOOD_DAY_INTEGRITY
-	GameState.save_profile()
 	AudioManager.stop_voices()
 	AudioManager.play_sfx(&"delivery")
 	_player.celebrate()
 	_customer.set_mood(CustomerNpc.Mood.HAPPY)
-	_customer.say("Makasih, Masbro!" if report.stars >= 3 else "Hmm... ya sudah, makasih.", 0.0)
 	# Konfeti di lapisan HUD supaya jatuh di depan kartu hasil.
 	var view := get_viewport().get_visible_rect().size
 	if not Accessibility.reduce_motion:
 		Effects.confetti(_hud, Vector2(view.x / 2.0, 0), view.x)
+	if GameState.is_endless:
+		var integrity := 1.0 - float(damage) / maxf(1.0, float(day.package.max_damage))
+		var score_data := EndlessGenerator.evaluate_order(
+				GameState.endless_order, integrity, maxf(0.0, day.eta_seconds - elapsed), coins)
+		var broke := GameState.record_endless_delivery(
+				score_data["total"], coins, score_data["streak_coins"])
+		_hud.update_coins(GameState.wallet)
+		_hud.update_score(GameState.endless_score)
+		_customer.say("Makasih, Masbro!", 0.0)
+		_hud.show_endless_result(GameState.endless_order, score_data, GameState.endless_score, broke)
+		return
+	var report := DeliveryReport.evaluate(day, damage, collisions, elapsed, coins, checkpoint_uses)
+	GameState.record_delivery(day, report.wage)
+	GameState.last_day_good = report.integrity >= GOOD_DAY_INTEGRITY
+	GameState.save_profile()
+	_customer.say("Makasih, Masbro!" if report.stars >= 3 else "Hmm... ya sudah, makasih.", 0.0)
 	_hud.show_result(report, _next_button_text())
 
 
-func _fail() -> void:
+func _fail(timed_out := false) -> void:
 	state = State.FINISHED
 	_player.input_enabled = false
 	_player.invulnerable = false
-	GameState.record_delivery(day, 0)
-	GameState.save_profile()
 	AudioManager.stop_voices()
 	AudioManager.play_sfx(&"fail")
 	_customer.set_mood(CustomerNpc.Mood.SAD)
+	if GameState.is_endless:
+		GameState.finish_endless_run(coins)
+		_customer.say("Yah, waktunya habis..." if timed_out else "Yah... paketnya...", 0.0)
+		_hud.show_endless_game_over(timed_out, GameState.endless_delivered, GameState.endless_score,
+				GameState.endless_best_score, GameState.endless_best_orders,
+				GameState.endless_coins, GameState.endless_new_record)
+		return
+	GameState.record_delivery(day, 0)
+	GameState.save_profile()
 	_customer.say("Yah... paketnya...", 0.0)
 	var can_continue := _checkpoint_cell.y >= 0 and day.map != null
 	_hud.show_failed(GameState.is_replay, day.map.checkpoint_penalty if can_continue else 0)
@@ -1222,6 +1247,9 @@ func _shake() -> void:
 
 func _on_retry_requested() -> void:
 	get_tree().paused = false
+	if GameState.is_endless:
+		GameState.start_endless()
+		return
 	Transition.reload()
 
 
@@ -1235,6 +1263,9 @@ func _next_button_text() -> String:
 
 func _on_next_requested() -> void:
 	get_tree().paused = false
+	if GameState.is_endless:
+		GameState.next_endless_order()
+		return
 	var evening := day.evening_good if GameState.last_day_good else day.evening_rough
 	if GameState.advance_day():
 		GameState.play_stories([evening, GameState.current_day().story], GameState.LEVEL_SCENE)
@@ -1247,6 +1278,7 @@ func _on_next_requested() -> void:
 
 func _on_menu_requested() -> void:
 	get_tree().paused = false
+	GameState.exit_endless()
 	Transition.change_scene(GameState.MENU_SCENE)
 
 
