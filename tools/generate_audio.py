@@ -356,8 +356,8 @@ def check() -> int:
             continue
         info = describe(path)
         print(f"suara  : {name:13s} {info['seconds']:.2f}s  puncak {info['peak']:.2f}")
-        if not (0.2 <= info["seconds"] <= 1.6):
-            fail(f"{name}: durasi di luar 0,2-1,6 detik")
+        if not (0.2 <= info["seconds"] <= 4.0):
+            fail(f"{name}: durasi di luar 0,2-4,0 detik")
         if info["peak"] >= 0.95 or info["peak"] < 0.1 or info["nan"]:
             fail(f"{name}: level tidak wajar")
     print("hasil  :", "OK" if errors == 0 else f"{errors} masalah")

@@ -14,6 +14,7 @@ var _secondary_grid: GridContainer
 
 func _ready() -> void:
 	get_tree().paused = false
+	GameState.exit_endless()
 	AudioManager.play_music(&"menu")
 	# Kembali ke progres terakhir yang tersimpan (misalnya keluar dari tengah hari).
 	if not GameState.load_game():
@@ -76,6 +77,9 @@ func _ready() -> void:
 		first = _button("Mulai Hari 1", _start_new_game)
 	UiTheme.make_primary(first)
 	inside.add_child(first)
+	var endless := _button("Mode Endless", GameState.start_endless)
+	UiTheme.make_accent(endless)
+	inside.add_child(endless)
 	secondary.append(_button("Toko Masbro", Transition.change_scene.bind(GameState.SHOP_SCENE)))
 	secondary.append(_button("Pengaturan", _on_settings_pressed))
 	secondary.append(_button("Album Cerita", Transition.change_scene.bind(GameState.ALBUM_SCENE)))
@@ -124,9 +128,12 @@ func _fit() -> void:
 
 
 func _wallet_row() -> Control:
+	var wrapper := HBoxContainer.new()
+	wrapper.add_theme_constant_override("separation", 8)
+	wrapper.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+
 	var pill := PanelContainer.new()
 	pill.add_theme_stylebox_override("panel", UiTheme.pill(Palette.CREAM_DARK))
-	pill.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
 	pill.add_child(row)
@@ -141,7 +148,20 @@ func _wallet_row() -> Control:
 	label.add_theme_font_override("font", UiTheme.font(600))
 	label.add_theme_font_size_override("font_size", 16)
 	row.add_child(label)
-	return pill
+	wrapper.add_child(pill)
+
+	if GameState.endless_best_score > 0:
+		var best_pill := PanelContainer.new()
+		best_pill.add_theme_stylebox_override("panel", UiTheme.pill(Palette.TEAL))
+		var best_label := Label.new()
+		best_label.text = tr("Endless: %d pts") % GameState.endless_best_score
+		best_label.add_theme_font_override("font", UiTheme.font(600))
+		best_label.add_theme_font_size_override("font_size", 15)
+		best_label.add_theme_color_override("font_color", Palette.WHITE)
+		best_pill.add_child(best_label)
+		wrapper.add_child(best_pill)
+
+	return wrapper
 
 
 func _on_continue_pressed() -> void:

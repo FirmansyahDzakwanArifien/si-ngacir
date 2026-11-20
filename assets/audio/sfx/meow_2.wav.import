@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://sfx_meow_2"
-path="res://.godot/imported/meow_2.wav-sfx.sample"
+uid="uid://b7d3rioushw5l"
+path="res://.godot/imported/meow_2.wav-cd21aeeb93a2d1214916063a60d4f70d.sample"
 
 [deps]
 
 source_file="res://assets/audio/sfx/meow_2.wav"
-dest_files=["res://.godot/imported/meow_2.wav-sfx.sample"]
+dest_files=["res://.godot/imported/meow_2.wav-cd21aeeb93a2d1214916063a60d4f70d.sample"]
 
 [params]
 

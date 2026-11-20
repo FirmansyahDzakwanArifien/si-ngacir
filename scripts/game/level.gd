@@ -609,10 +609,10 @@ func _npc_say(owner: Node2D, text: String, offset: Vector2, side := SpeechBubble
 	bubble.side = side
 	bubble.position = offset
 	owner.add_child(bubble)
-	bubble.say(text, 1.6)
+	bubble.say(text, 2.2)
 	# Simpan id, bukan objeknya: pemilik balon (misalnya motor Kuro) bisa hilang lebih dulu.
 	var bubble_id := bubble.get_instance_id()
-	get_tree().create_timer(1.8, false).timeout.connect(func() -> void:
+	get_tree().create_timer(2.4, false).timeout.connect(func() -> void:
 		var node := instance_from_id(bubble_id) as Node
 		if node:
 			node.queue_free())
