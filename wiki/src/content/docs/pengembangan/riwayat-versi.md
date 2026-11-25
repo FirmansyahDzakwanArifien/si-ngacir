@@ -5,6 +5,16 @@ description: Catatan perubahan Si Ngacir dari versi pertama yang bisa dimainkan 
 
 Semua versi bisa diunduh di [itch.io](https://cyphera-game.itch.io/si-ngacir).
 
+## v0.16.0 — 25 November 2026
+
+- **Mode Endless (Shift Lembur):** jalan 2D yang terus menyambung ke atas. Ambil paket di kios, antar ke pelanggan, dapat skor, koin streak, dan tambahan waktu ETA tanpa jeda. Makin jauh makin padat: sungai dan rakit, Kuro dengan kulit pisang, Pak Buldog, dan hujan. Rekor (skor dan jumlah antaran terbaik) tersimpan permanen. Bisa dibuka dari Menu Utama dan layar Ending.
+- **Suara Voice Artist:** 8 rekaman asli untuk pelanggan, pengirim, dan pejalan kaki menggantikan suara sementara.
+- **Musik dan efek suara baru:** 5 lagu tema (menu, gameplay siang, gameplay malam, ending, endless) dengan loop mulus, serta 20 SFX baru/diperbarui (klakson per kendaraan, kucing, gonggongan, tercebur, terpeleset, kardus penyok, jingle cutscene). Suara tukang bakso: "Ting-ting! So.. bakso!".
+- **Volume awal lebih lembut:** musik dan SFX bawaan diturunkan, dengan fade-in saat musik pertama kali menyala.
+- **Tombol pause "II"** kini tampil juga di Web dan Desktop, jadi tidak perlu menekan Esc (yang keluar dari layar penuh).
+- **Panduan ambil paket:** baris kios bersih dari rintangan, ada tulisan "AMBIL PAKET!", garis jalur, dan panah. Masbro tidak bisa ke finis sebelum mengambil paket (Bos Koko mengingatkan lewat radio).
+- **APK Android bisa di-update tanpa uninstall** mulai versi ini (ditandatangani kunci permanen). Pemain yang memasang v0.15.0 atau sebelumnya perlu uninstall satu kali terakhir.
+
 ## v0.15.0 — 2 November 2026
 
 - **Cerita baru: Kedai Chill.** Diadaptasi dari dokumen cerita tim Writer Story. Masbro kini pemilik Kedai Chill yang harus melunasi tunggakan sewa Rp350.000 dalam lima hari sebagai kurir jalan kaki masa percobaan di Ngacir Express. Malam setelah tiap hari berlangsung di Kedai Chill; ending lulus menjadikan kedainya tempat istirahat para kurir kota.
