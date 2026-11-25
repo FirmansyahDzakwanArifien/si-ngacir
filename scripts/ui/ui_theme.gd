@@ -98,6 +98,17 @@ static func make_primary(button: Button) -> void:
 	button.custom_minimum_size.y = maxf(button.custom_minimum_size.y, 54.0)
 
 
+## Tombol aksen toska (misalnya Mode Endless di menu utama).
+static func make_accent(button: Button) -> void:
+	button.add_theme_stylebox_override("normal", _button_box(Palette.TEAL, Palette.TEAL_DARK))
+	button.add_theme_stylebox_override("hover", _button_box(Color("45d6c8"), Palette.TEAL_DARK))
+	button.add_theme_stylebox_override("pressed", _button_box(Palette.TEAL_DARK, Palette.TEAL_DARK, true))
+	for state in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color", "font_hover_pressed_color"]:
+		button.add_theme_color_override(state, Palette.WHITE)
+	button.add_theme_font_size_override("font_size", 20)
+	button.custom_minimum_size.y = maxf(button.custom_minimum_size.y, 46.0)
+
+
 ## Kartu krem ber-outline dengan bayangan lembut, untuk panel dan dialog.
 static func card(fill := Palette.CREAM, border := Palette.OUTLINE) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()

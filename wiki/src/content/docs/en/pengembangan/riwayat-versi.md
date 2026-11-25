@@ -5,6 +5,16 @@ description: Si Ngacir's change notes, from the first playable version to the la
 
 All versions can be downloaded on [itch.io](https://cyphera-game.itch.io/si-ngacir).
 
+## v0.16.0 — November 25, 2026
+
+- **Endless Mode (Overtime Shift):** a continuous 2D street scrolling upward. Pick up a package at the kiosk, deliver it to the customer, and earn score, streak coins, and extra ETA time with no scene break. The further you go the busier it gets: rivers and rafts, Kuro with banana peels, Pak Buldog, and rain. High score and best delivery count are saved permanently. Available from the Main Menu and the Ending screen.
+- **Voice Artist recordings:** 8 real recordings for customers, senders, and pedestrians replace the placeholder voices.
+- **New music and sound effects:** 5 theme tracks (menu, day gameplay, night gameplay, ending, endless) with seamless loops, plus 20 new/updated SFX (per-vehicle horns, cats, barking, splash, slip, crushed box, cutscene jingles). The meatball seller now calls "Ting-ting! So.. bakso!".
+- **Gentler startup volume:** lower default music and SFX levels, with a fade-in when music first starts.
+- **"II" pause button** now also shows on Web and Desktop, so you don't need Esc (which exits fullscreen).
+- **Package pickup guide:** the kiosk row is clear of obstacles, with an "AMBIL PAKET!" sign, lane lines, and an arrow. Masbro can't reach the finish before picking up the package (Bos Koko reminds you over the radio).
+- **Android APK updates without uninstalling** starting with this version (signed with a permanent key). Players on v0.15.0 or earlier need to uninstall one last time.
+
 ## v0.15.0 — November 2, 2026
 
 - **New story: Kedai Chill.** Adapted from the Story Writer team's document. Masbro now owns Kedai Chill and must pay Rp350,000 of overdue rent within five days as a probationary on-foot courier at Ngacir Express. The nights after each day take place at Kedai Chill; the passing ending turns the stall into the city couriers' rest stop.

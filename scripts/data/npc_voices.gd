@@ -20,7 +20,7 @@ const PROFILES := {
 		"cooldown": Vector2(20.0, 30.0),
 		"priority": 3,
 		"chance": 1.0,
-		"pitch": 0.05,
+		"pitch": 0.02,
 		"lines": [
 			["Sedikit lagi, Masbro!", &"customer_1"],
 			["Itu dia kurirnya!", &"customer_2"],
@@ -34,7 +34,7 @@ const PROFILES := {
 		"cooldown": Vector2(15.0, 25.0),
 		"priority": 3,
 		"chance": 1.0,
-		"pitch": 0.04,
+		"pitch": 0.02,
 		"lines": [
 			["Paketnya sudah siap, Mas!", &"sender_1"],
 			["Sini, Mas! Jangan sampai lecet ya!", &"sender_2"],
@@ -60,7 +60,7 @@ const PROFILES := {
 		"cooldown": Vector2(12.0, 20.0),
 		"priority": 1,
 		"chance": 0.7,
-		"pitch": 0.07,
+		"pitch": 0.02,
 		"lines": [
 			["Eh, ada kurir lewat!", &"pedestrian_1"],
 			["Semangat, Mas Kurir!", &"pedestrian_2"],
@@ -77,7 +77,7 @@ const PROFILES := {
 		"pitch": 0.12,
 		"lines": [
 			["Meong~", &"meow"],
-			["Miaw!", &"meow"],
+			["Miaw!", &"meow_2"],
 			["Prrr...", &"meow"],
 		],
 	},

@@ -15,9 +15,12 @@ const CAST := {
 	"walikota": {"name": "Pak Wali Kota", "color": Color("d4a017")},
 }
 
-## Musik cutscene: tema sedih, tema tegang (Kuro, Pemilik Lahan, Pak Buldog), dan musik santai bawaan.
+## Musik cutscene: tema sedih, tema tegang (Kuro, Pemilik Lahan, Pak Buldog), malam di kedai,
+## perayaan ending, dan musik santai bawaan.
 const SAD_MUSIC := &"sedih"
 const TENSE_MUSIC := &"tegang"
+const NIGHT_MUSIC := &"gameplay_malam"
+const ENDING_MUSIC := &"ending"
 const CALM_MUSIC := &"menu"
 ## Suasana per "tokoh:ekspresi". Tokoh yang tidak ada di sini memakai CALM_MUSIC,
 ## kecuali Masbro dan narasi yang meneruskan musik sebelumnya.
@@ -31,6 +34,8 @@ const MOOD_MUSIC := {
 }
 ## Latar yang otomatis bernuansa sedih, kecuali suasananya ditentukan MOOD_MUSIC.
 const SAD_IMAGES: Array[String] = ["sunset"]
+const NIGHT_IMAGES: Array[String] = ["kedai_night"]
+const ENDING_IMAGES: Array[String] = ["celebrate"]
 
 
 ## Pecah "tokoh:ekspresi" menjadi [tokoh, ekspresi]. Ekspresi bawaan "normal".
@@ -67,6 +72,10 @@ static func music_for(entry: String, image: String) -> StringName:
 		return MOOD_MUSIC[key]
 	if image in SAD_IMAGES and not key.ends_with(":senang"):
 		return SAD_MUSIC
+	if image in ENDING_IMAGES:
+		return ENDING_MUSIC
+	if image in NIGHT_IMAGES:
+		return NIGHT_MUSIC
 	if parsed[0] == "" or parsed[0] == "masbro":
 		return &""
 	return CALM_MUSIC

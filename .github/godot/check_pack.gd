@@ -5,7 +5,15 @@ extends SceneTree
 
 const STORY_DIR := "res://resources/story/"
 const DAY_DIR := "res://resources/days/"
-const MUSIC: Array[String] = ["menu", "gameplay", "gameplay_ceria", "sedih", "tegang"]
+const MUSIC: Array[String] = [
+	"menu", "gameplay", "gameplay_ceria", "gameplay_malam",
+	"ending", "endless", "sedih", "tegang",
+]
+const SFX: Array[String] = [
+	"pickup", "step", "delivery", "fail", "coin", "star", "powerup",
+	"hit", "click", "package_damage", "slip", "splash", "horn", "horn_car", "horn_truck",
+	"meow", "meow_2", "bark", "chime_sad", "sting_tegang",
+]
 
 var _errors := 0
 
@@ -36,6 +44,8 @@ func _initialize() -> void:
 
 	for music in MUSIC:
 		_check(ResourceLoader.exists("res://assets/audio/music/%s.wav" % music), "musik %s" % music)
+	for sfx in SFX:
+		_check(ResourceLoader.exists("res://assets/audio/sfx/%s.wav" % sfx), "sfx %s" % sfx)
 	# Bus Music, SFX & Voice harus sudah ada dari layout: membuatnya saat berjalan membisukan
 	# semua suara di build web Godot 4.3.
 	var layout: AudioBusLayout = load("res://default_bus_layout.tres")

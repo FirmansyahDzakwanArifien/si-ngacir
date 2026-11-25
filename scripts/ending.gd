@@ -14,7 +14,8 @@ const BAD_ENDING_TEXT := "Masa percobaan berakhir, tapi tabungan Masbro belum cu
 func _ready() -> void:
 	get_tree().paused = false
 	GameState.is_replay = false
-	AudioManager.play_music(&"menu")
+	GameState.exit_endless()
+	AudioManager.play_music(&"ending", &"menu")
 
 	add_child(MenuBackdrop.new())
 
@@ -74,6 +75,12 @@ func _ready() -> void:
 	column.add_child(_money_row("Total tabungan", GameState.total_savings(),
 			Palette.TEAL_DARK if enough else Palette.CORAL_DARK))
 	column.add_child(_money_row("Sewa Kedai Chill", GameState.RENT_DUE, Palette.TEXT_SOFT))
+
+	var endless := Button.new()
+	endless.text = "Mode Endless"
+	UiTheme.make_accent(endless)
+	endless.pressed.connect(GameState.start_endless)
+	column.add_child(endless)
 
 	var menu := Button.new()
 	menu.text = "Menu Utama"

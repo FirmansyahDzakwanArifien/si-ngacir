@@ -23,6 +23,10 @@ const HOLD_REPEAT_GAP := 0.06
 
 var tile := 48.0
 var grid_size := Vector2i(15, 13)
+## Batas vertikal opsional (dipakai Mode Endless untuk naik tanpa batas ke baris negatif).
+## Bila max_row < min_row, memakai 0 .. grid_size.y - 1 seperti biasa.
+var min_row := 0
+var max_row := -1
 var cell := Vector2i.ZERO
 var step_time := 0.12
 var package_id: StringName = &""
@@ -217,7 +221,9 @@ func _try_move(direction: Vector2i) -> void:
 
 
 func _clamp_cell(target: Vector2i) -> Vector2i:
-	return Vector2i(clampi(target.x, 0, grid_size.x - 1), clampi(target.y, 0, grid_size.y - 1))
+	var top := min_row if max_row >= min_row else 0
+	var bottom := max_row if max_row >= min_row else grid_size.y - 1
+	return Vector2i(clampi(target.x, 0, grid_size.x - 1), clampi(target.y, top, bottom))
 
 
 func _is_enterable(target: Vector2i) -> bool:
@@ -284,6 +290,25 @@ func plop() -> void:
 	_hop_tween.parallel().tween_property(_visual, "modulate", Color(0.7, 0.85, 1.0, 0.6), 0.12)
 	_hop_tween.tween_property(_visual, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	_hop_tween.parallel().tween_property(_visual, "modulate", Color.WHITE, 0.25)
+
+
+## Ganti jenis paket yang digendong Masbro (dipakai Mode Endless saat ganti order).
+func set_package(id: StringName, color: Color) -> void:
+	package_id = id
+	package_color = color
+	if _package_icon == null:
+		return
+	var parent := _package_icon.get_parent()
+	_package_icon.queue_free()
+	var fresh := SpriteLibrary.sprite("package_%s" % package_id)
+	if fresh == null:
+		fresh = Sprite2D.new()
+		fresh.centered = false
+		fresh.texture = SpriteLibrary.placeholder_box(Vector2i(20, 15), package_color, Color("6e4a2b"))
+	fresh.visible = carrying
+	parent.add_child(fresh)
+	_package_icon = fresh
+	_update_facing()
 
 
 ## Paket baru diambil: ikon paket melompat ke punggung Masbro.

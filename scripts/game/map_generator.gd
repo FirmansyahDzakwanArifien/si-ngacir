@@ -124,6 +124,8 @@ static func pick_pickup(rows: Array[LaneData], rng: RandomNumberGenerator, start
 	if columns.is_empty():
 		return Vector2i(-1, -1)
 	var col := columns[rng.randi() % columns.size()]
+	# Bersihkan penghalang di baris titik jemput supaya jalur mendatar menuju kios selalu terbuka.
+	lane.obstacles.clear()
 	lane.items.erase(col)
 	return Vector2i(col, row)
 
